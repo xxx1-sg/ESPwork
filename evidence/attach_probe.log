@@ -1,0 +1,159 @@
+
+===== serial_watch 开始 2026-09-30T09:52:59.274 端口=COM5 时长=25s =====
+[2026-09-30T09:52:59.280] 已打开 COM5（第 1 次）
+[2026-09-30T09:52:59.280] 附着模式：未触发复位，直接观察板子当前输出
+[2026-09-30T09:52:59.309] ESP-ROM:esp32s3-20210327
+[2026-09-30T09:52:59.309] Build:Mar 27 2021
+[2026-09-30T09:52:59.309] rst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+[2026-09-30T09:52:59.309] Saved PC:0x40041a76
+[2026-09-30T09:52:59.309] SPIWP:0xee
+[2026-09-30T09:52:59.309] mode:DIO, clock div:1
+[2026-09-30T09:52:59.309] load:0x3fce2820,len:0x1548
+[2026-09-30T09:52:59.309] load:0x403c8700,len:0xdac
+[2026-09-30T09:52:59.309] load:0x403cb700,len:0x2f60
+[2026-09-30T09:52:59.309] entry 0x403c88f8
+[2026-09-30T09:52:59.309] I (24) boot: ESP-IDF 6.1.0 2nd stage bootloader
+[2026-09-30T09:52:59.309] I (24) boot: compile time Sep 24 2026 16:29:52
+[2026-09-30T09:52:59.309] I (25) boot: Multicore bootloader
+[2026-09-30T09:52:59.309] I (25) boot: chip revision: v0.2
+[2026-09-30T09:52:59.309] I (25) boot: efuse block revision: v1.3
+[2026-09-30T09:52:59.309] I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+[2026-09-30T09:52:59.309] I (26) boot.esp32s3: SPI Mode       : DIO
+[2026-09-30T09:52:59.309] I (26) boot.esp32s3: SPI Flash Size : 8MB
+[2026-09-30T09:52:59.309] I (26) boot: Enabling RNG early entropy source...
+[2026-09-30T09:52:59.309] I (26) boot: Partition Table:
+[2026-09-30T09:52:59.309] I (26) boot: ## Label            Usage          Type ST Offset   Length
+[2026-09-30T09:52:59.309] I (27) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+[2026-09-30T09:52:59.309] I (27) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+[2026-09-30T09:52:59.309] I (27) boot:  2 factory          factory app      00 00 00010000 00400000
+[2026-09-30T09:52:59.309] I (28) boot: End of partition table
+[2026-09-30T09:52:59.510] I (28) esp_image: segment 0: paddr=00010020 vaddr=3c0b0020 size=24058h (147544) map
+[2026-09-30T09:52:59.510] I (55) esp_image: segment 1: paddr=00034080 vaddr=3fc98100 size=05098h ( 20632) load
+[2026-09-30T09:52:59.510] I (60) esp_image: segment 2: paddr=00039120 vaddr=40374000 size=06ef8h ( 28408) load
+[2026-09-30T09:52:59.510] I (67) esp_image: segment 3: paddr=00040020 vaddr=42000020 size=ac304h (705284) map
+[2026-09-30T09:52:59.510] I (196) esp_image: segment 4: paddr=000ec32c vaddr=4037aef8 size=0d118h ( 53528) load
+[2026-09-30T09:52:59.510] I (209) esp_image: segment 5: paddr=000f944c vaddr=50000000 size=00024h (    36) load
+[2026-09-30T09:52:59.510] I (218) boot: Loaded app from partition at offset 0x10000
+[2026-09-30T09:52:59.510] I (218) boot: Disabling RNG early entropy source...
+[2026-09-30T09:52:59.510] I (219) cpu_start: Multicore app
+[2026-09-30T09:52:59.510] I (228) cpu_start: Pro cpu start user code
+[2026-09-30T09:52:59.510] I (228) cpu_start: cpu freq: 160000000 Hz
+[2026-09-30T09:52:59.510] I (228) app_init: Application information:
+[2026-09-30T09:52:59.510] I (228) app_init: Project name:     esp32s3eye_imu_uploader
+[2026-09-30T09:52:59.510] I (229) app_init: App version:      1
+[2026-09-30T09:52:59.510] I (229) app_init: Compile time:     Sep 24 2026 16:29:39
+[2026-09-30T09:52:59.510] I (229) app_init: ELF file SHA256:  116671d53...
+[2026-09-30T09:52:59.517] I (229) app_init: ESP-IDF:          6.1.0
+[2026-09-30T09:52:59.518] I (229) efuse_init: Min chip rev:     v0.0
+[2026-09-30T09:52:59.518] I (229) efuse_init: Max chip rev:     v0.99 
+[2026-09-30T09:52:59.518] I (230) efuse_init: Chip rev:         v0.2
+[2026-09-30T09:52:59.518] I (230) heap_init: Initializing. RAM available for dynamic allocation:
+[2026-09-30T09:52:59.518] I (230) heap_init: At 3FCA1EF0 len 00047820 (286 KiB): RAM
+[2026-09-30T09:52:59.518] I (230) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+[2026-09-30T09:52:59.518] I (230) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+[2026-09-30T09:52:59.518] I (231) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+[2026-09-30T09:52:59.518] I (232) spi_flash: detected chip: generic
+[2026-09-30T09:52:59.518] I (232) spi_flash: flash io: dio
+[2026-09-30T09:52:59.518] I (233) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+[2026-09-30T09:52:59.518] I (234) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+[2026-09-30T09:52:59.518] I (234) main_task: Started on CPU0
+[2026-09-30T09:52:59.518] I (234) main_task: Calling app_main()
+[2026-09-30T09:52:59.518] I (234) main: ==================================================
+[2026-09-30T09:52:59.518] I (234) main: ESP32-S3-EYE 真实物理传感器采集固件 v1.0.0
+[2026-09-30T09:52:59.518] I (234) main: 芯片: ESP32-S3, 2 核, 版本 v0.2, ESP-IDF 6.1.0
+[2026-09-30T09:53:00.020] I (234) main: 本次复位原因: USB 外设复位 (代码 11)
+[2026-09-30T09:53:00.020] I (234) main: ==================================================
+[2026-09-30T09:53:00.020] I (264) main: 设备 ID = esp32s3eye-1C701C, 本次为第 766 次开机
+[2026-09-30T09:53:00.021] I (264) imu: I2C 总线就绪: SDA=GPIO4 SCL=GPIO5 400kHz
+[2026-09-30T09:53:00.021] I (264) imu: 开始扫描 I2C 总线 ...
+[2026-09-30T09:53:00.021] I (264) imu:   发现 I2C 设备: 0x12  <-- QMA6100P 加速度计
+[2026-09-30T09:53:00.021] I (274) imu: 扫描结束, 共发现 1 个设备
+[2026-09-30T09:53:00.021] I (284) imu: 检测到 QMA6100P, I2C=0x12, CHIP_ID=0x90
+[2026-09-30T09:53:00.021] I (334) imu: 配置回读: RANGE=0x01(±2g, 4096 LSB/g) BW_ODR=0x00 POWER=0x84
+[2026-09-30T09:53:00.021] I (334) imu: QMA6100P 初始化完成, 开始输出真实物理测量值
+[2026-09-30T09:53:00.021] I (334) main: 硬件自检: 连续读取真实测量值, 检查合矢量是否接近 1g ...
+[2026-09-30T09:53:00.021] I (734) main: 自检结果: 平均合矢量 = 0.993 g (20/20 次有效)
+[2026-09-30T09:53:00.021] I (734) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T09:53:00.021] I (734) main: 【复位原因】USB 外设复位 (代码 11)，本次为第 766 次开机
+[2026-09-30T09:53:00.021] I (734) pp: pp rom version: e7ae62f
+[2026-09-30T09:53:00.021] I (734) net80211: net80211 rom version: e7ae62f
+[2026-09-30T09:53:00.038] I (744) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T09:53:00.038] I (754) wifi:wifi firmware version: e12a754
+[2026-09-30T09:53:00.038] I (754) wifi:wifi certification version: v7.0
+[2026-09-30T09:53:00.038] I (754) wifi:config NVS flash: enabled
+[2026-09-30T09:53:00.038] I (754) wifi:config nano formatting: disabled
+[2026-09-30T09:53:00.038] I (754) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T09:53:00.038] I (754) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T09:53:00.038] I (754) wifi:Init management short buffer num: 32
+[2026-09-30T09:53:00.038] I (754) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T09:53:00.038] I (754) wifi:Init static tx FG buffer num: 2
+[2026-09-30T09:53:00.038] I (754) wifi:Init static rx buffer size: 1600
+[2026-09-30T09:53:00.038] I (754) wifi:Init static rx buffer num: 10
+[2026-09-30T09:53:00.038] I (754) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T09:53:00.038] I (754) wifi_init: rx ba win: 6
+[2026-09-30T09:53:00.038] I (754) wifi_init: accept mbox: 6
+[2026-09-30T09:53:00.038] I (754) wifi_init: tcpip mbox: 32
+[2026-09-30T09:53:00.038] I (754) wifi_init: udp mbox: 6
+[2026-09-30T09:53:00.038] I (754) wifi_init: tcp mbox: 6
+[2026-09-30T09:53:00.038] I (754) wifi_init: tcp tx win: 5760
+[2026-09-30T09:53:00.038] I (754) wifi_init: tcp rx win: 5760
+[2026-09-30T09:53:00.038] I (754) wifi_init: tcp mss: 1440
+[2026-09-30T09:53:00.038] I (754) wifi_init: WiFi IRAM OP enabled
+[2026-09-30T09:53:00.038] I (754) wifi_init: WiFi RX IRAM OP enabled
+[2026-09-30T09:53:00.038] I (754) uploader: 使用网络[1/2]: SSID="432"
+[2026-09-30T09:53:00.308] I (754) phy_init: phy_version 712,87e8c20e,Apr 13 2026,18:51:10
+[2026-09-30T09:53:00.308] I (844) phy_init: Saving new calibration data due to checksum failure or outdated calibration data, mode(0)
+[2026-09-30T09:53:00.308] I (854) wifi:mode : sta (94:a9:90:1c:70:1c)
+[2026-09-30T09:53:00.308] I (854) wifi:enable tsf
+[2026-09-30T09:53:00.308] I (864) uploader: Wi-Fi 启动, 开始连接 SSID="432"
+[2026-09-30T09:53:00.308] I (864) uploader: Wi-Fi 最大发射功率 = 8.00 dBm（降低峰值电流，缓解供电不足导致的复位）
+[2026-09-30T09:53:00.308] I (864) uploader: 等待联网 (最长 30000 ms) ...
+[2026-09-30T09:53:00.308] I (894) wifi:new:<1,1>, old:<1,0>, ap:<255,255>, sta:<1,1>, prof:1, snd_ch_cfg:0x0
+[2026-09-30T09:53:00.308] I (894) wifi:state: init -> auth (0xb0)
+[2026-09-30T09:53:00.308] I (934) wifi:state: auth -> assoc (0x0)
+[2026-09-30T09:53:00.308] I (974) wifi:state: assoc -> run (0x10)
+[2026-09-30T09:53:00.308] I (1024) wifi:<ba-add>idx:0 (ifx:0, 80:ae:54:50:6c:30), tid:5, ssn:1, winSize:64
+[2026-09-30T09:53:00.308] I (1024) wifi:connected with 432, aid = 6, channel 1, 40U, bssid = 80:ae:54:50:6c:30
+[2026-09-30T09:53:00.309] I (1024) wifi:security: WPA2-PSK, phy: bgn, rssi: -61, cipher(pairwise:0x3, group:0x3), pmf:0
+[2026-09-30T09:53:00.309] I (1024) wifi:pm start, type: 1
+[2026-09-30T09:53:00.811] I (1024) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+[2026-09-30T09:53:00.811] I (1024) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000
+[2026-09-30T09:53:00.811] I (1034) uploader: 已关联到 AP, 等待 DHCP 分配 IP ...
+[2026-09-30T09:53:00.811] I (1104) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+[2026-09-30T09:53:00.811] I (1254) wifi:<ba-add>idx:1 (ifx:0, 80:ae:54:50:6c:30), tid:7, ssn:0, winSize:64
+[2026-09-30T09:53:01.812] I (2264) esp_netif_handlers: sta ip: 10.1.42.183, mask: 255.255.255.0, gw: 10.1.42.254
+[2026-09-30T09:53:01.812] I (2264) uploader: 获取 IP 成功: 10.1.42.183 (网关 10.1.42.254, SSID="432")
+[2026-09-30T09:53:01.812] I (2264) main: Wi-Fi 已连接, 本机 IP = 10.1.42.183
+[2026-09-30T09:53:02.328] I (2794) wifi:<ba-del>idx:0, tid:5
+[2026-09-30T09:53:02.328] I (2794) wifi:<ba-add>idx:0 (ifx:0, 80:ae:54:50:6c:30), tid:0, ssn:1, winSize:64
+[2026-09-30T09:53:02.828] I (3344) uploader: SNTP 对时成功, 设备本地时间: 2026-09-30 09:52:54 +0800
+[2026-09-30T09:53:02.828] I (3344) main: 开始高密度采集: 每 100 ms 采一个点, 攒满 10 点(约 1000 ms)整包上传一次; 每个采样点由 8 次硬件采样取平均后得到
+[2026-09-30T09:53:02.828] I (3364) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=1/10 up=3128ms ts=2026-09-30T09:52:54.342+0800 raw=(-2848,2057,2436) g=(-0.695,0.502,0.595) ms2=(-6.82,4.92,5.83) |a|=1.044g
+[2026-09-30T09:53:02.828] I (3454) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=2/10 up=3227ms ts=2026-09-30T09:52:54.441+0800 raw=(-2862,2071,2424) g=(-0.699,0.506,0.592) ms2=(-6.85,4.96,5.80) |a|=1.046g
+[2026-09-30T09:53:03.329] I (3554) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=3/10 up=3327ms ts=2026-09-30T09:52:54.541+0800 raw=(-2855,2097,2405) g=(-0.697,0.512,0.587) ms2=(-6.84,5.02,5.76) |a|=1.045g
+[2026-09-30T09:53:03.329] I (3654) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=4/10 up=3427ms ts=2026-09-30T09:52:54.641+0800 raw=(-2846,2093,2430) g=(-0.695,0.511,0.593) ms2=(-6.81,5.01,5.82) |a|=1.047g
+[2026-09-30T09:53:03.329] I (3764) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=5/10 up=3527ms ts=2026-09-30T09:52:54.741+0800 raw=(-2836,2111,2412) g=(-0.692,0.515,0.589) ms2=(-6.79,5.05,5.77) |a|=1.045g
+[2026-09-30T09:53:03.329] I (3844) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=6/10 up=3617ms ts=2026-09-30T09:52:54.830+0800 raw=(-2869,2111,2420) g=(-0.700,0.515,0.591) ms2=(-6.87,5.05,5.79) |a|=1.051g
+[2026-09-30T09:53:03.329] I (3944) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=7/10 up=3717ms ts=2026-09-30T09:52:54.930+0800 raw=(-2846,2095,2412) g=(-0.695,0.511,0.589) ms2=(-6.81,5.02,5.77) |a|=1.045g
+[2026-09-30T09:53:03.831] I (4044) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=8/10 up=3817ms ts=2026-09-30T09:52:55.030+0800 raw=(-2843,2103,2402) g=(-0.694,0.513,0.586) ms2=(-6.81,5.04,5.75) |a|=1.044g
+[2026-09-30T09:53:03.831] I (4144) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=9/10 up=3917ms ts=2026-09-30T09:52:55.130+0800 raw=(-2846,2072,2403) g=(-0.695,0.506,0.587) ms2=(-6.81,4.96,5.75) |a|=1.041g
+[2026-09-30T09:53:03.831] I (4244) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=1 idx=10/10 up=4017ms ts=2026-09-30T09:52:55.230+0800 raw=(-2861,2077,2408) g=(-0.698,0.507,0.588) ms2=(-6.85,4.97,5.77) |a|=1.044g
+[2026-09-30T09:53:03.831] I (4334) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+[2026-09-30T09:53:03.831] I (4334) uploader: 已建立可复用连接 (keep-alive)
+[2026-09-30T09:53:08.200] I (8724) main: [POST] seq=1 n=10 http=201 resp={"ok": true, "id": 2869, "stored_count": 10, "sample_idx": 10, "seq": 1, "device_id": "esp32s3eye-1C701C", "received_at_utc": "2026-09-30T01:53:07.682Z", "stored": {"raw": {"x": -2861, "y": 2077, "z": 2408}, "accel_g": {"x": -0.698486, "y": 0.50708, "z": 0.587891}, "accel_ms2": {"x": -6.849811, "y": 4.972757, "z": 5.765238}, "magnitude_g": 1.044332, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "ids": [2860, 2861, 2862, 2863, 2864, 2865, 2866, 2867, 2868, 
+[2026-09-30T09:53:08.201] I (8744) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=1/10 up=8512ms ts=2026-09-30T09:52:59.725+0800 raw=(-2860,2066,2395) g=(-0.698,0.504,0.585) ms2=(-6.85,4.95,5.73) |a|=1.041g
+[2026-09-30T09:53:08.201] I (8834) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=2/10 up=8598ms ts=2026-09-30T09:52:59.811+0800 raw=(-2875,2070,2414) g=(-0.702,0.505,0.589) ms2=(-6.88,4.96,5.78) |a|=1.047g
+[2026-09-30T09:53:08.681] I (8914) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=3/10 up=8687ms ts=2026-09-30T09:52:59.900+0800 raw=(-2844,2095,2388) g=(-0.694,0.511,0.583) ms2=(-6.81,5.02,5.72) |a|=1.041g
+[2026-09-30T09:53:08.681] I (9024) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=4/10 up=8788ms ts=2026-09-30T09:53:00.001+0800 raw=(-2810,2076,2401) g=(-0.686,0.507,0.586) ms2=(-6.73,4.97,5.75) |a|=1.035g
+[2026-09-30T09:53:08.681] I (9104) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=5/10 up=8877ms ts=2026-09-30T09:53:00.090+0800 raw=(-2831,2043,2397) g=(-0.691,0.499,0.585) ms2=(-6.78,4.89,5.74) |a|=1.034g
+[2026-09-30T09:53:08.681] I (9214) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=6/10 up=8977ms ts=2026-09-30T09:53:00.190+0800 raw=(-2856,2071,2418) g=(-0.697,0.506,0.590) ms2=(-6.84,4.96,5.79) |a|=1.044g
+[2026-09-30T09:53:08.681] I (9294) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=7/10 up=9067ms ts=2026-09-30T09:53:00.281+0800 raw=(-2873,2094,2411) g=(-0.701,0.511,0.589) ms2=(-6.88,5.01,5.77) |a|=1.049g
+[2026-09-30T09:53:09.187] I (9394) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=8/10 up=9167ms ts=2026-09-30T09:53:00.380+0800 raw=(-2877,2071,2383) g=(-0.702,0.506,0.582) ms2=(-6.89,4.96,5.71) |a|=1.043g
+[2026-09-30T09:53:09.187] I (9494) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=9/10 up=9267ms ts=2026-09-30T09:53:00.481+0800 raw=(-2840,2080,2420) g=(-0.693,0.508,0.591) ms2=(-6.80,4.98,5.79) |a|=1.043g
+[2026-09-30T09:53:09.187] I (9594) main: [DATA] dev=esp32s3eye-1C701C boot=766 seq=2 idx=10/10 up=9367ms ts=2026-09-30T09:53:00.580+0800 raw=(-2848,2057,2443) g=(-0.695,0.502,0.596) ms2=(-6.82,4.92,5.85) |a|=1.045g
+[2026-09-30T09:53:19.230] W (19704) HTTP_CLIENT: Connection timed out before data was ready!
+[2026-09-30T09:53:19.230] W (19704) uploader: 服务器返回非 2xx: -1
+[2026-09-30T09:53:19.230] W (19704) main: 上传失败(第 1/3 次, http=-1), 1s 后重试
+[2026-09-30T09:53:24.769] 结束：共打开 1 次，收到 11734 字节
+===== serial_watch 结束 =====
+

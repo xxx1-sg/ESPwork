@@ -1,0 +1,90 @@
+
+===== 采集开始 2026-09-24T16:30:24.459 端口=COM5 =====
+[2026-09-24T16:30:25.460] I (196) esp_image: segment 4: paddr=000ebccc vaddr=4037b368 sizeI (14717) main: [POST] seq=2 http=201 resp={"ok": true, "id": 2, "upload_id": 2, "device_id": "esp32s3eye-1C701C", "seq": 2, "received_at_utc": "2026-09-24T08:30:24.653Z", "stored": {"raw": {"x": -2808, "y": -1850, "z": -1216}, "accel_g": {"x": -0.685547, "y": -0.45166, "z": -0.296875}, "accel_ms2": {"x": -6.722919, "y": -4.429273, "z": -2.911349}, "magnitude_g": 0.872987, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "raw_sha256": "284aca80e6a540427aab6978b632c47b3260b56e1066a04508ed6f6f757c58ab",
+[2026-09-24T16:30:26.460] I (15727) main: [DATA] dev=esp32s3eye-1C701C boot=10 seq=3 up=15498ms ts=2026-09-24T16:30:25.945+0800 raw=(-2837,-1846,-1198) g=(-0.693,-0.451,-0.292) ms2=(-6.79,-4.42,-2.87) |a|=0.877g
+[2026-09-24T16:30:26.461] I (15737) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+[2026-09-24T16:30:29.463] I (19117) main: [POST] seq=3 http=201 resp={"ok": true, "id": 3, "upload_id": 3, "device_id": "esp32s3eye-1C701C", "seq": 3, "received_at_utc": "2026-09-24T08:30:28.985Z", "stored": {"raw": {"x": -2837, "y": -1846, "z": -1198}, "accel_g": {"x": -0.692627, "y": -0.450684, "z": -0.29248}, "accel_ms2": {"x": -6.79235, "y": -4.419696, "z": -2.868254}, "magnitude_g": 0.87658, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "raw_sha256": "e353c46652bfb661d699b204799457f82f5be529ed8f015dc2215a999977a978", "
+[2026-09-24T16:30:30.465] I (20147) main: [DATA] dev=esp32s3eye-1C701C boot=10 seq=4 up=19908ms ts=2026-09-24T16:30:30.356+0800 raw=(-2800,-1850,-1237) g=(-0.684,-0.452,-0.302) ms2=(-6.70,-4.43,-2.96) |a|=0.873g
+[2026-09-24T16:30:30.465] I (20147) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+[2026-09-24T16:30:33.468] I (23107) main: [POST] seq=4 http=201 resp={"ok": true, "id": 4, "upload_id": 4, "device_id": "esp32s3eye-1C701C", "seq": 4, "received_at_utc": "2026-09-24T08:30:33.047Z", "stored": {"raw": {"x": -2800, "y": -1850, "z": -1237}, "accel_g": {"x": -0.683594, "y": -0.45166, "z": -0.302002}, "accel_ms2": {"x": -6.703765, "y": -4.429273, "z": -2.961627}, "magnitude_g": 0.873214, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "raw_sha256": "eca7815ebfc703bf7963849a77437e8929cb77d4b18cfb6aadbc55e53cd57494",
+[2026-09-24T16:30:34.468] I (24127) main: [DATA] dev=esp32s3eye-1C701C boot=10 seq=5 up=23897ms ts=2026-09-24T16:30:34.345+0800 raw=(-2793,-1838,-1200) g=(-0.682,-0.449,-0.293) ms2=(-6.69,-4.40,-2.87) |a|=0.867g
+[2026-09-24T16:30:34.468] I (24137) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+[2026-09-24T16:30:38.472] I (27727) main: [POST] seq=5 http=201 resp={"ok": true, "id": 5, "upload_id": 5, "device_id": "esp32s3eye-1C701C", "seq": 5, "received_at_utc": "2026-09-24T08:30:37.594Z", "stored": {"raw": {"x": -2793, "y": -1838, "z": -1200}, "accel_g": {"x": -0.681885, "y": -0.44873, "z": -0.292969}, "accel_ms2": {"x": -6.687006, "y": -4.400543, "z": -2.873042}, "magnitude_g": 0.86727, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "raw_sha256": "d8dee2f40a6474235a1657f348e83e0117a3eaa6e9d1d0efded5390de8105eba", 
+[2026-09-24T16:30:39.473] I (28737) main: [DATA] dev=esp32s3eye-1C701C boot=10 seq=6 up=28507ms ts=2026-09-24T16:30:38.955+0800 raw=(-2813,-1861,-1215) g=(-0.687,-0.454,-0.297) ms2=(-6.73,-4.46,-2.91) |a|=0.875g
+[2026-09-24T16:30:39.473] I (28747) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+[2026-09-24T16:30:42.476] I (32077) main: [POST] seq=6 http=201 resp={"ok": true, "id": 6, "upload_id": 6, "device_id": "esp32s3eye-1C701C", "seq": 6, "received_at_utc": "2026-09-24T08:30:42.013Z", "stored": {"raw": {"x": -2813, "y": -1861, "z": -1215}, "accel_g": {"x": -0.686768, "y": -0.454346, "z": -0.296631}, "accel_ms2": {"x": -6.73489, "y": -4.455609, "z": -2.908955}, "magnitude_g": 0.875254, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "raw_sha256": "1e46a79d5f85dc3caec7367eb545595d0893f7c2f20e474634c827a6e86015f8",
+[2026-09-24T16:30:43.477] I (33097) main: [DATA] dev=esp32s3eye-1C701C boot=10 seq=7 up=32867ms ts=2026-09-24T16:30:43.315+0800 raw=(-2791,-1825,-1217) g=(-0.681,-0.446,-0.297) ms2=(-6.68,-4.37,-2.91) |a|=0.867g
+[2026-09-24T16:30:43.477] I (33107) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+[2026-09-24T16:30:47.482] I (36387) main: [POST] seq=7 http=201 resp={"ok": true, "id": 7, "upload_id": 7, "device_id": "esp32s3eye-1C701C", "seq": 7, "received_at_utc": "2026-09-24T08:30:46.338Z", "stored": {"raw": {"x": -2791, "y": -1825, "z": -1217}, "accel_g": {"x": -0.681396, "y": -0.445557, "z": -0.297119}, "accel_ms2": {"x": -6.682217, "y": -4.369418, "z": -2.913743}, "magnitude_g": 0.866661, "unit": {"raw": "LSB(14bit signed)", "accel_g": "g", "accel_ms2": "m/s^2", "magnitude_g": "g"}}, "raw_sha256": "978c23529e0b4f53579239cfe14813d7d25b773b6fdf56bf1579a69503b1512b"
+[2026-09-24T16:30:48.482] I (37397) main: [DATA] dev=esp32s3eye-1C701C boot=10 seq=8 up=37167ms ts=2026-09-24T16:30:47.615+0800 raw=(-2795,-1845,-1223) g=(-0.682,-0.450,-0.299) ms2=(-6.69,-4.42,-2.93) |a|=0.870g
+[2026-09-24T16:30:48.482] I (37407) uploader: HTTPS 校验方式: 工程内嵌 CA 链（2234 字节）
+
+===== 采集开始 2026-09-30T08:49:47.860 端口=COM5 =====
+[2026-09-30T08:49:48.870] I (644) esp_psram: SPI SRAM memory test OK
+[2026-09-30T08:49:48.870] I (652) cpu_start: Pro cpu start user code
+[2026-09-30T08:49:48.870] I (652) cpu_start: cpu freq: 160000000 Hz
+[2026-09-30T08:49:48.870] I (652) app_init: Application information:
+[2026-09-30T08:49:48.870] I (653) app_init: Project name:     s3eye_imu
+[2026-09-30T08:49:48.870] I (653) app_init: App version:      a31a9ae-dirty
+[2026-09-30T08:49:48.870] I (653) app_init: Compile time:     Sep 28 2026 13:39:07
+[2026-09-30T08:49:48.870] I (653) app_init: ELF file SHA256:  021c89bb9...
+[2026-09-30T08:49:48.870] I (653) app_init: ESP-IDF:          6.1.0
+[2026-09-30T08:49:48.870] I (653) efuse_init: Min chip rev:     v0.0
+[2026-09-30T08:49:48.870] I (653) efuse_init: Max chip rev:     v0.99 
+[2026-09-30T08:49:48.870] I (654) efuse_init: Chip rev:         v0.2
+[2026-09-30T08:49:48.870] I (654) heap_init: Initializing. RAM available for dynamic allocation:
+[2026-09-30T08:49:48.870] I (654) heap_init: At 3FCA7C20 len 00041AF0 (262 KiB): RAM
+[2026-09-30T08:49:48.870] I (654) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+[2026-09-30T08:49:48.870] I (654) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+[2026-09-30T08:49:48.870] I (655) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+[2026-09-30T08:49:48.870] I (655) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+[2026-09-30T08:49:48.870] I (656) spi_flash: detected chip: generic
+[2026-09-30T08:49:48.870] I (656) spi_flash: flash io: qio
+[2026-09-30T08:49:48.870] I (657) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+[2026-09-30T08:49:48.870] I (658) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+[2026-09-30T08:49:48.870] I (658) main_task: Started on CPU0
+[2026-09-30T08:49:48.870] I (658) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+[2026-09-30T08:49:48.870] I (659) main_task: Calling app_main()
+[2026-09-30T08:49:49.873] 
+[2026-09-30T08:49:49.873] === ESP32-S3-EYE IMU 上报固件 (ESP-IDF) ===
+[2026-09-30T08:49:49.874] chip=ESP32-S3  device=S3EYE-GROUP01  mac=94A9901C701C
+[2026-09-30T08:49:49.874] I (1875) temperature_sensor: Range [-10°C ~ 80°C], error < 1°C
+[2026-09-30T08:49:49.874] I (1876) S3EYE: 扫描 I2C 总线 (SDA=4 SCL=5)…
+[2026-09-30T08:49:49.874] I (1878) S3EYE:   发现 I2C 设备: 0x12
+[2026-09-30T08:49:49.874] I (1895) S3EYE: IMU = QMA6100P (WHO_AM_I=0x90，与官方驱动常量一致)
+[2026-09-30T08:49:49.874] I (1956) S3EYE: IMU QMA6100P 初始化完成（±2g，4096 LSB/g，端口 0）
+[2026-09-30T08:49:49.874] W (1956) S3EYE: 摄像头初始化失败，IMU 上报与按键闭环不受影响
+[2026-09-30T08:49:49.874] I (2077) S3EYE: LCD 初始化完成（240x240 ST7789, SPI3）
+[2026-09-30T08:49:49.874] I (2083) pp: pp rom version: e7ae62f
+[2026-09-30T08:49:49.874] I (2085) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:49:49.874] I (2089) wifi:wifi driver task: 3fcb7be8, prio:23, stack:6656, core=0
+[2026-09-30T08:49:49.874] I (2103) wifi:wifi firmware version: e12a754
+[2026-09-30T08:49:49.874] I (2103) wifi:wifi certification version: v7.0
+[2026-09-30T08:49:49.874] I (2103) wifi:config NVS flash: enabled
+[2026-09-30T08:49:49.874] I (2103) wifi:config nano formatting: disabled
+[2026-09-30T08:49:49.875] I (2104) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:49:49.875] I (2104) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:49:49.875] I (2104) wifi:Init management short buffer num: 32
+[2026-09-30T08:49:49.875] I (2105) wifi:Init static tx buffer num: 16
+[2026-09-30T08:49:49.875] I (2106) wifi:Init tx cache buffer num: 32
+[2026-09-30T08:49:49.875] I (2106) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:49:49.875] I (2107) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:49:49.875] I (2107) wifi:Init static rx buffer num: 16
+[2026-09-30T08:49:49.875] I (2108) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:49:49.875] I (2110) wifi_init: rx ba win: 16
+[2026-09-30T08:49:49.875] I (2111) wifi_init: accept mbox: 6
+[2026-09-30T08:49:49.875] I (2111) wifi_init: tcpip mbox: 32
+[2026-09-30T08:49:49.875] I (2112) wifi_init: udp mbox: 6
+[2026-09-30T08:49:49.875] I (2113) wifi_init: tcp mbox: 6
+[2026-09-30T08:49:49.875] I (2113) wifi_init: tcp tx win: 5760
+[2026-09-30T08:49:49.875] I (2114) wifi_init: tcp rx win: 5760
+[2026-09-30T08:49:49.875] I (2114) wifi_init: tcp mss: 1440
+[2026-09-30T08:49:49.875] I (2115) wifi_init: WiFi/LWIP prefer SPIRAM
+[2026-09-30T08:49:49.875] I (2115) wifi_init: WiFi IRAM OP enabled
+[2026-09-30T08:49:49.875] I (2116) wifi_init: WiFi RX IRAM OP enabled
+[2026-09-30T08:49:49.875] I (2118) wifi:Set ps type: 0, coexist: 0
+[2026-09-30T08:49:49.875] 
+[2026-09-30T08:49:49.875] I (2119) phy_init: phy_version 712,87e8c20e,Apr 13 2026,18:51:10
+[2026-09-30T08:49:49.875] I (2226) wifi:mode : sta (94:a9:90:1c:70:1c)
+[2026-09-30T08:49:49.875] I (2226) wifi:enable tsf
+===== 采集结束 2026-09-30T08:49:50.077，共 67 行 =====

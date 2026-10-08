@@ -1,0 +1,2540 @@
+
+===== serial_watch 开始 2026-09-30T08:54:21.167 端口=COM5 时长=100s =====
+[2026-09-30T08:54:21.172] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:21.679] 已打开 COM5（第 1 次）
+[2026-09-30T08:54:21.857] I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 192 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:21.858] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:21.858] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:21.858] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:21.858] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:21.858] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:21.858] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:21.858] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:21.858] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:21.858] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:21.858] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:21.858] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:21.858] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:21.858] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:21.858] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:21.858] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:21.858] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:21.858] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:21.858] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:21.970] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:21.973] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:22.477] 已打开 COM5（第 2 次）
+[2026-09-30T08:54:22.771] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 193 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:22.771] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:22.771] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:22.771] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:22.771] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:22.771] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:22.771] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:22.771] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:22.771] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:22.771] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:22.771] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:22.771] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:22.771] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:22.771] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:22.771] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:22.771] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:22.771] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:22.771] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:22.771] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:22.848] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:22.851] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:23.354] 已打开 COM5（第 3 次）
+[2026-09-30T08:54:23.650] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 194 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:23.650] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:23.650] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:23.650] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:23.650] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:23.650] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:23.650] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:23.650] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:23.650] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:23.650] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:23.650] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:23.650] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:23.650] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:23.650] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:23.650] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:23.650] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:23.650] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:23.650] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:23.650] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:23.718] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:23.720] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:24.224] 已打开 COM5（第 4 次）
+[2026-09-30T08:54:24.519] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 195 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:24.519] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:24.519] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:24.519] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:24.519] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:24.519] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:24.519] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:24.519] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:24.519] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:24.519] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:24.519] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:24.519] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:24.519] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:24.519] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:24.519] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:24.519] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:24.519] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:24.519] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:24.519] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:24.602] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:24.604] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:25.108] 已打开 COM5（第 5 次）
+[2026-09-30T08:54:25.401] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 196 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:25.401] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:25.401] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:25.401] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:25.401] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:25.401] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:25.401] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:25.401] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:25.401] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:25.401] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:25.401] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:25.401] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:25.401] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:25.401] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:25.401] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:25.401] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:25.401] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:25.401] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:25.401] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:25.485] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:25.488] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:25.991] 已打开 COM5（第 6 次）
+[2026-09-30T08:54:26.275] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:26.275] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:26.275] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:26.275] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:26.275] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:26.275] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:26.275] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:26.275] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:26.275] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:26.275] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:26.275] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:26.275] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:26.275] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:26.275] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:26.275] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:26.275] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:26.275] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:26.275] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:26.275] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:26.275] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:26.275] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:26.379] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:26.383] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:26.887] 已打开 COM5（第 7 次）
+[2026-09-30T08:54:27.181] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 198 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:27.181] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:27.181] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:27.181] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:27.181] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:27.181] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:27.181] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:27.181] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:27.181] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:27.181] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:27.181] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:27.181] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:27.181] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:27.181] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:27.181] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:27.181] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:27.181] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:27.181] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:27.181] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:27.258] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:27.261] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:27.765] 已打开 COM5（第 8 次）
+[2026-09-30T08:54:28.060] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 199 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:28.060] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:28.060] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:28.060] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:28.060] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:28.060] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:28.060] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:28.060] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:28.060] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:28.060] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:28.060] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:28.060] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:28.060] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:28.060] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:28.060] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:28.060] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:28.060] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:28.060] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:28.060] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:28.169] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:28.172] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:28.676] 已打开 COM5（第 9 次）
+[2026-09-30T08:54:28.971] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 200 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:28.971] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:28.971] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:28.971] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:28.971] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:28.971] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:28.971] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:28.971] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:28.971] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:28.971] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:28.971] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:28.971] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:28.971] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:28.971] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:28.971] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:28.971] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:28.971] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:28.971] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:28.971] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:29.058] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:29.061] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:29.564] 已打开 COM5（第 10 次）
+[2026-09-30T08:54:29.860] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 201 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:29.860] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:29.860] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:29.860] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:29.860] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:29.860] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:29.860] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:29.860] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:29.860] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:29.860] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:29.860] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:29.860] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:29.860] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:29.860] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:29.860] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:29.860] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:29.860] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:29.860] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:29.860] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:29.960] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:29.963] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:30.467] 已打开 COM5（第 11 次）
+[2026-09-30T08:54:30.751] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:30.751] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:30.751] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:30.751] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:30.751] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:30.751] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:30.751] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:30.751] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:30.751] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:30.751] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:30.751] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:30.751] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:30.751] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:30.751] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:30.751] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:30.751] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:30.751] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:30.751] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:30.751] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:30.751] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:30.751] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:30.820] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:30.823] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:31.326] 已打开 COM5（第 12 次）
+[2026-09-30T08:54:31.612] I (795) wifi_init:I (775) main: 自检结果: 平均合矢量 = 0.938 g (20/20 次有效)
+[2026-09-30T08:54:31.612] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:31.612] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:31.612] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:31.612] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:31.612] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:31.612] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:31.612] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:31.612] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:31.612] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:31.612] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:31.612] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:31.612] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:31.612] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:31.612] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:31.612] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:31.612] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:31.612] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:31.612] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:31.612] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:31.612] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:31.707] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:31.710] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:32.214] 已打开 COM5（第 13 次）
+[2026-09-30T08:54:32.508] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 204 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:32.508] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:32.508] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:32.508] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:32.508] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:32.508] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:32.508] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:32.508] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:32.508] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:32.508] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:32.508] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:32.508] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:32.508] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:32.508] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:32.508] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:32.508] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:32.508] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:32.508] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:32.508] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:32.608] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:32.611] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:33.128] 已打开 COM5（第 14 次）
+[2026-09-30T08:54:33.409] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 205 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:33.409] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:33.409] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:33.409] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:33.409] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:33.409] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:33.409] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:33.409] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:33.409] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:33.409] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:33.409] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:33.409] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:33.409] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:33.409] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:33.409] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:33.409] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:33.409] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:33.409] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:33.409] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:33.481] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:33.484] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:33.987] 已打开 COM5（第 15 次）
+[2026-09-30T08:54:34.282] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 206 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:34.282] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:34.282] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:34.282] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:34.282] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:34.282] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:34.282] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:34.282] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:34.282] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:34.282] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:34.282] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:34.282] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:34.282] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:34.282] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:34.282] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:34.282] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:34.282] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:34.282] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:34.282] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:34.354] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:34.357] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:34.861] 已打开 COM5（第 16 次）
+[2026-09-30T08:54:35.156] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 207 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:35.156] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:35.156] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:35.156] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:35.156] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:35.156] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:35.156] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:35.156] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:35.156] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:35.156] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:35.156] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:35.156] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:35.156] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:35.156] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:35.156] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:35.156] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:35.156] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:35.156] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:35.156] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:35.254] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:35.257] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:35.761] 已打开 COM5（第 17 次）
+[2026-09-30T08:54:36.056] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 208 �I (785) main: 自检结果: 平均合矢量 = 0.933 g (20/20 次有效)
+[2026-09-30T08:54:36.056] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:36.056] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:36.056] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:36.056] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:36.056] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:36.056] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:36.056] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:36.056] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:36.056] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:36.056] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:36.056] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:36.056] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:36.056] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:36.056] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:36.056] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:36.056] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:36.056] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:36.056] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:36.140] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:36.143] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:36.647] 已打开 COM5（第 18 次）
+[2026-09-30T08:54:36.941] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 209 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:36.941] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:36.942] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:36.942] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:36.942] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:36.942] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:36.942] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:36.942] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:36.942] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:36.942] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:36.942] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:36.942] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:36.942] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:36.942] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:36.942] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:36.942] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:36.942] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:36.942] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:36.942] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:37.031] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:37.033] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:37.537] 已打开 COM5（第 19 次）
+[2026-09-30T08:54:37.832] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 210 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:37.832] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:37.832] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:37.832] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:37.832] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:37.832] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:37.832] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:37.832] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:37.832] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:37.832] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:37.832] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:37.832] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:37.832] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:37.832] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:37.832] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:37.832] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:37.832] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:37.832] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:37.832] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:37.901] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:37.904] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:38.408] 已打开 COM5（第 20 次）
+[2026-09-30T08:54:38.703] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 211 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:38.703] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:38.703] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:38.703] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:38.703] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:38.703] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:38.703] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:38.703] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:38.703] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:38.703] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:38.703] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:38.703] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:38.703] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:38.703] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:38.703] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:38.703] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:38.703] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:38.703] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:38.703] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:38.786] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:38.789] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:39.293] 已打开 COM5（第 21 次）
+[2026-09-30T08:54:39.585] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 212 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:39.586] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:39.586] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:39.586] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:39.586] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:39.586] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:39.586] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:39.586] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:39.586] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:39.586] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:39.586] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:39.586] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:39.586] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:39.586] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:39.586] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:39.586] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:39.586] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:39.586] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:39.586] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:39.661] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:39.664] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:40.169] 已打开 COM5（第 22 次）
+[2026-09-30T08:54:40.453] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:40.453] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:40.453] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:40.453] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:40.453] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:40.453] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:40.453] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:40.453] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:40.453] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:40.453] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:40.453] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:40.453] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:40.453] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:40.453] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:40.453] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:40.453] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:40.453] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:40.453] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:40.453] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:40.453] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:40.453] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:40.529] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:40.532] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:41.036] 已打开 COM5（第 23 次）
+[2026-09-30T08:54:41.320] I (795) wifi_init:I (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:41.320] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:41.320] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:41.320] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:41.320] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:41.320] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:41.320] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:41.320] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:41.320] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:41.320] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:41.320] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:41.320] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:41.320] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:41.320] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:41.320] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:41.320] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:41.320] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:41.320] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:41.320] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:41.320] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:41.320] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:41.410] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:41.413] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:41.917] 已打开 COM5（第 24 次）
+[2026-09-30T08:54:42.191] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 215 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:42.191] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:42.191] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:42.191] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:42.191] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:42.191] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:42.192] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:42.192] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:42.192] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:42.192] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:42.192] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:42.192] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:42.192] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:42.192] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:42.192] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:42.192] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:42.192] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:42.192] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:42.192] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:42.266] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:42.269] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:42.773] 已打开 COM5（第 25 次）
+[2026-09-30T08:54:43.066] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 216 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:43.066] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:43.066] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:43.066] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:43.066] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:43.066] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:43.067] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:43.067] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:43.067] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:43.067] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:43.067] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:43.067] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:43.067] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:43.067] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:43.067] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:43.067] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:43.067] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:43.067] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:43.067] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:43.202] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:43.205] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:43.709] 已打开 COM5（第 26 次）
+[2026-09-30T08:54:44.003] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 217 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:44.003] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:44.003] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:44.004] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:44.004] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:44.004] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:44.004] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:44.004] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:44.004] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:44.004] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:44.004] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:44.004] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:44.004] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:44.004] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:44.004] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:44.004] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:44.004] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:44.004] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:44.004] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:44.071] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:44.073] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:44.577] 已打开 COM5（第 27 次）
+[2026-09-30T08:54:44.873] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 218 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:44.873] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:44.873] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:44.873] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:44.873] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:44.873] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:44.873] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:44.873] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:44.873] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:44.873] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:44.873] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:44.873] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:44.873] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:44.873] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:44.873] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:44.873] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:44.873] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:44.873] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:44.873] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:44.978] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:44.981] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:45.485] 已打开 COM5（第 28 次）
+[2026-09-30T08:54:45.779] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 219 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:45.779] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:45.779] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:45.779] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:45.779] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:45.779] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:45.779] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:45.779] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:45.779] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:45.779] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:45.779] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:45.779] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:45.779] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:45.779] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:45.779] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:45.779] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:45.779] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:45.779] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:45.779] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:45.839] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:45.842] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:46.346] 已打开 COM5（第 29 次）
+[2026-09-30T08:54:46.640] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 220 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:46.641] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:46.641] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:46.641] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:46.641] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:46.641] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:46.641] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:46.641] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:46.641] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:46.641] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:46.641] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:46.641] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:46.641] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:46.641] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:46.641] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:46.641] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:46.641] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:46.641] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:46.641] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:46.714] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:46.718] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:47.222] 已打开 COM5（第 30 次）
+[2026-09-30T08:54:47.506] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:54:47.506] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:47.506] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:47.506] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:47.506] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:47.506] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:47.506] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:47.506] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:47.506] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:47.506] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:47.506] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:47.506] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:47.506] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:47.506] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:47.506] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:47.506] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:47.506] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:47.506] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:47.506] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:47.506] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:47.506] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:47.574] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:47.577] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:48.081] 已打开 COM5（第 31 次）
+[2026-09-30T08:54:48.375] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 222 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:48.375] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:48.375] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:48.375] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:48.375] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:48.375] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:48.375] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:48.375] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:48.375] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:48.375] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:48.375] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:48.375] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:48.375] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:48.375] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:48.375] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:48.375] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:48.375] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:48.375] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:48.375] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:48.450] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:48.453] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:48.957] 已打开 COM5（第 32 次）
+[2026-09-30T08:54:49.242] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:49.242] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:49.242] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:49.242] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:49.242] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:49.242] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:49.242] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:49.242] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:49.242] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:49.242] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:49.242] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:49.242] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:49.242] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:49.242] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:49.242] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:49.242] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:49.242] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:49.242] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:49.242] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:49.242] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:49.242] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:49.300] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:49.303] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:49.807] 已打开 COM5（第 33 次）
+[2026-09-30T08:54:50.101] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 224 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:50.101] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:50.101] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:50.101] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:50.101] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:50.101] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:50.101] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:50.101] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:50.101] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:50.101] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:50.101] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:50.101] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:50.101] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:50.101] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:50.101] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:50.101] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:50.101] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:50.101] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:50.101] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:50.202] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:50.205] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:50.714] 已打开 COM5（第 34 次）
+[2026-09-30T08:54:50.994] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:50.994] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:50.994] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:50.994] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:50.994] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:50.994] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:50.994] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:50.994] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:54:50.994] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:54:50.994] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:50.994] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:50.994] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:50.994] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:50.994] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:50.994] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:50.994] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:50.994] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:50.994] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:54:50.994] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:54:50.995] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:54:50.995] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:54:51.089] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:51.092] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:51.596] 已打开 COM5（第 35 次）
+[2026-09-30T08:54:51.891] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 226 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:51.891] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:51.891] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:51.891] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:51.891] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:51.891] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:51.891] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:51.891] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:51.891] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:51.891] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:51.891] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:51.891] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:51.891] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:51.891] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:51.891] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:51.891] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:51.891] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:51.891] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:51.891] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:51.964] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:51.967] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:52.471] 已打开 COM5（第 36 次）
+[2026-09-30T08:54:52.766] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 227 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:52.766] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:52.766] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:52.766] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:52.766] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:52.766] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:52.766] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:52.766] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:52.766] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:52.766] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:52.766] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:52.766] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:52.766] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:52.766] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:52.766] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:52.766] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:52.766] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:52.766] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:52.766] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:52.828] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:52.831] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:53.336] 已打开 COM5（第 37 次）
+[2026-09-30T08:54:53.630] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 228 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:53.630] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:53.630] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:53.630] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:53.630] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:53.630] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:53.630] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:53.630] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:53.630] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:53.630] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:53.630] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:53.630] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:53.630] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:53.630] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:53.630] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:53.630] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:53.630] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:53.630] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:53.630] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:53.700] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:53.703] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:54.209] 已打开 COM5（第 38 次）
+[2026-09-30T08:54:54.502] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 229 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:54.502] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:54.502] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:54.502] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:54.502] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:54.502] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:54.502] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:54.502] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:54.502] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:54.502] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:54.502] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:54.502] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:54.502] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:54.502] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:54.502] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:54.502] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:54.502] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:54.502] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:54.502] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:54.607] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:54.611] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:55.115] 已打开 COM5（第 39 次）
+[2026-09-30T08:54:55.408] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 230 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:55.408] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:55.408] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:55.408] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:55.408] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:55.408] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:55.408] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:55.408] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:55.408] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:55.408] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:55.408] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:55.408] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:55.408] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:55.408] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:55.408] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:55.408] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:55.408] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:55.408] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:55.408] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:55.486] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:55.489] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:55.993] 已打开 COM5（第 40 次）
+[2026-09-30T08:54:56.287] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 231 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:56.287] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:56.287] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:56.287] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:56.287] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:56.287] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:56.287] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:56.287] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:56.287] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:56.287] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:56.287] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:56.287] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:56.287] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:56.287] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:56.287] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:56.287] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:56.287] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:56.287] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:56.287] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:56.365] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:56.368] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:56.872] 已打开 COM5（第 41 次）
+[2026-09-30T08:54:57.166] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 232 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:54:57.167] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:57.167] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:57.167] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:57.167] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:57.167] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:57.167] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:57.167] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:57.167] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:57.167] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:57.167] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:57.167] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:57.167] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:57.167] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:57.167] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:57.167] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:57.167] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:57.167] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:57.167] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:57.239] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:57.242] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:57.747] 已打开 COM5（第 42 次）
+[2026-09-30T08:54:58.041] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 233 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:58.041] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:58.041] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:58.041] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:58.041] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:58.041] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:58.041] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:58.041] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:58.041] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:58.041] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:58.041] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:58.041] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:58.041] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:58.041] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:58.041] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:58.041] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:58.041] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:58.041] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:58.041] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:58.131] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:58.134] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:58.639] 已打开 COM5（第 43 次）
+[2026-09-30T08:54:58.931] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 234 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:54:58.932] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:58.932] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:58.932] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:58.932] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:58.932] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:58.932] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:58.932] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:58.932] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:58.932] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:58.932] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:58.932] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:58.932] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:58.932] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:58.932] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:58.932] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:58.932] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:58.932] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:58.932] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:59.057] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:59.060] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:59.564] 已打开 COM5（第 44 次）
+[2026-09-30T08:54:59.859] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 235 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:54:59.859] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:59.859] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:59.859] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:59.859] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:59.859] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:59.859] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:59.859] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:59.859] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:59.859] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:59.859] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:59.859] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:59.859] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:59.859] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:59.859] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:59.859] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:59.859] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:59.859] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:59.859] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:59.978] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:54:59.982] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:00.486] 已打开 COM5（第 45 次）
+[2026-09-30T08:55:00.778] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 236 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:00.778] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:00.778] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:00.778] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:00.778] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:00.778] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:00.778] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:00.778] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:00.778] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:00.778] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:00.778] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:00.778] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:00.778] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:00.778] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:00.778] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:00.778] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:00.778] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:00.779] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:00.779] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:00.913] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:00.917] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:01.421] 已打开 COM5（第 46 次）
+[2026-09-30T08:55:01.704] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:01.704] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:01.704] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:01.704] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:01.704] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:01.704] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:01.704] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:01.704] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:01.704] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:01.704] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:01.704] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:01.704] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:01.704] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:01.704] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:01.704] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:01.704] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:01.704] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:01.704] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:01.704] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:01.704] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:01.704] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:01.839] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:01.843] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:02.347] 已打开 COM5（第 47 次）
+[2026-09-30T08:55:02.638] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 238 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:55:02.639] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:02.639] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:02.639] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:02.639] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:02.639] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:02.639] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:02.639] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:02.639] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:02.639] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:02.639] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:02.639] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:02.639] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:02.639] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:02.639] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:02.639] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:02.639] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:02.639] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:02.639] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:02.736] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:02.740] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:03.244] 已打开 COM5（第 48 次）
+[2026-09-30T08:55:03.528] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:03.528] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:03.528] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:03.528] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:03.528] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:03.528] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:03.528] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:03.528] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:03.528] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:03.528] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:03.528] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:03.528] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:03.528] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:03.528] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:03.528] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:03.528] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:03.528] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:03.528] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:03.528] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:03.528] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:03.528] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:03.631] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:03.635] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:04.158] 已打开 COM5（第 49 次）
+[2026-09-30T08:55:04.432] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 240 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:04.432] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:04.432] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:04.432] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:04.432] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:04.432] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:04.433] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:04.433] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:04.433] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:04.433] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:04.433] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:04.433] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:04.433] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:04.433] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:04.433] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:04.433] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:04.433] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:04.433] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:04.433] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:04.507] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:04.510] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:05.014] 已打开 COM5（第 50 次）
+[2026-09-30T08:55:05.309] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 241 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:05.309] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:05.309] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:05.309] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:05.309] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:05.309] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:05.309] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:05.309] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:05.309] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:05.309] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:05.309] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:05.309] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:05.309] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:05.309] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:05.309] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:05.309] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:05.309] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:05.309] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:05.309] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:05.396] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:05.399] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:05.903] 已打开 COM5（第 51 次）
+[2026-09-30T08:55:06.197] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 242 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:06.197] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:06.197] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:06.197] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:06.197] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:06.197] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:06.197] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:06.197] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:06.197] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:06.197] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:06.197] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:06.197] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:06.197] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:06.197] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:06.197] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:06.197] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:06.197] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:06.198] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:06.198] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:06.297] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:06.300] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:06.805] 已打开 COM5（第 52 次）
+[2026-09-30T08:55:07.089] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:07.089] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:07.089] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:07.089] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:07.089] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:07.089] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:07.089] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:07.089] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:07.089] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:07.089] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:07.089] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:07.089] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:07.089] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:07.089] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:07.089] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:07.089] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:07.089] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:07.089] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:07.089] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:07.089] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:07.089] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:07.170] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:07.173] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:07.678] 已打开 COM5（第 53 次）
+[2026-09-30T08:55:07.971] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 244 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:07.972] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:07.972] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:07.972] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:07.972] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:07.972] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:07.972] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:07.972] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:07.972] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:07.972] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:07.972] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:07.972] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:07.972] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:07.972] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:07.972] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:07.972] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:07.972] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:07.972] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:07.972] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:08.044] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:08.048] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:08.552] 已打开 COM5（第 54 次）
+[2026-09-30T08:55:08.845] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 245 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:08.845] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:08.845] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:08.845] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:08.845] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:08.845] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:08.845] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:08.845] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:08.845] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:08.845] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:08.845] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:08.845] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:08.845] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:08.845] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:08.845] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:08.845] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:08.845] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:08.845] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:08.845] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:08.923] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:08.927] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:09.431] 已打开 COM5（第 55 次）
+[2026-09-30T08:55:09.723] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 246 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:09.724] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:09.724] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:09.724] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:09.724] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:09.724] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:09.724] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:09.724] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:09.724] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:09.724] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:09.724] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:09.724] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:09.724] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:09.724] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:09.724] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:09.724] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:09.724] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:09.724] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:09.724] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:09.838] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:09.842] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:10.365] 已打开 COM5（第 56 次）
+[2026-09-30T08:55:10.629] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:55:10.629] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:10.629] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:10.629] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:10.629] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:10.629] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:10.629] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:10.629] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:10.629] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:10.629] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:10.629] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:10.629] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:10.629] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:10.629] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:10.629] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:10.629] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:10.629] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:10.629] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:10.629] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:10.629] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:10.629] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:10.699] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:10.702] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:11.206] 已打开 COM5（第 57 次）
+[2026-09-30T08:55:11.500] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 248 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:11.500] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:11.500] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:11.500] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:11.500] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:11.500] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:11.500] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:11.500] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:11.500] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:11.500] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:11.500] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:11.500] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:11.500] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:11.500] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:11.500] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:11.500] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:11.500] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:11.500] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:11.500] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:11.564] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:11.567] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:12.071] 已打开 COM5（第 58 次）
+[2026-09-30T08:55:12.364] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 249 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:55:12.364] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:12.364] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:12.364] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:12.364] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:12.364] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:12.364] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:12.364] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:12.364] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:12.364] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:12.364] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:12.364] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:12.364] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:12.364] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:12.364] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:12.364] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:12.364] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:12.364] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:12.364] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:12.444] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:12.447] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:12.951] 已打开 COM5（第 59 次）
+[2026-09-30T08:55:13.246] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 250 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:13.246] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:13.246] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:13.246] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:13.246] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:13.246] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:13.246] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:13.246] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:13.246] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:13.246] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:13.246] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:13.246] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:13.246] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:13.246] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:13.246] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:13.246] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:13.246] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:13.246] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:13.246] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:13.335] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:13.338] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:13.842] 已打开 COM5（第 60 次）
+[2026-09-30T08:55:14.136] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 251 �I (785) main: 自检结果: 平均合矢量 = 0.937 g (20/20 次有效)
+[2026-09-30T08:55:14.136] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:14.136] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:14.136] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:14.136] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:14.136] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:14.136] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:14.136] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:14.136] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:14.136] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:14.136] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:14.136] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:14.136] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:14.136] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:14.136] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:14.136] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:14.136] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:14.136] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:14.136] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:14.195] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:14.198] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:14.702] 已打开 COM5（第 61 次）
+[2026-09-30T08:55:14.997] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 252 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:14.997] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:14.997] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:14.997] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:14.997] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:14.997] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:14.997] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:14.997] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:14.997] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:14.997] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:14.997] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:14.997] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:14.997] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:14.997] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:14.997] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:14.997] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:14.997] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:14.997] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:14.997] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:15.055] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:15.057] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:15.561] 已打开 COM5（第 62 次）
+[2026-09-30T08:55:15.856] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 253 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:15.856] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:15.856] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:15.856] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:15.856] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:15.856] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:15.856] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:15.856] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:15.856] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:15.856] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:15.856] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:15.856] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:15.856] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:15.856] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:15.856] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:15.856] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:15.856] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:15.856] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:15.856] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:15.929] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:15.932] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:16.436] 已打开 COM5（第 63 次）
+[2026-09-30T08:55:16.730] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 254 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:16.730] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:16.730] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:16.730] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:16.730] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:16.730] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:16.730] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:16.730] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:16.730] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:16.730] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:16.730] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:16.730] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:16.730] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:16.730] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:16.730] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:16.730] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:16.730] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:16.730] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:16.730] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:16.792] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:16.795] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:17.298] 已打开 COM5（第 64 次）
+[2026-09-30T08:55:17.584] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:17.584] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:17.584] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:17.584] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:17.584] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:17.584] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:17.584] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:17.584] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:17.584] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:17.584] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:17.584] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:17.584] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:17.584] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:17.584] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:17.584] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:17.584] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:17.584] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:17.584] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:17.584] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:17.584] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:17.584] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:17.675] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:17.678] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:18.184] 已打开 COM5（第 65 次）
+[2026-09-30T08:55:18.476] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 256 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:18.476] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:18.476] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:18.476] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:18.476] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:18.476] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:18.476] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:18.476] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:18.476] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:18.476] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:18.476] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:18.476] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:18.476] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:18.476] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:18.476] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:18.476] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:18.476] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:18.476] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:18.476] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:18.537] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:18.539] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:19.043] 已打开 COM5（第 66 次）
+[2026-09-30T08:55:19.338] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 257 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:19.338] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:19.338] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:19.338] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:19.338] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:19.338] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:19.338] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:19.338] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:19.338] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:19.338] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:19.338] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:19.339] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:19.339] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:19.339] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:19.339] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:19.339] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:19.339] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:19.339] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:19.339] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:19.435] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:19.438] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:19.942] 已打开 COM5（第 67 次）
+[2026-09-30T08:55:20.226] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:20.226] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:20.226] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:20.226] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:20.226] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:20.226] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:20.226] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:20.226] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:20.226] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:20.226] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:20.226] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:20.226] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:20.226] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:20.226] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:20.226] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:20.226] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:20.226] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:20.226] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:20.226] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:20.226] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:20.226] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:20.344] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:20.347] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:20.851] 已打开 COM5（第 68 次）
+[2026-09-30T08:55:21.146] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 259 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:21.146] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:21.146] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:21.146] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:21.146] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:21.146] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:21.146] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:21.146] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:21.146] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:21.146] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:21.146] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:21.146] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:21.146] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:21.146] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:21.146] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:21.146] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:21.146] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:21.146] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:21.146] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:21.212] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:21.215] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:21.742] 已打开 COM5（第 69 次）
+[2026-09-30T08:55:22.014] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 260 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:22.014] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:22.014] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:22.014] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:22.014] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:22.014] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:22.014] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:22.014] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:22.014] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:22.014] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:22.014] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:22.014] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:22.014] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:22.014] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:22.014] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:22.014] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:22.014] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:22.014] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:22.014] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:22.106] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:22.109] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:22.613] 已打开 COM5（第 70 次）
+[2026-09-30T08:55:22.898] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.933 g (20/20 次有效)
+[2026-09-30T08:55:22.898] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:22.898] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:22.898] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:22.898] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:22.898] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:22.898] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:22.898] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:22.898] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:22.898] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:22.898] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:22.898] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:22.898] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:22.898] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:22.898] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:22.898] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:22.898] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:22.898] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:22.898] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:22.898] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:22.898] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:22.997] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:23.000] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:23.504] 已打开 COM5（第 71 次）
+[2026-09-30T08:55:23.799] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 262 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:23.799] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:23.799] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:23.799] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:23.799] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:23.799] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:23.799] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:23.799] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:23.799] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:23.799] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:23.799] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:23.799] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:23.799] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:23.799] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:23.799] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:23.799] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:23.799] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:23.799] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:23.799] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:23.885] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:23.888] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:24.392] 已打开 COM5（第 72 次）
+[2026-09-30T08:55:24.686] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 263 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:24.687] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:24.687] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:24.687] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:24.687] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:24.687] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:24.687] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:24.687] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:24.687] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:24.687] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:24.687] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:24.687] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:24.687] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:24.687] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:24.687] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:24.687] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:24.687] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:24.687] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:24.687] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:24.746] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:24.749] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:25.253] 已打开 COM5（第 73 次）
+[2026-09-30T08:55:25.547] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 264 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:25.547] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:25.547] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:25.547] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:25.547] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:25.547] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:25.547] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:25.547] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:25.547] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:25.547] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:25.547] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:25.547] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:25.547] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:25.547] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:25.547] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:25.547] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:25.547] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:25.547] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:25.547] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:25.706] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:25.710] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:26.214] 已打开 COM5（第 74 次）
+[2026-09-30T08:55:26.508] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 265 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:26.508] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:26.508] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:26.508] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:26.508] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:26.508] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:26.508] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:26.508] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:26.508] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:26.508] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:26.508] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:26.508] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:26.508] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:26.508] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:26.508] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:26.508] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:26.508] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:26.508] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:26.508] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:26.605] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:26.609] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:27.113] 已打开 COM5（第 75 次）
+[2026-09-30T08:55:27.407] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 266 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:27.407] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:27.407] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:27.407] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:27.407] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:27.407] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:27.407] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:27.407] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:27.407] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:27.407] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:27.407] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:27.407] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:27.407] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:27.407] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:27.407] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:27.407] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:27.407] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:27.407] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:27.407] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:27.487] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:27.490] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:27.994] 已打开 COM5（第 76 次）
+[2026-09-30T08:55:28.279] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:28.279] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:28.279] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:28.279] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:28.279] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:28.279] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:28.279] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:28.279] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:28.279] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:28.279] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:28.279] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:28.279] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:28.279] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:28.279] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:28.279] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:28.279] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:28.279] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:28.279] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:28.279] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:28.279] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:28.279] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:28.346] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:28.349] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:28.853] 已打开 COM5（第 77 次）
+[2026-09-30T08:55:29.148] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 268 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:29.148] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:29.149] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:29.149] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:29.149] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:29.149] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:29.149] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:29.149] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:29.149] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:29.149] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:29.149] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:29.149] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:29.149] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:29.149] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:29.149] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:29.149] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:29.149] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:29.149] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:29.149] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:29.235] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:29.238] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:29.742] 已打开 COM5（第 78 次）
+[2026-09-30T08:55:30.036] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 269 �I (785) main: 自检结果: 平均合矢量 = 0.932 g (20/20 次有效)
+[2026-09-30T08:55:30.036] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:30.036] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:30.036] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:30.036] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:30.036] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:30.036] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:30.036] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:30.036] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:30.036] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:30.036] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:30.036] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:30.036] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:30.036] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:30.036] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:30.036] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:30.036] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:30.036] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:30.036] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:30.104] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:30.107] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:30.612] 已打开 COM5（第 79 次）
+[2026-09-30T08:55:30.906] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 270 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:30.906] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:30.906] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:30.906] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:30.906] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:30.906] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:30.906] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:30.906] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:30.906] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:30.906] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:30.906] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:30.906] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:30.906] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:30.906] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:30.906] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:30.906] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:30.906] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:30.906] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:30.906] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:30.988] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:30.991] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:31.495] 已打开 COM5（第 80 次）
+[2026-09-30T08:55:31.789] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 271 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:31.789] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:31.789] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:31.789] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:31.789] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:31.789] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:31.789] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:31.789] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:31.789] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:31.789] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:31.789] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:31.789] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:31.789] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:31.789] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:31.789] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:31.789] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:31.789] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:31.789] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:31.789] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:31.869] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:31.871] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:32.375] 已打开 COM5（第 81 次）
+[2026-09-30T08:55:32.670] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 272 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:32.670] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:32.670] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:32.670] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:32.670] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:32.670] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:32.670] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:32.670] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:32.670] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:32.670] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:32.670] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:32.670] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:32.670] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:32.670] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:32.670] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:32.670] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:32.670] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:32.670] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:32.670] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:32.746] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:32.749] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:33.252] 已打开 COM5（第 82 次）
+[2026-09-30T08:55:33.537] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.933 g (20/20 次有效)
+[2026-09-30T08:55:33.537] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:33.537] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:33.537] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:33.537] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:33.537] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:33.537] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:33.537] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:33.537] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:33.537] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:33.537] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:33.537] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:33.537] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:33.537] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:33.537] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:33.537] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:33.537] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:33.537] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:33.538] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:33.538] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:33.538] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:33.619] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:33.622] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:34.126] 已打开 COM5（第 83 次）
+[2026-09-30T08:55:34.417] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 274 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:34.417] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:34.417] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:34.417] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:34.418] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:34.418] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:34.418] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:34.418] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:34.418] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:34.418] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:34.418] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:34.418] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:34.418] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:34.418] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:34.418] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:34.418] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:34.418] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:34.418] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:34.418] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:34.486] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:34.489] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:34.994] 已打开 COM5（第 84 次）
+[2026-09-30T08:55:35.278] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:35.278] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:35.278] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:35.278] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:35.278] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:35.278] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:35.278] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:35.278] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:35.278] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:35.278] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:35.278] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:35.278] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:35.278] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:35.278] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:35.278] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:35.278] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:35.278] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:35.278] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:35.278] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:35.278] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:35.278] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:35.356] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:35.360] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:35.863] 已打开 COM5（第 85 次）
+[2026-09-30T08:55:36.147] I (795) wifi_init:I (775) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:36.147] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:36.147] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:36.147] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:36.147] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:36.147] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:36.147] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:36.147] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:36.147] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:36.147] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:36.147] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:36.147] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:36.147] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:36.147] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:36.147] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:36.147] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:36.147] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:36.147] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:36.147] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:36.147] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:36.147] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:36.223] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:36.226] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:36.730] 已打开 COM5（第 86 次）
+[2026-09-30T08:55:37.008] I (795) wifi_init:I (775) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:37.008] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:37.008] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:37.008] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:37.008] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:37.008] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:37.008] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:37.008] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:37.008] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:37.008] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:37.008] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:37.008] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:37.008] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:37.008] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:37.008] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:37.008] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:37.008] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:37.008] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:37.008] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:37.008] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:37.008] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:37.085] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:37.088] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:37.592] 已打开 COM5（第 87 次）
+[2026-09-30T08:55:37.886] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 278 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:37.886] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:37.886] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:37.886] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:37.886] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:37.886] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:37.886] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:37.886] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:37.886] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:37.886] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:37.886] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:37.886] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:37.886] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:37.886] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:37.886] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:37.886] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:37.886] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:37.886] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:37.886] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:37.954] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:37.958] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:38.461] 已打开 COM5（第 88 次）
+[2026-09-30T08:55:38.756] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 279 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:38.756] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:38.756] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:38.756] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:38.756] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:38.756] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:38.756] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:38.756] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:38.756] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:38.756] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:38.756] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:38.756] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:38.756] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:38.756] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:38.756] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:38.756] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:38.756] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:38.756] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:38.756] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:38.825] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:38.828] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:39.332] 已打开 COM5（第 89 次）
+[2026-09-30T08:55:39.627] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 280 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:39.627] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:39.627] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:39.627] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:39.627] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:39.627] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:39.627] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:39.627] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:39.627] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:39.627] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:39.627] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:39.627] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:39.627] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:39.627] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:39.627] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:39.627] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:39.627] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:39.627] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:39.627] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:39.694] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:39.697] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:40.201] 已打开 COM5（第 90 次）
+[2026-09-30T08:55:40.495] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 281 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:40.495] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:40.495] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:40.495] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:40.495] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:40.495] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:40.495] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:40.495] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:40.495] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:40.495] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:40.495] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:40.495] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:40.495] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:40.495] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:40.495] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:40.495] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:40.495] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:40.495] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:40.495] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:40.587] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:40.591] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:41.095] 已打开 COM5（第 91 次）
+[2026-09-30T08:55:41.389] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 282 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:41.389] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:41.389] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:41.389] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:41.389] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:41.389] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:41.389] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:41.390] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:41.390] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:41.390] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:41.390] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:41.390] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:41.390] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:41.390] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:41.390] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:41.390] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:41.390] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:41.390] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:41.390] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:41.461] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:41.464] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:41.968] 已打开 COM5（第 92 次）
+[2026-09-30T08:55:42.262] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 283 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:42.262] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:42.262] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:42.262] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:42.262] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:42.262] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:42.262] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:42.262] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:42.262] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:42.262] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:42.262] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:42.262] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:42.262] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:42.262] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:42.262] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:42.262] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:42.262] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:42.262] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:42.262] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:42.332] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:42.336] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:42.840] 已打开 COM5（第 93 次）
+[2026-09-30T08:55:43.134] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 284 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:43.134] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:43.134] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:43.134] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:43.134] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:43.134] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:43.134] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:43.134] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:43.134] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:43.134] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:43.134] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:43.134] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:43.134] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:43.134] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:43.134] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:43.134] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:43.134] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:43.134] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:43.134] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:43.197] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:43.200] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:43.704] 已打开 COM5（第 94 次）
+[2026-09-30T08:55:44.030] I (805) wifi_init: tcI (295) main: 设备 ID = esp32s3eye-1C701C, 本次为第 285 �I (815) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:44.030] I (815) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:44.030] I (815) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:44.030] I (815) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:44.030] I (825) wifi:wifi driver task: 3fced730, prio:23, stack:6656, core=0
+[2026-09-30T08:55:44.030] I (835) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:44.030] I (835) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:44.030] I (835) wifi:config NVS flash: enabled
+[2026-09-30T08:55:44.030] I (835) wifi:config nano formatting: disabled
+[2026-09-30T08:55:44.030] I (835) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:44.030] I (835) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:44.030] I (835) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:44.030] I (835) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:44.030] I (835) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:44.030] I (835) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:44.030] I (835) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:44.030] I (835) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:44.030] I (835) wifi_init: rx ba win: 6
+[2026-09-30T08:55:44.030] I (835) wifi_init: accept mbox: 6
+[2026-09-30T08:55:44.086] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:44.090] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:44.594] 已打开 COM5（第 95 次）
+[2026-09-30T08:55:44.887] I (835) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 286 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:44.887] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:44.887] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:44.887] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:44.887] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:44.887] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:44.887] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:44.887] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:44.887] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:44.887] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:44.887] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:44.888] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:44.888] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:44.888] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:44.888] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:44.888] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:44.888] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:44.888] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:44.888] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:44.957] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:44.961] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:45.466] 已打开 COM5（第 96 次）
+[2026-09-30T08:55:45.759] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 287 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:45.759] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:45.759] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:45.759] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:45.759] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:45.759] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:45.759] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:45.759] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:45.759] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:45.759] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:45.759] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:45.759] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:45.759] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:45.759] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:45.759] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:45.759] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:45.759] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:45.759] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:45.759] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:45.819] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:45.822] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:46.326] 已打开 COM5（第 97 次）
+[2026-09-30T08:55:46.610] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:46.610] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:46.610] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:46.610] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:46.610] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:46.610] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:46.610] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:46.610] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:46.610] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:46.610] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:46.610] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:46.610] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:46.610] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:46.610] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:46.610] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:46.610] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:46.610] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:46.610] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:46.610] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:46.610] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:46.610] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:46.670] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:46.673] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:47.177] 已打开 COM5（第 98 次）
+[2026-09-30T08:55:47.462] I (795) wifi_init:I (775) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:47.462] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:47.462] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:47.462] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:47.462] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:47.462] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:47.462] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:47.462] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:47.462] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:47.462] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:47.462] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:47.462] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:47.462] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:47.462] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:47.462] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:47.462] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:47.462] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:47.462] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:47.462] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:47.462] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:47.462] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:47.517] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:47.520] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:48.024] 已打开 COM5（第 99 次）
+[2026-09-30T08:55:48.318] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 290 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:48.318] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:48.318] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:48.318] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:48.318] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:48.318] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:48.318] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:48.318] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:48.318] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:48.318] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:48.318] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:48.318] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:48.318] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:48.318] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:48.318] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:48.318] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:48.318] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:48.318] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:48.318] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:48.390] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:48.394] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:48.898] 已打开 COM5（第 100 次）
+[2026-09-30T08:55:49.191] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 291 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:49.191] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:49.191] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:49.191] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:49.191] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:49.191] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:49.191] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:49.191] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:49.191] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:49.191] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:49.191] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:49.191] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:49.191] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:49.191] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:49.191] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:49.191] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:49.191] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:49.191] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:49.191] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:49.320] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:49.324] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:49.828] 已打开 COM5（第 101 次）
+[2026-09-30T08:55:50.119] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 292 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:50.119] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:50.119] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:50.119] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:50.119] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:50.119] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:50.119] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:50.119] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:50.119] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:50.119] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:50.119] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:50.119] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:50.119] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:50.119] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:50.119] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:50.119] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:50.119] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:50.119] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:50.119] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:50.178] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:50.182] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:50.704] 已打开 COM5（第 102 次）
+[2026-09-30T08:55:50.980] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 293 �I (785) main: 自检结果: 平均合矢量 = 0.933 g (20/20 次有效)
+[2026-09-30T08:55:50.980] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:50.980] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:50.980] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:50.980] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:50.980] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:50.980] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:50.980] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:50.980] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:50.980] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:50.980] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:50.980] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:50.980] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:50.980] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:50.980] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:50.980] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:50.980] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:50.980] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:50.980] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:51.067] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:51.071] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:51.575] 已打开 COM5（第 103 次）
+[2026-09-30T08:55:51.869] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 294 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:51.869] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:51.869] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:51.869] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:51.869] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:51.869] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:51.869] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:51.869] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:51.869] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:51.869] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:51.869] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:51.869] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:51.869] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:51.869] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:51.869] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:51.869] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:51.869] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:51.869] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:51.869] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:52.009] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:52.013] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:52.517] 已打开 COM5（第 104 次）
+[2026-09-30T08:55:52.810] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 295 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:52.810] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:52.810] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:52.810] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:52.810] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:52.810] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:52.810] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:52.810] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:52.810] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:52.810] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:52.810] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:52.810] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:52.810] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:52.810] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:52.810] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:52.810] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:52.810] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:52.810] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:52.810] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:52.935] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:52.938] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:53.442] 已打开 COM5（第 105 次）
+[2026-09-30T08:55:53.737] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 296 �I (785) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:53.737] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:53.737] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:53.737] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:53.737] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:53.737] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:53.737] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:53.737] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:53.737] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:53.737] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:53.737] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:53.737] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:53.737] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:53.737] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:53.737] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:53.737] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:53.737] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:53.737] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:53.737] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:53.837] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:53.841] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:54.345] 已打开 COM5（第 106 次）
+[2026-09-30T08:55:54.639] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 297 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:54.639] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:54.639] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:54.639] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:54.639] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:54.639] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:54.639] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:54.639] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:54.639] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:54.639] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:54.639] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:54.639] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:54.639] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:54.639] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:54.639] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:54.639] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:54.639] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:54.639] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:54.639] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:54.749] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:54.753] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:55.258] 已打开 COM5（第 107 次）
+[2026-09-30T08:55:55.551] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 298 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:55.551] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:55.551] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:55.551] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:55.551] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:55.551] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:55.551] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:55.551] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:55.551] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:55.551] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:55.551] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:55.551] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:55.551] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:55.551] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:55.551] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:55.551] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:55.551] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:55.551] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:55.551] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:55.712] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:55.715] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:56.219] 已打开 COM5（第 108 次）
+[2026-09-30T08:55:56.514] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 299 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:55:56.514] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:56.514] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:56.514] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:56.514] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:56.514] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:56.514] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:56.514] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:56.514] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:56.514] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:56.514] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:56.514] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:56.514] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:56.514] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:56.514] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:56.514] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:56.514] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:56.514] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:56.514] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:56.613] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:56.616] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:57.121] 已打开 COM5（第 109 次）
+[2026-09-30T08:55:57.414] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 300 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:57.414] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:57.414] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:57.414] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:57.414] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:57.414] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:57.414] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:57.414] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:55:57.414] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:55:57.414] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:57.414] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:57.414] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:57.414] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:57.414] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:57.414] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:57.414] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:57.414] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:57.415] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:55:57.415] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:55:57.536] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:57.539] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:58.044] 已打开 COM5（第 110 次）
+[2026-09-30T08:55:58.328] I (805) wifi_init: tcI (775) main: 自检结果: 平均合矢量 = 0.935 g (20/20 次有效)
+[2026-09-30T08:55:58.328] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:58.328] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:58.328] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:58.328] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:58.328] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:58.328] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:58.328] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:58.328] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:58.328] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:58.328] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:58.328] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:58.328] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:58.328] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:58.328] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:58.328] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:58.328] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:58.328] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:58.328] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:58.328] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:58.328] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:58.445] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:58.448] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:58.952] 已打开 COM5（第 111 次）
+[2026-09-30T08:55:59.236] I (795) wifi_init:I (775) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:55:59.236] I (775) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:55:59.236] I (775) pp: pp rom version: e7ae62f
+[2026-09-30T08:55:59.236] I (775) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:55:59.236] I (785) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:55:59.236] I (795) wifi:wifi firmware version: e12a754
+[2026-09-30T08:55:59.236] I (795) wifi:wifi certification version: v7.0
+[2026-09-30T08:55:59.236] I (795) wifi:config NVS flash: enabled
+[2026-09-30T08:55:59.236] I (795) wifi:config nano formatting: disabled
+[2026-09-30T08:55:59.236] I (795) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:55:59.236] I (795) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:55:59.236] I (795) wifi:Init management short buffer num: 32
+[2026-09-30T08:55:59.236] I (795) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:55:59.236] I (795) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:55:59.236] I (795) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:55:59.236] I (795) wifi:Init static rx buffer num: 10
+[2026-09-30T08:55:59.236] I (795) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:55:59.236] I (795) wifi_init: rx ba win: 6
+[2026-09-30T08:55:59.236] I (795) wifi_init: accept mbox: 6
+[2026-09-30T08:55:59.236] I (795) wifi_init: tcpip mbox: 32
+[2026-09-30T08:55:59.236] I (795) wifi_init: udp mbox: 6
+[2026-09-30T08:55:59.359] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:55:59.362] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:55:59.866] 已打开 COM5（第 112 次）
+[2026-09-30T08:56:00.159] I (795) wifi_init:I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 303 �I (785) main: 自检结果: 平均合矢量 = 0.936 g (20/20 次有效)
+[2026-09-30T08:56:00.159] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:56:00.159] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:56:00.159] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:56:00.159] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:56:00.159] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:56:00.159] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:56:00.159] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:56:00.159] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:56:00.159] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:56:00.159] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:56:00.159] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:56:00.159] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:56:00.159] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:56:00.159] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:56:00.159] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:56:00.159] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:56:00.159] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:56:00.159] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:56:00.266] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:56:00.270] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:56:00.773] 已打开 COM5（第 113 次）
+[2026-09-30T08:56:01.064] I (805) wifi_init: tcI (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 304 �I (785) main: 自检结果: 平均合矢量 = 0.934 g (20/20 次有效)
+[2026-09-30T08:56:01.064] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:56:01.064] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:56:01.064] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:56:01.064] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:56:01.064] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:56:01.064] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:56:01.064] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:56:01.064] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:56:01.064] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:56:01.064] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:56:01.064] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:56:01.064] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:56:01.064] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:56:01.064] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:56:01.064] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:56:01.064] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:56:01.064] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:56:01.064] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:56:01.159] 端口消失（设备重新枚举，通常是芯片复位）
+[2026-09-30T08:56:01.162] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:56:01.663] 结束：共打开 113 次，收到 115712 字节
+===== serial_watch 结束 =====
+

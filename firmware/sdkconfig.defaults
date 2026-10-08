@@ -1,0 +1,42 @@
+# ============================================================================
+#  sdkconfig.defaults —— ESP-IDF 关键开关（只列与本工程真正相关的项）
+#  说明: 这些是「默认值」，编译时会被 sdkconfig 采用；改这里比 menuconfig 更可复现。
+# ============================================================================
+
+# ---- 控制台输出走原生 USB-Serial-JTAG (即电脑上的 COM5) ----
+# ESP32-S3-EYE 有两个 USB 口，本工程只插原生 USB 口，所以控制台必须配置到这里，
+# 否则串口上看不到任何日志（日志会跑到 UART0 的排针上）。
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+
+# ---- 主任务栈加大 ----
+# app_main 里有较长格式的日志打印 + JSON 组包，默认 3584 字节偏紧，容易栈溢出。
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# ---- Flash 容量: ESP32-S3-EYE 板载 8MB ----
+# 显式指定，避免被默认值(2MB)覆盖导致分区表与真实 Flash 不匹配。
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="8MB"
+
+# ---- 使用工程自带 partitions.csv ----
+# 给应用分区 4MB（默认单应用表只有 1MB），详见 partitions.csv
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# ---- Wi-Fi (ESP32-S3 只支持 2.4GHz, 手机热点请确认是 2.4G 频段) ----
+CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=10
+CONFIG_ESP_WIFI_DYNAMIC_RX_BUFFER_NUM=32
+
+# ---- SNTP: 让板子有真实 UTC 时间，用于给每条数据打时间戳 ----
+CONFIG_LWIP_SNTP_MAX_SERVERS=2
+CONFIG_LWIP_SNTP_UPDATE_DELAY=3600000
+
+# ---- HTTPS: 使用 ESP-IDF 自带的根证书包，校验服务器证书 ----
+# 后端部署在 VPS/隧道上时通常是 HTTPS，开启后可做真实证书校验。
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE_DEFAULT_FULL=y
+
+# ---- 日志等级: 默认 INFO，方便串口核对实测值 ----
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# ---- 关闭不需要的组件，减小固件体积 ----
+CONFIG_BT_ENABLED=n

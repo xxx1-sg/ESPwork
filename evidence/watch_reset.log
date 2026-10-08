@@ -1,0 +1,46 @@
+
+===== serial_watch 开始 2026-09-30T09:00:56.946 端口=COM5 时长=20s =====
+[2026-09-30T09:00:56.951] 已打开 COM5（第 1 次）
+[2026-09-30T09:00:57.552] 已触发芯片复位，等待 USB 重新枚举 ...
+[2026-09-30T09:00:59.559] 已打开 COM5（第 2 次）
+[2026-09-30T09:00:59.790] I (265) main: 设备 ID = esp32s3eye-1C701C, 本次为第 630 �I (785) main: 自检结果: 平均合矢量 = 0.931 g (20/20 次有效)
+[2026-09-30T09:00:59.790] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T09:00:59.790] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T09:00:59.790] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T09:00:59.790] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T09:00:59.790] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T09:00:59.790] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T09:00:59.790] I (805) wifi:config NVS flash: enabled
+[2026-09-30T09:00:59.790] I (805) wifi:config nano formatting: disabled
+[2026-09-30T09:00:59.790] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T09:00:59.790] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T09:00:59.790] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T09:00:59.790] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T09:00:59.790] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T09:00:59.790] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T09:00:59.790] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T09:00:59.790] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T09:00:59.790] I (805) wifi_init: rx ba win: 6
+[2026-09-30T09:00:59.790] I (805) wifi_init: accept mbox: 6
+[2026-09-30T09:00:59.856] 读取出错（设备重新枚举或拔出）: ClearCommError failed (PermissionError(13, '设备不识别此命令。', None, 22))
+[2026-09-30T09:00:59.856] 结束：共打开 2 次，收到 1024 字节
+===== serial_watch 结束 =====
+
+
+===== serial_watch 开始 2026-09-30T09:00:59.923 端口=COM5 时长=20s =====
+[2026-09-30T09:01:00.333] 已打开 COM5（第 1 次）
+[2026-09-30T09:01:00.933] 已触发芯片复位，等待 USB 重新枚举 ...
+[2026-09-30T09:01:02.538] 已打开 COM5（第 2 次）
+[2026-09-30T09:01:02.551] 读取出错（设备重新枚举或拔出）: ClearCommError failed (PermissionError(13, '设备不识别此命令。', None, 22))
+[2026-09-30T09:01:02.551] 结束：共打开 2 次，收到 0 字节
+===== serial_watch 结束 =====
+
+
+===== serial_watch 开始 2026-09-30T09:01:02.619 端口=COM5 时长=20s =====
+[2026-09-30T09:01:03.029] 已打开 COM5（第 1 次）
+[2026-09-30T09:01:03.630] 已触发芯片复位，等待 USB 重新枚举 ...
+[2026-09-30T09:01:05.234] 已打开 COM5（第 2 次）
+[2026-09-30T09:01:05.270] 读取出错（设备重新枚举或拔出）: ClearCommError failed (PermissionError(13, '设备不识别此命令。', None, 22))
+[2026-09-30T09:01:05.270] 结束：共打开 2 次，收到 0 字节
+===== serial_watch 结束 =====
+

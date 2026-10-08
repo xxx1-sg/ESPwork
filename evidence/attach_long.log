@@ -1,0 +1,105 @@
+
+===== serial_watch 开始 2026-09-30T09:54:48.192 端口=COM5 时长=90s =====
+[2026-09-30T09:54:48.197] 已打开 COM5（第 1 次）
+[2026-09-30T09:54:48.197] 附着模式：未触发复位，直接观察板子当前输出
+[2026-09-30T09:54:48.225] I (28284) main: [POST] seq=2 n=10 http=201 resp={"ok": true, "idESP-ROM:esp32s3-20210327
+[2026-09-30T09:54:48.225] Build:Mar 27 2021
+[2026-09-30T09:54:48.225] rst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+[2026-09-30T09:54:48.225] Saved PC:0x4037ba7e
+[2026-09-30T09:54:48.225] SPIWP:0xee
+[2026-09-30T09:54:48.225] mode:DIO, clock div:1
+[2026-09-30T09:54:48.225] load:0x3fce2820,len:0x1548
+[2026-09-30T09:54:48.225] load:0x403c8700,len:0xdac
+[2026-09-30T09:54:48.226] load:0x403cb700,len:0x2f60
+[2026-09-30T09:54:48.226] entry 0x403c88f8
+[2026-09-30T09:54:48.226] I (24) boot: ESP-IDF 6.1.0 2nd stage bootloader
+[2026-09-30T09:54:48.226] I (24) boot: compile time Sep 24 2026 16:29:52
+[2026-09-30T09:54:48.226] I (25) boot: Multicore bootloader
+[2026-09-30T09:54:48.226] I (25) boot: chip revision: v0.2
+[2026-09-30T09:54:48.226] I (25) boot: efuse block revision: v1.3
+[2026-09-30T09:54:48.226] I (25) boot.esp32s3: Boot SPI Speed : 80MHz
+[2026-09-30T09:54:48.226] I (25) boot.esp32s3: SPI Mode       : DIO
+[2026-09-30T09:54:48.226] I (26) boot.esp32s3: SPI Flash Size : 8MB
+[2026-09-30T09:54:48.226] I (26) boot: Enabling RNG early entropy source...
+[2026-09-30T09:54:48.226] I (26) boot: Partition Table:
+[2026-09-30T09:54:48.226] I (26) boot: ## Label            Usage          Type ST Offset   Length
+[2026-09-30T09:54:48.226] I (27) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+[2026-09-30T09:54:48.226] I (27) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+[2026-09-30T09:54:48.426] I (27) boot:  2 factory          factory app      00 00 00010000 00400000
+[2026-09-30T09:54:48.427] I (28) boot: End of partition table
+[2026-09-30T09:54:48.427] I (28) esp_image: segment 0: paddr=00010020 vaddr=3c0b0020 size=24058h (147544) map
+[2026-09-30T09:54:48.427] I (55) esp_image: segment 1: paddr=00034080 vaddr=3fc98100 size=05098h ( 20632) load
+[2026-09-30T09:54:48.427] I (60) esp_image: segment 2: paddr=00039120 vaddr=40374000 size=06ef8h ( 28408) load
+[2026-09-30T09:54:48.427] I (67) esp_image: segment 3: paddr=00040020 vaddr=42000020 size=ac304h (705284) map
+[2026-09-30T09:54:48.427] I (196) esp_image: segment 4: paddr=000ec32c vaddr=4037aef8 size=0d118h ( 53528) load
+[2026-09-30T09:54:48.427] I (209) esp_image: segment 5: paddr=000f944c vaddr=50000000 size=00024h (    36) load
+[2026-09-30T09:54:48.427] I (218) boot: Loaded app from partition at offset 0x10000
+[2026-09-30T09:54:48.427] I (218) boot: Disabling RNG early entropy source...
+[2026-09-30T09:54:48.427] I (219) cpu_start: Multicore app
+[2026-09-30T09:54:48.427] I (228) cpu_start: Pro cpu start user code
+[2026-09-30T09:54:48.427] I (228) cpu_start: cpu freq: 160000000 Hz
+[2026-09-30T09:54:48.427] I (228) app_init: Application information:
+[2026-09-30T09:54:48.427] I (228) app_init: Project name:     esp32s3eye_imu_uploader
+[2026-09-30T09:54:48.427] I (229) app_init: App version:      1
+[2026-09-30T09:54:48.427] I (229) app_init: Compile time:     Sep 24 2026 16:29:39
+[2026-09-30T09:54:48.434] I (229) app_init: ELF file SHA256:  116671d53...
+[2026-09-30T09:54:48.434] I (229) app_init: ESP-IDF:          6.1.0
+[2026-09-30T09:54:48.434] I (229) efuse_init: Min chip rev:     v0.0
+[2026-09-30T09:54:48.434] I (229) efuse_init: Max chip rev:     v0.99 
+[2026-09-30T09:54:48.434] I (230) efuse_init: Chip rev:         v0.2
+[2026-09-30T09:54:48.434] I (230) heap_init: Initializing. RAM available for dynamic allocation:
+[2026-09-30T09:54:48.434] I (230) heap_init: At 3FCA1EF0 len 00047820 (286 KiB): RAM
+[2026-09-30T09:54:48.434] I (230) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+[2026-09-30T09:54:48.434] I (230) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+[2026-09-30T09:54:48.434] I (231) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+[2026-09-30T09:54:48.434] I (232) spi_flash: detected chip: generic
+[2026-09-30T09:54:48.434] I (232) spi_flash: flash io: dio
+[2026-09-30T09:54:48.434] I (233) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+[2026-09-30T09:54:48.434] I (234) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+[2026-09-30T09:54:48.434] I (234) main_task: Started on CPU0
+[2026-09-30T09:54:48.434] I (234) main_task: Calling app_main()
+[2026-09-30T09:54:48.434] I (234) main: ==================================================
+[2026-09-30T09:54:48.434] I (234) main: ESP32-S3-EYE 真实物理传感器采集固件 v1.0.0
+[2026-09-30T09:54:48.931] I (234) main: 芯片: ESP32-S3, 2 核, 版本 v0.2, ESP-IDF 6.1.0
+[2026-09-30T09:54:48.931] I (234) main: 本次复位原因: USB 外设复位 (代码 11)
+[2026-09-30T09:54:48.931] I (234) main: ==================================================
+[2026-09-30T09:54:48.931] I (264) main: 设备 ID = esp32s3eye-1C701C, 本次为第 767 次开机
+[2026-09-30T09:54:48.931] I (264) imu: I2C 总线就绪: SDA=GPIO4 SCL=GPIO5 400kHz
+[2026-09-30T09:54:48.931] I (264) imu: 开始扫描 I2C 总线 ...
+[2026-09-30T09:54:48.931] I (264) imu:   发现 I2C 设备: 0x12  <-- QMA6100P 加速度计
+[2026-09-30T09:54:48.931] I (274) imu: 扫描结束, 共发现 1 个设备
+[2026-09-30T09:54:48.931] I (284) imu: 检测到 QMA6100P, I2C=0x12, CHIP_ID=0x90
+[2026-09-30T09:54:48.931] I (334) imu: 配置回读: RANGE=0x01(±2g, 4096 LSB/g) BW_ODR=0x00 POWER=0x84
+[2026-09-30T09:54:48.931] I (334) imu: QMA6100P 初始化完成, 开始输出真实物理测量值
+[2026-09-30T09:54:48.931] I (334) main: 硬件自检: 连续读取真实测量值, 检查合矢量是否接近 1g ...
+[2026-09-30T09:54:48.931] I (734) main: 自检结果: 平均合矢量 = 0.990 g (20/20 次有效)
+[2026-09-30T09:54:48.931] I (734) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T09:54:48.931] I (734) main: 【复位原因】USB 外设复位 (代码 11)，本次为第 767 次开机
+[2026-09-30T09:54:48.931] I (734) pp: pp rom version: e7ae62f
+[2026-09-30T09:54:48.953] I (734) net80211: net80211 rom version: e7ae62f
+[2026-09-30T09:54:48.953] I (744) wifi:wifi driver task: 3fced6a4, prio:23, stack:6656, core=0
+[2026-09-30T09:54:48.953] I (754) wifi:wifi firmware version: e12a754
+[2026-09-30T09:54:48.953] I (754) wifi:wifi certification version: v7.0
+[2026-09-30T09:54:48.953] I (754) wifi:config NVS flash: enabled
+[2026-09-30T09:54:48.953] I (754) wifi:config nano formatting: disabled
+[2026-09-30T09:54:48.953] I (754) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T09:54:48.953] I (754) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T09:54:48.953] I (754) wifi:Init management short buffer num: 32
+[2026-09-30T09:54:48.953] I (754) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T09:54:48.953] I (754) wifi:Init static tx FG buffer num: 2
+[2026-09-30T09:54:48.953] I (754) wifi:Init static rx buffer size: 1600
+[2026-09-30T09:54:48.953] I (754) wifi:Init static rx buffer num: 10
+[2026-09-30T09:54:48.953] I (754) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T09:54:48.953] I (754) wifi_init: rx ba win: 6
+[2026-09-30T09:54:48.953] I (754) wifi_init: accept mbox: 6
+[2026-09-30T09:54:48.953] I (754) wifi_init: tcpip mbox: 32
+[2026-09-30T09:54:48.953] I (754) wifi_init: udp mbox: 6
+[2026-09-30T09:54:48.953] I (754) wifi_init: tcp mbox: 6
+[2026-09-30T09:54:48.953] I (754) wifi_init: tcp tx win: 5760
+[2026-09-30T09:54:48.953] I (754) wifi_init: tcp rx win: 5760
+[2026-09-30T09:54:48.953] I (754) wifi_init: tcp mss: 1440
+[2026-09-30T09:54:48.953] I (754) wifi_init: WiFi IRAM OP enabled
+[2026-09-30T09:54:48.977] 读取出错（设备重新枚举或拔出）: ClearCommError failed (PermissionError(13, '设备不识别此命令。', None, 22))
+[2026-09-30T09:54:48.977] 结束：共打开 1 次，收到 5120 字节
+===== serial_watch 结束 =====
+

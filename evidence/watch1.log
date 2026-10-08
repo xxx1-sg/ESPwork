@@ -1,0 +1,47 @@
+
+===== serial_watch 开始 2026-09-30T08:54:06.550 端口=COM5 时长=40s =====
+[2026-09-30T08:54:06.554] 端口 COM5 不存在，等待重新枚举 ...
+[2026-09-30T08:54:07.059] 已打开 COM5（第 1 次）
+[2026-09-30T08:54:07.302] 读取出错: 'gbk' codec can't encode character '\ufffd' in position 76: illegal multibyte sequence
+[2026-09-30T08:54:07.306] 已打开 COM5（第 2 次）
+[2026-09-30T08:54:07.333] I (785) main: 自检通过: 读数符合静止状态下的真实重力加速度
+[2026-09-30T08:54:07.333] I (785) pp: pp rom version: e7ae62f
+[2026-09-30T08:54:07.333] I (785) net80211: net80211 rom version: e7ae62f
+[2026-09-30T08:54:07.333] I (795) wifi:wifi driver task: 3fced728, prio:23, stack:6656, core=0
+[2026-09-30T08:54:07.334] I (805) wifi:wifi firmware version: e12a754
+[2026-09-30T08:54:07.334] I (805) wifi:wifi certification version: v7.0
+[2026-09-30T08:54:07.334] I (805) wifi:config NVS flash: enabled
+[2026-09-30T08:54:07.334] I (805) wifi:config nano formatting: disabled
+[2026-09-30T08:54:07.334] I (805) wifi:Init data frame dynamic rx buffer num: 32
+[2026-09-30T08:54:07.334] I (805) wifi:Init static rx mgmt buffer num: 5
+[2026-09-30T08:54:07.334] I (805) wifi:Init management short buffer num: 32
+[2026-09-30T08:54:07.334] I (805) wifi:Init dynamic tx buffer num: 32
+[2026-09-30T08:54:07.334] I (805) wifi:Init static tx FG buffer num: 2
+[2026-09-30T08:54:07.334] I (805) wifi:Init static rx buffer size: 1600
+[2026-09-30T08:54:07.334] I (805) wifi:Init static rx buffer num: 10
+[2026-09-30T08:54:07.334] I (805) wifi:Init dynamic rx buffer num: 32
+[2026-09-30T08:54:07.334] I (805) wifi_init: rx ba win: 6
+[2026-09-30T08:54:07.334] I (805) wifi_init: accept mbox: 6
+[2026-09-30T08:54:07.334] I (805) wifi_init: tcrst:0x15 (USB_UART_CHIP_RESET),boot:0x2a (SPI_FAST_FLASH_BOOT)
+[2026-09-30T08:54:07.334] Saved PC:0x4037e86c
+[2026-09-30T08:54:07.334] SPIWP:0xee
+[2026-09-30T08:54:07.334] mode:DIO, clock div:1
+[2026-09-30T08:54:07.334] load:0x3fce2820,len:0x1548
+[2026-09-30T08:54:07.334] load:0x403c8700,len:0xdac
+[2026-09-30T08:54:07.334] load:0x403cb700,len:0x2f60
+[2026-09-30T08:54:07.334] entry 0x403c88f8
+[2026-09-30T08:54:07.334] I (26) boot: ESP-IDF 6.1.0 2nd stage bootloader
+[2026-09-30T08:54:07.334] I (26) boot: compile time Sep 24 2026 16:29:52
+[2026-09-30T08:54:07.334] I (26) boot: Multicore bootloader
+[2026-09-30T08:54:07.334] I (27) boot: chip revision: v0.2
+[2026-09-30T08:54:07.334] I (27) boot: efuse block revision: v1.3
+[2026-09-30T08:54:07.334] I (27) boot.esp32s3: Boot SPI Speed : 80MHz
+[2026-09-30T08:54:07.334] I (27) boot.esp32s3: SPI Mode       : DIO
+[2026-09-30T08:54:07.334] I (27) boot.esp32s3: SPI Flash Size : 8MB
+[2026-09-30T08:54:07.334] I (27) boot: Enabling RNG early entropy source...
+[2026-09-30T08:54:07.334] I (28) boot: Partition Table:
+[2026-09-30T08:54:07.334] I (28) boot: ## Label            Usage          Type ST Offset   Length
+[2026-09-30T08:54:07.334] I (28) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+[2026-09-30T08:54:07.334] I (29) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+[2026-09-30T08:54:07.334] I (29) boot:  2 factory          factory app      00 00 00010000 00400000
+[2026-09-30T08:54:07.334] I (29) boot: End of partition table

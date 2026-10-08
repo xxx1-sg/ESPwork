@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<title>ESP32-S3 IMU 三轴姿态监测</title>
+<!--
+  index.html —— 三轴姿态实时监测台（界面重构版）
+
+  ★ 数据真实性约束（与本工程 README 的约定一致，界面重构不改变它）：
+    - 页面里没有任何一个传感器数值是写死的：所有 g 值、m/s²、原始码值、
+      时间戳、设备号、MAC 都来自后端 API（/api/v1/latest、/api/v1/records、
+      /api/v1/devices、/api/v1/stats），而后端的数据只来自开发板上
+      QMA6100P 芯片的真实寄存器读数。
+    - 初始状态只显示占位符 "—" 与"等待数据"；连"静态参考说明"里的小字
+      也是物理常识（例如"平放时该轴 ≈ 0 g"），不是测量值。
+    - HTML/CSS 只负责外观与结构，不含任何数据；每个数字都由 app.js 从接口填入。
+
+  ★ 断流行为：超过 stale 阈值没有新的服务器接收时间 → 明确提示「暂无新数据」，
+    并保留最后一次真实数值与时间戳（不清零、不继续假装实时）。
+
+  ★ 按要求保留：①「数据来源与时间戳（用于三方核对）」卡片
+                ②「后端返回的原始 JSON（最新一条）」卡片
+
+  布局：顶部导航 → 快捷工具栏（顶部子栏）→ 左列（姿态 / 设备与时间同步 /
+  数据来源）→ 右列（实时趋势大卡 / 原始 JSON）。纯 2D 平面 UI，矢量图标，
+  无位图、无照片。
+-->
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════════════════ 顶部导航栏 ══════════════════════ -->
+<header class="nav">
+  <div class="brand">
+    <span class="brand-icon" aria-hidden="true">
+      <svg viewBox="0 0 40 40" width="30" height="30">
+        <defs>
+          <linearGradient id="gBrand" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#5b6cf0"/><stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+        <circle cx="20" cy="20" r="15" fill="none" stroke="url(#gBrand)" stroke-width="1.5" opacity=".5"/>
+        <ellipse cx="20" cy="20" rx="15" ry="5.8" fill="none" stroke="url(#gBrand)" stroke-width="1.1" opacity=".42"/>
+        <ellipse cx="20" cy="20" rx="5.8" ry="15" fill="none" stroke="url(#gBrand)" stroke-width="1.1" opacity=".42"/>
+        <path d="M20 20 L30 12" stroke="#ef5f6b" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 20 L11 15" stroke="#17b890" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 20 L20 32" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="20" cy="20" r="2.5" fill="url(#gBrand)"/>
+      </svg>
+    </span>
+    <div class="brand-text">
+      <h1>ESP32-S3 IMU 三轴姿态监测</h1>
+      <p class="brand-sub">板载 QMA6100P 物理传感器 · 开发板 Wi-Fi 直连后端 · 页面数值全部来自接口</p>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <!-- 状态指示灯：如实说明——网页读不到 USB 串口，这里反映的是"数据链路"是否通畅 -->
+    <div class="link-group" title="网页无法直接读取 USB 串口（板子走 Wi-Fi 上传，USB 只作调试通道）；这里显示的是数据链路状态：开发板 → 后端 → 本页面。">
+      <span class="dot" id="linkDot"></span>
+      <span id="linkStatus" class="pill pill-wait">连接中…</span>
+      <span id="freshness" class="pill pill-wait">等待数据</span>
+    </div>
+    <label class="field" title="设备列表来自后端 /api/v1/devices（真实上报过的设备）；切换后曲线按该设备重新装载">
+      <span class="field-label">设备分组</span>
+      <select id="deviceSelect"><option value="">全部设备（加载中）</option></select>
+    </label>
+    <button id="themeToggle" class="icon-btn" type="button" title="切换深色 / 浅色模式" aria-label="切换主题">
+      <span id="themeIcon">☾</span>
+    </button>
+  </div>
+</header>
+
+<!-- 断流提示条：只有真的没有新数据时才由 JS 显示 -->
+<div id="staleBanner" class="banner hidden">
+  <span class="banner-mark">⚠</span>
+  <strong>暂无新数据</strong>
+  <span id="staleDetail"></span>
+</div>
+
+<!-- ══════════════════════ ④ 快捷工具栏（顶部子栏卡片） ══════════════════════ -->
+<section class="card toolbar">
+  <div class="tool-btns">
+    <button id="btnLive" class="tool is-on" type="button"
+            title="暂停 / 继续拉取后端数据（继续时按记录 id 续传，一个采样点都不会丢）">
+      <i>◉</i><span>实时监控</span>
+    </button>
+    <button id="btnExport" class="tool" type="button"
+            title="把后端最近 2000 条真实记录导出为 CSV（含原始码值与三方核对字段）">
+      <i>⤓</i><span>数据导出</span>
+    </button>
+    <button id="btnCamera" class="tool tool-off" type="button"
+            title="板载 OV2640 尚未接入图像链路（点击看说明，不显示任何伪造画面）">
+      <i>▣</i><span>相机预览</span>
+    </button>
+    <button id="btnLog" class="tool" type="button"
+            title="本页面的真实事件记录（断流、失败、导出、切换…）">
+      <i>≡</i><span>日志记录</span><em id="logCount" class="badge">0</em>
+    </button>
+    <button id="btnAsk" class="tool" type="button"
+            title="对已加载的真实采样点做统计问答（本地规则解析，不调用外部模型）">
+      <i>✦</i><span>AI 自然语言交互</span>
+    </button>
+  </div>
+  <div id="toolHint" class="tool-hint">就绪</div>
+</section>
+
+<!-- ── 工具抽屉（默认隐藏，点上面的按钮展开） ── -->
+<section id="logPanel" class="card drawer hidden">
+  <div class="drawer-head">
+    <h2>运行日志<span class="h2-note">本页面观察到的事件，真实发生、非模拟</span></h2>
+    <div class="drawer-acts">
+      <button id="btnLogExport" class="mini" type="button">导出日志</button>
+      <button id="btnLogClear" class="mini" type="button">清空</button>
+      <button id="closeLog" class="mini" type="button">收起</button>
+    </div>
+  </div>
+  <ul id="logList" class="log-list"></ul>
+</section>
+
+<section id="cameraPanel" class="card drawer hidden">
+  <div class="drawer-head">
+    <h2>相机预览<span class="h2-note">如实说明，不显示任何占位画面</span></h2>
+    <div class="drawer-acts"><button id="closeCamera" class="mini" type="button">收起</button></div>
+  </div>
+  <p class="drawer-text">
+    这块板子（ESP32-S3-EYE）板载 <b>OV2640</b> 摄像头，但<b>当前固件没有接入图像链路</b>：
+    固件只做 QMA6100P 三轴采集与上传，没有图像采集、没有 MJPEG/JPEG 上传接口，
+    后端也没有图片存储或视频流端点。<b>所以这里不会显示任何画面</b>——用占位图或录播冒充实时预览，
+    与本工程「不出现任何非真实数据」的原则冲突。
+  </p>
+  <p class="drawer-text">
+    要真正接进来，需要三步（都属于新功能，不在本次范围内）：
+    ① 固件增加 <code>esp32-camera</code> 驱动，按需抓 JPEG；
+    ② 新增上传通道（例如 <code>POST /api/v1/image</code>，同样带设备令牌与原始字节 SHA256）；
+    ③ 后端提供帧输出接口，本页面用 <code>&lt;img&gt;</code> 轮询或 MJPEG 流显示。
+  </p>
+</section>
+
+<section id="aiPanel" class="card drawer hidden">
+  <div class="drawer-head">
+    <h2>AI 自然语言交互<span class="h2-note">本地规则解析 · 结果全部由已加载的真实采样点算出</span></h2>
+    <div class="drawer-acts"><button id="closeAi" class="mini" type="button">收起</button></div>
+  </div>
+  <div class="ai-row">
+    <input id="aiInput" type="text" placeholder="例如：最近 1 分钟 X 轴的平均值 / 合矢量最大值 / 现在倾角多少" />
+    <button id="aiSend" class="mini mini-primary" type="button">提问</button>
+  </div>
+  <div id="aiExamples" class="ai-examples">
+    <span class="chip-ex">最近 30 秒 X 轴平均值</span>
+    <span class="chip-ex">合矢量最大值</span>
+    <span class="chip-ex">最近 1 分钟 Z 轴峰峰值</span>
+    <span class="chip-ex">现在倾角是多少</span>
+    <span class="chip-ex">窗口内共多少点</span>
+  </div>
+  <div id="aiAnswer" class="ai-answer">还没有提问。支持：平均值 / 最大 / 最小 / 峰峰值 / 标准差 / 点数 / 倾角；时间范围可写「最近 N 秒|分钟」，不写则用当前曲线窗口。答案里的每个数字都由已加载的真实采样点算出，不做任何推测。</div>
+</section>
+
+<!-- ══════════════════════ 主体 ══════════════════════ -->
+<main class="layout">
+  <!-- ───────────── 左列 ───────────── -->
+  <div class="col col-left">
+
+    <!-- ① 姿态可视化卡片 -->
+    <section class="card card-attitude">
+      <div class="card-head">
+        <h2>姿态可视化<span class="h2-note">重力落点由三轴实测值实时解算</span></h2>
+        <span class="chip" id="attState">等待数据</span>
+      </div>
+
+      <div class="attitude-body">
+        <div class="sphere-wrap">
+          <canvas id="sphere" width="320" height="320" aria-label="重力方向落点球"></canvas>
+          <div class="sphere-legend">
+            <span><i class="sw sw-x"></i>X 轴</span>
+            <span><i class="sw sw-y"></i>Y 轴</span>
+            <span><i class="sw sw-z"></i>Z 轴</span>
+            <span><i class="sw sw-g"></i>重力落点</span>
+          </div>
+        </div>
+
+        <div class="attitude-side">
+          <div class="mini-grid">
+            <div class="mini"><label>俯仰角 pitch</label><b id="attPitch">—</b></div>
+            <div class="mini"><label>横滚角 roll</label><b id="attRoll">—</b></div>
+            <div class="mini"><label>Z 轴与重力夹角</label><b id="attTiltZ">—</b></div>
+            <div class="mini" id="cardMag"><label>合矢量 |a|</label><b id="valMag">—</b><small>g</small></div>
+          </div>
+          <div class="vec-line">
+            <span>重力单位向量（设备坐标系）</span>
+            <b id="attGvec">—</b>
+          </div>
+          <p class="note" id="sphereNote">
+            球面上的落点 = 重力方向在设备坐标系中的指向（由接口返回的 g 值归一化得到）。
+          </p>
+        </div>
+      </div>
+
+      <!-- X / Y / Z 三轴独立小卡片 + 以 0 为中心的细双向进度条 -->
+      <div class="axis-cards">
+        <div class="axis-card ax-x" id="cardX">
+          <div class="ax-top"><span class="ax-name">X 轴</span><span class="ax-tag">红</span></div>
+          <div class="ax-val"><b id="valGX">—</b><small>g</small></div>
+          <div class="ax-ms2"><span id="valMS2X">—</span><small>m/s²</small></div>
+          <div class="bar"><i id="barX"></i></div>
+          <div class="ax-ref">静态参考：平放时 ≈ 0 g，该轴竖直朝上时 ≈ +1 g</div>
+        </div>
+        <div class="axis-card ax-y" id="cardY">
+          <div class="ax-top"><span class="ax-name">Y 轴</span><span class="ax-tag">绿</span></div>
+          <div class="ax-val"><b id="valGY">—</b><small>g</small></div>
+          <div class="ax-ms2"><span id="valMS2Y">—</span><small>m/s²</small></div>
+          <div class="bar"><i id="barY"></i></div>
+          <div class="ax-ref">静态参考：平放时 ≈ 0 g，该轴竖直朝上时 ≈ +1 g</div>
+        </div>
+        <div class="axis-card ax-z" id="cardZ">
+          <div class="ax-top"><span class="ax-name">Z 轴</span><span class="ax-tag">蓝</span></div>
+          <div class="ax-val"><b id="valGZ">—</b><small>g</small></div>
+          <div class="ax-ms2"><span id="valMS2Z">—</span><small>m/s²</small></div>
+          <div class="bar"><i id="barZ"></i></div>
+          <div class="ax-ref">静态参考：平放时 ≈ 0 g，该轴竖直朝上时 ≈ +1 g</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 设备信息与时间同步卡片 -->
+    <section class="card card-device">
+      <div class="card-head">
+        <h2>设备信息与时间同步<span class="h2-note">全部字段取自接口，缺失显示 —</span></h2>
+        <span class="chip" id="dSyncChip">—</span>
+      </div>
+      <dl class="kv2">
+        <div><dt>设备唯一 ID</dt><dd id="dDeviceId">—</dd></div>
+        <div><dt>芯片 MAC 地址</dt><dd id="dMac">—</dd></div>
+        <div class="wide-row"><dt>通信方式（链路固定说明 + 传感器总线实测）</dt><dd id="dComm">—</dd></div>
+        <div><dt>板端时间戳</dt><dd id="dTsLocal">—</dd></div>
+        <div><dt>服务器接收时间</dt><dd id="dRecvTime">—</dd></div>
+        <div class="wide-row"><dt>时间偏移（采集 → 入库）</dt><dd id="dOffset">—</dd></div>
+        <div><dt>设备时钟校对</dt><dd id="dClock">—</dd></div>
+        <div><dt>数据滞后</dt><dd id="dAge">—</dd></div>
+        <div><dt>设备运行时间</dt><dd id="dUptime">—</dd></div>
+      </dl>
+      <p class="note">
+        「时间偏移」= 服务器接收时间 − 板端 UTC 时间戳（含网络与入库耗时），所以正常情况下应为<b>正值</b>；
+        若出现负值，说明板端时钟<b>快于</b>服务器时钟。绿色 = 正常，橙色 = 偏大，红色 = 异常或时钟超前。
+      </p>
+    </section>
+
+    <!-- 数据来源与时间戳（用于三方核对）——按要求保留 -->
+    <section class="card card-source">
+      <div class="card-head">
+        <h2>数据来源与时间戳<span class="h2-note">用于三方核对</span></h2>
+        <span class="chip" id="dVerify">—</span>
+      </div>
+      <dl class="kv2">
+        <div><dt>记录 ID / seq</dt><dd id="dIdSeq">—</dd></div>
+        <div><dt>传感器型号</dt><dd id="dSensor">—</dd></div>
+        <div class="wide-row"><dt>原始测量码值 (LSB)</dt><dd id="dRaw">—</dd></div>
+        <div><dt>量程 / 灵敏度</dt><dd id="dRange">—</dd></div>
+        <div><dt>采样次数（平均）</dt><dd id="dOver">—</dd></div>
+      </dl>
+      <p class="note" id="dVerifyNote">—</p>
+      <p class="tip">
+        核对方法：串口打印的 <code>[DATA]</code> 行、数据库 <code>sensor_records</code> 表、
+        本页面这三处的 <em>raw / g / 时间戳</em> 应当完全一致（每个采样点以
+        <code>boot_count + seq + 包内序号</code> 为键）。可用仓库里的
+        <code>tools/verify_three_way.py</code> 自动比对。
+      </p>
+    </section>
+  </div>
+
+  <!-- ───────────── 右列 ───────────── -->
+  <div class="col col-right">
+
+    <!-- ③ 实时趋势图表卡片（大尺寸） -->
+    <section class="card card-chart">
+      <div class="card-head">
+        <h2>实时趋势<span class="h2-note" id="chartNote">等待数据…</span></h2>
+      </div>
+      <div class="chart-tools">
+        <button id="btnPause" class="mini" type="button"
+                title="冻结图表视图（时间轴停止前进）；继续时按记录 id 补齐这段时间的全部真实采样点">暂停</button>
+        <button id="btnBaseline" class="mini" type="button"
+                title="以最新采样点为基线，图表曲线显示相对基线的变化量（读数卡片始终显示接口绝对值，不被基线改写）">设基线</button>
+        <button id="btnAuto" class="mini is-on" type="button"
+                title="自动滚动：时间轴跟随真实时间；关闭后横轴改为铺满已加载的全部真实采样点，便于整体对比">自动滚动</button>
+        <span class="seg" role="group" aria-label="单位切换">
+          <button id="unitG" class="seg-btn is-on" type="button">g</button>
+          <button id="unitMS2" class="seg-btn" type="button">m/s²</button>
+        </span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chart" width="1200" height="336"></canvas>
+        <div id="chartTip" class="chart-tip hidden"></div>
+      </div>
+      <div class="legend">
+        <span><i class="sw sw-x"></i>X</span>
+        <span><i class="sw sw-y"></i>Y</span>
+        <span><i class="sw sw-z"></i>Z</span>
+        <span><i class="sw sw-m"></i>|a|</span>
+        <span class="legend-note" id="baseInfo">基线：未设置</span>
+      </div>
+    </section>
+
+    <!-- 后端返回的原始 JSON（最新一条）——按要求保留 -->
+    <section class="card card-raw">
+      <div class="card-head">
+        <h2>后端返回的原始 JSON<span class="h2-note">最新一条，逐字段原样</span></h2>
+        <button id="toggleRaw" class="mini" type="button">展开 / 收起</button>
+      </div>
+      <pre id="rawJson" class="hidden">—</pre>
+    </section>
+  </div>
+</main>
+
+<footer class="foot">
+  <span id="apiInfo">API: —</span>
+  <span id="pollInfo">轮询: —</span>
+  <span id="fpsInfo">渲染: —</span>
+  <span id="statInfo">库统计: —</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

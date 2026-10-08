@@ -1,0 +1,76 @@
+# ===========================================================================
+# .gitignore —— ESP32-S3 IMU 采集工程
+#
+# 原则：仓库里只放「源码 + 文档 + 证据」，不放构建产物、依赖环境、临时文件。
+#   · 环境/工具链 (.platformio/.venv/.pio) 动辄数 GB，且可由命令重新生成；
+#   · backend/data/sensor.db 是持续增长的实时数据库（含真实设备 MAC）；
+#   · tools/bin/cloudflared.exe 是第三方二进制，请按 docs/03 自行下载。
+# ===========================================================================
+
+# ---- Python 虚拟环境与依赖缓存 ----
+.venv/
+.venv2/
+.pylibs/
+wheels/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# ---- PlatformIO / ESP-IDF 构建产物（可由 pio run 重新生成）----
+.platformio/
+.pio/
+firmware/.pio/
+firmware/build/
+firmware/sdkconfig.esp32s3eye
+firmware/managed_components/
+firmware/dependencies.lock
+*.bin
+*.elf
+*.map
+*.o
+*.su
+
+# ---- 运行期数据：实时数据库（持续增长，且含真实设备 MAC）----
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/*.db-wal
+backend/data/*.db-shm
+*.sqlite
+*.sqlite3
+
+# 运行期日志一律忽略；但 evidence/ 里的实测证据日志是交付物，必须保留
+*.log
+!evidence/*.log
+
+# ---- 第三方二进制（体积大且可重新下载）----
+tools/bin/cloudflared.exe
+tools/bin/*.exe
+
+# ---- 临时与调试目录 ----
+.tmp/
+temp/
+tmp/
+*.tmp
+diag_*.txt
+
+# ---- ★ 本地私密配置：真实 Wi-Fi 密码 / 设备令牌绝不能进仓库 ----
+#   app_config.h 里的值都是占位符；真实值写进下面这个文件，编译时启用
+#   （见 app_config.h 里的 APP_CONFIG_USE_LOCAL 说明）
+firmware/src/app_config.local.h
+firmware/src/server_ca_pem.local.h
+.env
+.env.*
+secrets/
+*.pem
+*.key
+pat.txt
+.github_token
+
+# ---- 编辑器与操作系统 ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

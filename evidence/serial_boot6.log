@@ -1,0 +1,263 @@
+
+===== 采集开始 2026-09-24T16:23:44.506 端口=COM5 =====
+[2026-09-24T16:23:47.221] I (10469) esp-x509-crt-bundle: No matching trusted root certificE (11529) main: [POST] seq=1 上传失败(累计 1 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:23:48.223] I (12539) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=2 up=12297ms ts=2026-09-24T16:23:48.006+0800 raw=(-2822,-1791,-1210) g=(-0.689,-0.437,-0.295) ms2=(-6.76,-4.29,-2.90) |a|=0.868g
+[2026-09-24T16:23:50.246] I (14349) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:23:50.246] E (14349) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:23:50.246] E (14349) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:23:50.247] E (14349) esp-tls: Failed to open new connection
+[2026-09-24T16:23:50.247] E (14349) transport_base: Failed to open a new connection
+[2026-09-24T16:23:50.247] E (14359) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:23:50.247] W (14359) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:23:50.247] W (14359) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:23:53.265] I (17259) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:23:53.265] E (17259) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:23:53.265] E (17259) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:23:53.265] E (17259) esp-tls: Failed to open new connection
+[2026-09-24T16:23:53.265] E (17259) transport_base: Failed to open a new connection
+[2026-09-24T16:23:53.265] E (17259) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:23:53.265] W (17259) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:23:53.265] W (17259) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:23:56.301] I (19979) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:23:56.301] E (19989) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:23:56.301] E (19989) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:23:56.301] E (19989) esp-tls: Failed to open new connection
+[2026-09-24T16:23:56.301] E (19989) transport_base: Failed to open a new connection
+[2026-09-24T16:23:56.301] E (19989) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:23:56.301] W (19989) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:23:56.301] W (19989) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:23:57.302] E (20989) main: [POST] seq=2 上传失败(累计 2 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:23:58.315] I (21999) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=3 up=21757ms ts=2026-09-24T16:23:57.466+0800 raw=(-2806,-1788,-1211) g=(-0.685,-0.437,-0.296) ms2=(-6.72,-4.28,-2.90) |a|=0.864g
+[2026-09-24T16:23:59.318] I (23869) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:23:59.318] E (23869) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:23:59.318] E (23869) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:23:59.318] E (23879) esp-tls: Failed to open new connection
+[2026-09-24T16:23:59.318] E (23879) transport_base: Failed to open a new connection
+[2026-09-24T16:23:59.318] E (23879) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:23:59.318] W (23879) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:23:59.318] W (23879) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:02.353] I (26729) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:02.353] E (26729) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:02.353] E (26739) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:02.353] E (26739) esp-tls: Failed to open new connection
+[2026-09-24T16:24:02.353] E (26739) transport_base: Failed to open a new connection
+[2026-09-24T16:24:02.353] E (26739) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:02.353] W (26739) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:02.353] W (26739) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:05.378] I (29509) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:05.378] E (29509) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:05.378] E (29509) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:05.378] E (29509) esp-tls: Failed to open new connection
+[2026-09-24T16:24:05.378] E (29509) transport_base: Failed to open a new connection
+[2026-09-24T16:24:05.378] E (29509) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:05.378] W (29509) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:05.378] W (29509) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:06.391] E (30509) main: [POST] seq=3 上传失败(累计 3 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:24:07.403] I (31519) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=4 up=31277ms ts=2026-09-24T16:24:06.986+0800 raw=(-2820,-1802,-1193) g=(-0.688,-0.440,-0.291) ms2=(-6.75,-4.31,-2.86) |a|=0.867g
+[2026-09-24T16:24:09.432] I (33419) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:09.432] E (33419) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:09.432] E (33419) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:09.432] E (33419) esp-tls: Failed to open new connection
+[2026-09-24T16:24:09.432] E (33419) transport_base: Failed to open a new connection
+[2026-09-24T16:24:09.432] E (33419) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:09.432] W (33419) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:09.432] W (33419) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:12.475] I (36149) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:12.475] E (36149) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:12.475] E (36149) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:12.475] E (36149) esp-tls: Failed to open new connection
+[2026-09-24T16:24:12.475] E (36149) transport_base: Failed to open a new connection
+[2026-09-24T16:24:12.475] E (36149) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:12.475] W (36159) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:12.475] W (36159) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:14.498] I (38909) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:14.498] E (38919) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:14.498] E (38919) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:14.498] E (38919) esp-tls: Failed to open new connection
+[2026-09-24T16:24:14.498] E (38919) transport_base: Failed to open a new connection
+[2026-09-24T16:24:14.498] E (38919) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:14.498] W (38919) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:14.498] W (38919) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:15.503] E (39919) main: [POST] seq=4 上传失败(累计 4 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:24:16.511] I (40929) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=5 up=40687ms ts=2026-09-24T16:24:16.396+0800 raw=(-2807,-1819,-1206) g=(-0.685,-0.444,-0.294) ms2=(-6.72,-4.36,-2.89) |a|=0.868g
+[2026-09-24T16:24:18.535] I (42709) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:18.535] E (42709) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:18.535] E (42709) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:18.535] E (42709) esp-tls: Failed to open new connection
+[2026-09-24T16:24:18.535] E (42709) transport_base: Failed to open a new connection
+[2026-09-24T16:24:18.535] E (42719) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:18.535] W (42719) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:18.535] W (42719) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:21.570] I (45479) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:21.570] E (45479) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:21.570] E (45479) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:21.570] E (45479) esp-tls: Failed to open new connection
+[2026-09-24T16:24:21.570] E (45479) transport_base: Failed to open a new connection
+[2026-09-24T16:24:21.570] E (45479) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:21.570] W (45479) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:21.570] W (45479) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:24.597] I (48449) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:24.597] E (48449) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:24.597] E (48449) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:24.597] E (48449) esp-tls: Failed to open new connection
+[2026-09-24T16:24:24.597] E (48449) transport_base: Failed to open a new connection
+[2026-09-24T16:24:24.597] E (48449) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:24.597] W (48449) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:24.597] W (48459) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:25.601] E (49459) main: [POST] seq=5 上传失败(累计 5 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:24:26.604] I (50469) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=6 up=50227ms ts=2026-09-24T16:24:25.936+0800 raw=(-2828,-1812,-1179) g=(-0.690,-0.442,-0.288) ms2=(-6.77,-4.34,-2.82) |a|=0.869g
+[2026-09-24T16:24:28.617] I (52359) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:28.617] E (52359) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:28.617] E (52359) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:28.617] E (52359) esp-tls: Failed to open new connection
+[2026-09-24T16:24:28.617] E (52359) transport_base: Failed to open a new connection
+[2026-09-24T16:24:28.617] E (52359) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:28.617] W (52359) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:28.617] W (52359) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:30.633] I (55119) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:30.633] E (55119) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:30.633] E (55129) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:30.633] E (55129) esp-tls: Failed to open new connection
+[2026-09-24T16:24:30.633] E (55129) transport_base: Failed to open a new connection
+[2026-09-24T16:24:30.633] E (55129) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:30.633] W (55129) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:30.634] W (55129) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:33.673] I (57969) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:33.673] E (57969) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:33.673] E (57969) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:33.673] E (57969) esp-tls: Failed to open new connection
+[2026-09-24T16:24:33.673] E (57969) transport_base: Failed to open a new connection
+[2026-09-24T16:24:33.673] E (57969) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:33.673] W (57969) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:33.673] W (57969) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:34.679] E (58979) main: [POST] seq=6 上传失败(累计 6 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:24:35.692] I (59989) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=7 up=59747ms ts=2026-09-24T16:24:35.456+0800 raw=(-2806,-1815,-1171) g=(-0.685,-0.443,-0.286) ms2=(-6.72,-4.35,-2.80) |a|=0.865g
+[2026-09-24T16:24:37.707] I (61769) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:37.707] E (61769) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:37.707] E (61779) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:37.707] E (61779) esp-tls: Failed to open new connection
+[2026-09-24T16:24:37.707] E (61779) transport_base: Failed to open a new connection
+[2026-09-24T16:24:37.707] E (61779) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:37.707] W (61779) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:37.707] W (61779) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:40.740] I (64539) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:40.740] E (64539) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:40.740] E (64539) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:40.740] E (64539) esp-tls: Failed to open new connection
+[2026-09-24T16:24:40.740] E (64539) transport_base: Failed to open a new connection
+[2026-09-24T16:24:40.740] E (64549) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:40.740] W (64549) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:40.740] W (64549) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:43.780] I (67419) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:43.780] E (67419) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:43.780] E (67419) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:43.780] E (67419) esp-tls: Failed to open new connection
+[2026-09-24T16:24:43.780] E (67429) transport_base: Failed to open a new connection
+[2026-09-24T16:24:43.780] E (67429) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:43.780] W (67429) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:43.780] W (67429) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:44.790] E (68429) main: [POST] seq=7 上传失败(累计 7 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:24:45.803] I (69439) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=8 up=69197ms ts=2026-09-24T16:24:44.906+0800 raw=(-2808,-1811,-1213) g=(-0.686,-0.442,-0.296) ms2=(-6.72,-4.34,-2.90) |a|=0.868g
+[2026-09-24T16:24:47.815] I (71689) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:47.815] E (71689) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:47.815] E (71699) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:47.815] E (71699) esp-tls: Failed to open new connection
+[2026-09-24T16:24:47.815] E (71699) transport_base: Failed to open a new connection
+[2026-09-24T16:24:47.815] E (71699) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:47.815] W (71699) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:47.815] W (71699) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:50.854] I (74549) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:50.854] E (74549) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:50.854] E (74549) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:50.854] E (74549) esp-tls: Failed to open new connection
+[2026-09-24T16:24:50.854] E (74549) transport_base: Failed to open a new connection
+[2026-09-24T16:24:50.854] E (74559) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:50.854] W (74559) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:50.854] W (74559) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:52.876] I (77319) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:52.876] E (77319) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:52.876] E (77319) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:52.876] E (77319) esp-tls: Failed to open new connection
+[2026-09-24T16:24:52.876] E (77319) transport_base: Failed to open a new connection
+[2026-09-24T16:24:52.876] E (77329) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:52.876] W (77329) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:52.876] W (77329) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:53.888] E (78329) main: [POST] seq=8 上传失败(累计 8 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:24:54.901] I (79339) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=9 up=79097ms ts=2026-09-24T16:24:54.806+0800 raw=(-2786,-1813,-1180) g=(-0.680,-0.443,-0.288) ms2=(-6.67,-4.34,-2.83) |a|=0.861g
+[2026-09-24T16:24:56.918] I (81309) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:56.918] E (81309) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:56.918] E (81309) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:56.918] E (81309) esp-tls: Failed to open new connection
+[2026-09-24T16:24:56.918] E (81309) transport_base: Failed to open a new connection
+[2026-09-24T16:24:56.918] E (81309) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:56.918] W (81319) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:56.918] W (81319) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:24:59.945] I (84289) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:24:59.945] E (84289) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:24:59.945] E (84289) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:24:59.945] E (84289) esp-tls: Failed to open new connection
+[2026-09-24T16:24:59.945] E (84289) transport_base: Failed to open a new connection
+[2026-09-24T16:24:59.945] E (84289) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:24:59.945] W (84289) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:24:59.945] W (84289) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:02.965] I (87039) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:02.965] E (87039) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:02.965] E (87049) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:02.965] E (87049) esp-tls: Failed to open new connection
+[2026-09-24T16:25:02.965] E (87049) transport_base: Failed to open a new connection
+[2026-09-24T16:25:02.965] E (87049) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:02.965] W (87049) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:02.965] W (87049) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:03.973] E (88049) main: [POST] seq=9 上传失败(累计 9 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:25:04.986] I (89059) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=10 up=88818ms ts=2026-09-24T16:25:04.526+0800 raw=(-2796,-1821,-1196) g=(-0.683,-0.445,-0.292) ms2=(-6.69,-4.36,-2.86) |a|=0.865g
+[2026-09-24T16:25:07.005] I (90879) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:07.005] E (90879) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:07.005] E (90879) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:07.005] E (90879) esp-tls: Failed to open new connection
+[2026-09-24T16:25:07.005] E (90879) transport_base: Failed to open a new connection
+[2026-09-24T16:25:07.005] E (90879) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:07.005] W (90879) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:07.005] W (90879) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:09.016] I (93599) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:09.016] E (93599) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:09.016] E (93599) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:09.016] E (93599) esp-tls: Failed to open new connection
+[2026-09-24T16:25:09.016] E (93599) transport_base: Failed to open a new connection
+[2026-09-24T16:25:09.016] E (93599) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:09.016] W (93599) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:09.016] W (93599) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:12.040] I (96389) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:12.040] E (96389) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:12.040] E (96389) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:12.040] E (96389) esp-tls: Failed to open new connection
+[2026-09-24T16:25:12.040] E (96389) transport_base: Failed to open a new connection
+[2026-09-24T16:25:12.040] E (96399) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:12.040] W (96399) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:12.040] W (96399) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:13.047] E (97399) main: [POST] seq=10 上传失败(累计 10 次), 本次数据已丢弃(不做假补发)
+[2026-09-24T16:25:14.052] I (98409) main: [DATA] dev=esp32s3eye-1C701C boot=8 seq=11 up=98167ms ts=2026-09-24T16:25:13.876+0800 raw=(-2802,-1817,-1198) g=(-0.684,-0.444,-0.292) ms2=(-6.71,-4.35,-2.87) |a|=0.866g
+[2026-09-24T16:25:16.073] I (100269) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:16.073] E (100269) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:16.073] E (100269) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:16.073] E (100269) esp-tls: Failed to open new connection
+[2026-09-24T16:25:16.073] E (100269) transport_base: Failed to open a new connection
+[2026-09-24T16:25:16.073] E (100279) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:16.073] W (100279) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:16.073] W (100279) main: 上传失败(第 1/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:19.101] I (103499) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:19.101] E (103499) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:19.101] E (103499) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:19.101] E (103499) esp-tls: Failed to open new connection
+[2026-09-24T16:25:19.101] E (103499) transport_base: Failed to open a new connection
+[2026-09-24T16:25:19.101] E (103499) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:19.101] W (103499) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:19.101] W (103499) main: 上传失败(第 2/3 次, http=0), 1s 后重试
+[2026-09-24T16:25:22.134] I (106539) esp-x509-crt-bundle: No matching trusted root certificate found
+[2026-09-24T16:25:22.134] E (106549) esp-x509-crt-bundle: Failed to verify certificate
+[2026-09-24T16:25:22.134] E (106549) esp-tls-mbedtls: mbedtls_ssl_handshake returned -0x3000
+[2026-09-24T16:25:22.134] E (106549) esp-tls: Failed to open new connection
+[2026-09-24T16:25:22.134] E (106549) transport_base: Failed to open a new connection
+[2026-09-24T16:25:22.134] E (106549) HTTP_CLIENT: Connection failed, sock < 0
+[2026-09-24T16:25:22.134] W (106549) uploader: HTTP 连接失败: ESP_ERR_HTTP_CONNECT
+[2026-09-24T16:25:22.134] W (106549) main: 上传失败(第 3/3 次, http=0), 1s 后重试
+===== 采集结束 2026-09-24T16:25:22.135，共 260 行 =====

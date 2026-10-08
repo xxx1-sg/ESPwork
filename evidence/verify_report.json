@@ -1,0 +1,1398 @@
+{
+  "serial_file": "D:\\ESP\\evidence\\final_serial_run.log",
+  "db_file": "D:\\ESP\\backend\\data\\sensor.db",
+  "api": "http://127.0.0.1:8000",
+  "checked": [
+    {
+      "boot_count": 810,
+      "seq": 420,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 420,
+        "sample_idx": 10,
+        "uptime_ms": 44422,
+        "ts_local": "2026-10-08T14:07:10.928+0800",
+        "raw": {
+          "x": -2876,
+          "y": 2061,
+          "z": 1959
+        },
+        "accel_g": {
+          "x": -0.702,
+          "y": 0.503,
+          "z": 0.478
+        },
+        "accel_ms2": {
+          "x": -6.89,
+          "y": 4.93,
+          "z": 4.69
+        },
+        "magnitude_g": 0.987
+      },
+      "db": {
+        "id": 21169,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 420,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 44422,
+        "ts_local": "2026-10-08T14:07:10.928+0800",
+        "ts_utc_ms": 1791439630928,
+        "received_at_utc": "2026-10-08T06:07:11.121Z",
+        "raw": {
+          "x": -2876,
+          "y": 2061,
+          "z": 1959
+        },
+        "accel_g": {
+          "x": -0.702148,
+          "y": 0.503174,
+          "z": 0.478271
+        },
+        "accel_ms2": {
+          "x": -6.885724,
+          "y": 4.93445,
+          "z": 4.690241
+        },
+        "magnitude_g": 0.98739,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2876,
+            "y": 2061,
+            "z": 1959
+          },
+          "accel_g": {
+            "x": -0.702148,
+            "y": 0.503174,
+            "z": 0.478271
+          },
+          "accel_ms2": {
+            "x": -6.885724,
+            "y": 4.93445,
+            "z": 4.690241
+          },
+          "magnitude_g": 0.98739,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:11.121Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 430,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 430,
+        "sample_idx": 10,
+        "uptime_ms": 45422,
+        "ts_local": "2026-10-08T14:07:11.928+0800",
+        "raw": {
+          "x": -2879,
+          "y": 2066,
+          "z": 1942
+        },
+        "accel_g": {
+          "x": -0.703,
+          "y": 0.504,
+          "z": 0.474
+        },
+        "accel_ms2": {
+          "x": -6.89,
+          "y": 4.95,
+          "z": 4.65
+        },
+        "magnitude_g": 0.987
+      },
+      "db": {
+        "id": 21179,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 430,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 45422,
+        "ts_local": "2026-10-08T14:07:11.928+0800",
+        "ts_utc_ms": 1791439631928,
+        "received_at_utc": "2026-10-08T06:07:12.008Z",
+        "raw": {
+          "x": -2879,
+          "y": 2066,
+          "z": 1942
+        },
+        "accel_g": {
+          "x": -0.702881,
+          "y": 0.504395,
+          "z": 0.474121
+        },
+        "accel_ms2": {
+          "x": -6.892907,
+          "y": 4.946421,
+          "z": 4.649539
+        },
+        "magnitude_g": 0.986532,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2879,
+            "y": 2066,
+            "z": 1942
+          },
+          "accel_g": {
+            "x": -0.702881,
+            "y": 0.504395,
+            "z": 0.474121
+          },
+          "accel_ms2": {
+            "x": -6.892907,
+            "y": 4.946421,
+            "z": 4.649539
+          },
+          "magnitude_g": 0.986532,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:12.008Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 440,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 440,
+        "sample_idx": 10,
+        "uptime_ms": 46422,
+        "ts_local": "2026-10-08T14:07:12.928+0800",
+        "raw": {
+          "x": -2867,
+          "y": 2081,
+          "z": 1954
+        },
+        "accel_g": {
+          "x": -0.7,
+          "y": 0.508,
+          "z": 0.477
+        },
+        "accel_ms2": {
+          "x": -6.86,
+          "y": 4.98,
+          "z": 4.68
+        },
+        "magnitude_g": 0.988
+      },
+      "db": {
+        "id": 21189,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 440,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 46422,
+        "ts_local": "2026-10-08T14:07:12.928+0800",
+        "ts_utc_ms": 1791439632928,
+        "received_at_utc": "2026-10-08T06:07:13.037Z",
+        "raw": {
+          "x": -2867,
+          "y": 2081,
+          "z": 1954
+        },
+        "accel_g": {
+          "x": -0.699951,
+          "y": 0.508057,
+          "z": 0.477051
+        },
+        "accel_ms2": {
+          "x": -6.864176,
+          "y": 4.982334,
+          "z": 4.67827
+        },
+        "magnitude_g": 0.98774,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2867,
+            "y": 2081,
+            "z": 1954
+          },
+          "accel_g": {
+            "x": -0.699951,
+            "y": 0.508057,
+            "z": 0.477051
+          },
+          "accel_ms2": {
+            "x": -6.864176,
+            "y": 4.982334,
+            "z": 4.67827
+          },
+          "magnitude_g": 0.98774,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:13.037Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 450,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 450,
+        "sample_idx": 10,
+        "uptime_ms": 47422,
+        "ts_local": "2026-10-08T14:07:13.928+0800",
+        "raw": {
+          "x": -2874,
+          "y": 2050,
+          "z": 1943
+        },
+        "accel_g": {
+          "x": -0.702,
+          "y": 0.5,
+          "z": 0.474
+        },
+        "accel_ms2": {
+          "x": -6.88,
+          "y": 4.91,
+          "z": 4.65
+        },
+        "magnitude_g": 0.984
+      },
+      "db": {
+        "id": 21199,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 450,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 47422,
+        "ts_local": "2026-10-08T14:07:13.928+0800",
+        "ts_utc_ms": 1791439633928,
+        "received_at_utc": "2026-10-08T06:07:14.094Z",
+        "raw": {
+          "x": -2874,
+          "y": 2050,
+          "z": 1943
+        },
+        "accel_g": {
+          "x": -0.70166,
+          "y": 0.500488,
+          "z": 0.474365
+        },
+        "accel_ms2": {
+          "x": -6.880936,
+          "y": 4.908113,
+          "z": 4.651934
+        },
+        "magnitude_g": 0.983788,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2874,
+            "y": 2050,
+            "z": 1943
+          },
+          "accel_g": {
+            "x": -0.70166,
+            "y": 0.500488,
+            "z": 0.474365
+          },
+          "accel_ms2": {
+            "x": -6.880936,
+            "y": 4.908113,
+            "z": 4.651934
+          },
+          "magnitude_g": 0.983788,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:14.094Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 460,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 460,
+        "sample_idx": 10,
+        "uptime_ms": 48422,
+        "ts_local": "2026-10-08T14:07:14.928+0800",
+        "raw": {
+          "x": -2908,
+          "y": 2085,
+          "z": 1965
+        },
+        "accel_g": {
+          "x": -0.71,
+          "y": 0.509,
+          "z": 0.48
+        },
+        "accel_ms2": {
+          "x": -6.96,
+          "y": 4.99,
+          "z": 4.7
+        },
+        "magnitude_g": 0.997
+      },
+      "db": {
+        "id": 21209,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 460,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 48422,
+        "ts_local": "2026-10-08T14:07:14.928+0800",
+        "ts_utc_ms": 1791439634928,
+        "received_at_utc": "2026-10-08T06:07:15.117Z",
+        "raw": {
+          "x": -2908,
+          "y": 2085,
+          "z": 1965
+        },
+        "accel_g": {
+          "x": -0.709961,
+          "y": 0.509033,
+          "z": 0.479736
+        },
+        "accel_ms2": {
+          "x": -6.962338,
+          "y": 4.99191,
+          "z": 4.704607
+        },
+        "magnitude_g": 0.996648,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2908,
+            "y": 2085,
+            "z": 1965
+          },
+          "accel_g": {
+            "x": -0.709961,
+            "y": 0.509033,
+            "z": 0.479736
+          },
+          "accel_ms2": {
+            "x": -6.962338,
+            "y": 4.99191,
+            "z": 4.704607
+          },
+          "magnitude_g": 0.996648,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:15.117Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 470,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 470,
+        "sample_idx": 10,
+        "uptime_ms": 49422,
+        "ts_local": "2026-10-08T14:07:15.928+0800",
+        "raw": {
+          "x": -2866,
+          "y": 2040,
+          "z": 1966
+        },
+        "accel_g": {
+          "x": -0.7,
+          "y": 0.498,
+          "z": 0.48
+        },
+        "accel_ms2": {
+          "x": -6.86,
+          "y": 4.88,
+          "z": 4.71
+        },
+        "magnitude_g": 0.984
+      },
+      "db": {
+        "id": 21219,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 470,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 49422,
+        "ts_local": "2026-10-08T14:07:15.928+0800",
+        "ts_utc_ms": 1791439635928,
+        "received_at_utc": "2026-10-08T06:07:16.024Z",
+        "raw": {
+          "x": -2866,
+          "y": 2040,
+          "z": 1966
+        },
+        "accel_g": {
+          "x": -0.699707,
+          "y": 0.498047,
+          "z": 0.47998
+        },
+        "accel_ms2": {
+          "x": -6.861782,
+          "y": 4.884171,
+          "z": 4.707001
+        },
+        "magnitude_g": 0.983881,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2866,
+            "y": 2040,
+            "z": 1966
+          },
+          "accel_g": {
+            "x": -0.699707,
+            "y": 0.498047,
+            "z": 0.47998
+          },
+          "accel_ms2": {
+            "x": -6.861782,
+            "y": 4.884171,
+            "z": 4.707001
+          },
+          "magnitude_g": 0.983881,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:16.024Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 480,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 480,
+        "sample_idx": 10,
+        "uptime_ms": 50422,
+        "ts_local": "2026-10-08T14:07:16.928+0800",
+        "raw": {
+          "x": -2867,
+          "y": 2047,
+          "z": 1954
+        },
+        "accel_g": {
+          "x": -0.7,
+          "y": 0.5,
+          "z": 0.477
+        },
+        "accel_ms2": {
+          "x": -6.86,
+          "y": 4.9,
+          "z": 4.68
+        },
+        "magnitude_g": 0.983
+      },
+      "db": {
+        "id": 21229,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 480,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 50422,
+        "ts_local": "2026-10-08T14:07:16.928+0800",
+        "ts_utc_ms": 1791439636928,
+        "received_at_utc": "2026-10-08T06:07:17.009Z",
+        "raw": {
+          "x": -2867,
+          "y": 2047,
+          "z": 1954
+        },
+        "accel_g": {
+          "x": -0.699951,
+          "y": 0.499756,
+          "z": 0.477051
+        },
+        "accel_ms2": {
+          "x": -6.864176,
+          "y": 4.900931,
+          "z": 4.67827
+        },
+        "magnitude_g": 0.983496,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2867,
+            "y": 2047,
+            "z": 1954
+          },
+          "accel_g": {
+            "x": -0.699951,
+            "y": 0.499756,
+            "z": 0.477051
+          },
+          "accel_ms2": {
+            "x": -6.864176,
+            "y": 4.900931,
+            "z": 4.67827
+          },
+          "magnitude_g": 0.983496,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:17.009Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 490,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 490,
+        "sample_idx": 10,
+        "uptime_ms": 51422,
+        "ts_local": "2026-10-08T14:07:17.928+0800",
+        "raw": {
+          "x": -2856,
+          "y": 2036,
+          "z": 1976
+        },
+        "accel_g": {
+          "x": -0.697,
+          "y": 0.497,
+          "z": 0.482
+        },
+        "accel_ms2": {
+          "x": -6.84,
+          "y": 4.87,
+          "z": 4.73
+        },
+        "magnitude_g": 0.983
+      },
+      "db": {
+        "id": 21239,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 490,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 51422,
+        "ts_local": "2026-10-08T14:07:17.928+0800",
+        "ts_utc_ms": 1791439637928,
+        "received_at_utc": "2026-10-08T06:07:18.057Z",
+        "raw": {
+          "x": -2856,
+          "y": 2036,
+          "z": 1976
+        },
+        "accel_g": {
+          "x": -0.697266,
+          "y": 0.49707,
+          "z": 0.482422
+        },
+        "accel_ms2": {
+          "x": -6.83784,
+          "y": 4.874595,
+          "z": 4.730943
+        },
+        "magnitude_g": 0.982847,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2856,
+            "y": 2036,
+            "z": 1976
+          },
+          "accel_g": {
+            "x": -0.697266,
+            "y": 0.49707,
+            "z": 0.482422
+          },
+          "accel_ms2": {
+            "x": -6.83784,
+            "y": 4.874595,
+            "z": 4.730943
+          },
+          "magnitude_g": 0.982847,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:18.057Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 500,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 500,
+        "sample_idx": 10,
+        "uptime_ms": 52422,
+        "ts_local": "2026-10-08T14:07:18.928+0800",
+        "raw": {
+          "x": -2854,
+          "y": 2042,
+          "z": 1935
+        },
+        "accel_g": {
+          "x": -0.697,
+          "y": 0.499,
+          "z": 0.472
+        },
+        "accel_ms2": {
+          "x": -6.83,
+          "y": 4.89,
+          "z": 4.63
+        },
+        "magnitude_g": 0.978
+      },
+      "db": {
+        "id": 21249,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 500,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 52422,
+        "ts_local": "2026-10-08T14:07:18.928+0800",
+        "ts_utc_ms": 1791439638928,
+        "received_at_utc": "2026-10-08T06:07:19.107Z",
+        "raw": {
+          "x": -2854,
+          "y": 2042,
+          "z": 1935
+        },
+        "accel_g": {
+          "x": -0.696777,
+          "y": 0.498535,
+          "z": 0.472412
+        },
+        "accel_ms2": {
+          "x": -6.833052,
+          "y": 4.88896,
+          "z": 4.63278
+        },
+        "magnitude_g": 0.978371,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2854,
+            "y": 2042,
+            "z": 1935
+          },
+          "accel_g": {
+            "x": -0.696777,
+            "y": 0.498535,
+            "z": 0.472412
+          },
+          "accel_ms2": {
+            "x": -6.833052,
+            "y": 4.88896,
+            "z": 4.63278
+          },
+          "magnitude_g": 0.978371,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:19.107Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 510,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 510,
+        "sample_idx": 10,
+        "uptime_ms": 53422,
+        "ts_local": "2026-10-08T14:07:19.928+0800",
+        "raw": {
+          "x": -2878,
+          "y": 2031,
+          "z": 1951
+        },
+        "accel_g": {
+          "x": -0.703,
+          "y": 0.496,
+          "z": 0.476
+        },
+        "accel_ms2": {
+          "x": -6.89,
+          "y": 4.86,
+          "z": 4.67
+        },
+        "magnitude_g": 0.983
+      },
+      "db": {
+        "id": 21259,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 510,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 53422,
+        "ts_local": "2026-10-08T14:07:19.928+0800",
+        "ts_utc_ms": 1791439639928,
+        "received_at_utc": "2026-10-08T06:07:20.132Z",
+        "raw": {
+          "x": -2878,
+          "y": 2031,
+          "z": 1951
+        },
+        "accel_g": {
+          "x": -0.702637,
+          "y": 0.49585,
+          "z": 0.476318
+        },
+        "accel_ms2": {
+          "x": -6.890512,
+          "y": 4.862624,
+          "z": 4.671088
+        },
+        "magnitude_g": 0.983079,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2878,
+            "y": 2031,
+            "z": 1951
+          },
+          "accel_g": {
+            "x": -0.702637,
+            "y": 0.49585,
+            "z": 0.476318
+          },
+          "accel_ms2": {
+            "x": -6.890512,
+            "y": 4.862624,
+            "z": 4.671088
+          },
+          "magnitude_g": 0.983079,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:20.132Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 520,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 520,
+        "sample_idx": 10,
+        "uptime_ms": 54422,
+        "ts_local": "2026-10-08T14:07:20.928+0800",
+        "raw": {
+          "x": -2877,
+          "y": 2027,
+          "z": 1955
+        },
+        "accel_g": {
+          "x": -0.702,
+          "y": 0.495,
+          "z": 0.477
+        },
+        "accel_ms2": {
+          "x": -6.89,
+          "y": 4.85,
+          "z": 4.68
+        },
+        "magnitude_g": 0.983
+      },
+      "db": {
+        "id": 21269,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 520,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 54422,
+        "ts_local": "2026-10-08T14:07:20.928+0800",
+        "ts_utc_ms": 1791439640928,
+        "received_at_utc": "2026-10-08T06:07:21.051Z",
+        "raw": {
+          "x": -2877,
+          "y": 2027,
+          "z": 1955
+        },
+        "accel_g": {
+          "x": -0.702393,
+          "y": 0.494873,
+          "z": 0.477295
+        },
+        "accel_ms2": {
+          "x": -6.888118,
+          "y": 4.853047,
+          "z": 4.680665
+        },
+        "magnitude_g": 0.982886,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2877,
+            "y": 2027,
+            "z": 1955
+          },
+          "accel_g": {
+            "x": -0.702393,
+            "y": 0.494873,
+            "z": 0.477295
+          },
+          "accel_ms2": {
+            "x": -6.888118,
+            "y": 4.853047,
+            "z": 4.680665
+          },
+          "magnitude_g": 0.982886,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:21.051Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 530,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 530,
+        "sample_idx": 10,
+        "uptime_ms": 55422,
+        "ts_local": "2026-10-08T14:07:21.928+0800",
+        "raw": {
+          "x": -2876,
+          "y": 2038,
+          "z": 1968
+        },
+        "accel_g": {
+          "x": -0.702,
+          "y": 0.498,
+          "z": 0.48
+        },
+        "accel_ms2": {
+          "x": -6.89,
+          "y": 4.88,
+          "z": 4.71
+        },
+        "magnitude_g": 0.986
+      },
+      "db": {
+        "id": 21279,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 530,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 55422,
+        "ts_local": "2026-10-08T14:07:21.928+0800",
+        "ts_utc_ms": 1791439641928,
+        "received_at_utc": "2026-10-08T06:07:22.086Z",
+        "raw": {
+          "x": -2876,
+          "y": 2038,
+          "z": 1968
+        },
+        "accel_g": {
+          "x": -0.702148,
+          "y": 0.497559,
+          "z": 0.480469
+        },
+        "accel_ms2": {
+          "x": -6.885724,
+          "y": 4.879383,
+          "z": 4.711789
+        },
+        "magnitude_g": 0.98561,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2876,
+            "y": 2038,
+            "z": 1968
+          },
+          "accel_g": {
+            "x": -0.702148,
+            "y": 0.497559,
+            "z": 0.480469
+          },
+          "accel_ms2": {
+            "x": -6.885724,
+            "y": 4.879383,
+            "z": 4.711789
+          },
+          "magnitude_g": 0.98561,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:22.086Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 540,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 540,
+        "sample_idx": 10,
+        "uptime_ms": 56422,
+        "ts_local": "2026-10-08T14:07:22.928+0800",
+        "raw": {
+          "x": -2873,
+          "y": 2034,
+          "z": 1971
+        },
+        "accel_g": {
+          "x": -0.701,
+          "y": 0.497,
+          "z": 0.481
+        },
+        "accel_ms2": {
+          "x": -6.88,
+          "y": 4.87,
+          "z": 4.72
+        },
+        "magnitude_g": 0.985
+      },
+      "db": {
+        "id": 21289,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 540,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 56422,
+        "ts_local": "2026-10-08T14:07:22.928+0800",
+        "ts_utc_ms": 1791439642928,
+        "received_at_utc": "2026-10-08T06:07:23.072Z",
+        "raw": {
+          "x": -2873,
+          "y": 2034,
+          "z": 1971
+        },
+        "accel_g": {
+          "x": -0.701416,
+          "y": 0.496582,
+          "z": 0.481201
+        },
+        "accel_ms2": {
+          "x": -6.878541,
+          "y": 4.869806,
+          "z": 4.718972
+        },
+        "magnitude_g": 0.984953,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2873,
+            "y": 2034,
+            "z": 1971
+          },
+          "accel_g": {
+            "x": -0.701416,
+            "y": 0.496582,
+            "z": 0.481201
+          },
+          "accel_ms2": {
+            "x": -6.878541,
+            "y": 4.869806,
+            "z": 4.718972
+          },
+          "magnitude_g": 0.984953,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:23.072Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 550,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 550,
+        "sample_idx": 10,
+        "uptime_ms": 57422,
+        "ts_local": "2026-10-08T14:07:23.928+0800",
+        "raw": {
+          "x": -2866,
+          "y": 2052,
+          "z": 1959
+        },
+        "accel_g": {
+          "x": -0.7,
+          "y": 0.501,
+          "z": 0.478
+        },
+        "accel_ms2": {
+          "x": -6.86,
+          "y": 4.91,
+          "z": 4.69
+        },
+        "magnitude_g": 0.985
+      },
+      "db": {
+        "id": 21299,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 550,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 57422,
+        "ts_local": "2026-10-08T14:07:23.928+0800",
+        "ts_utc_ms": 1791439643928,
+        "received_at_utc": "2026-10-08T06:07:24.027Z",
+        "raw": {
+          "x": -2866,
+          "y": 2052,
+          "z": 1959
+        },
+        "accel_g": {
+          "x": -0.699707,
+          "y": 0.500977,
+          "z": 0.478271
+        },
+        "accel_ms2": {
+          "x": -6.861782,
+          "y": 4.912902,
+          "z": 4.690241
+        },
+        "magnitude_g": 0.984536,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2866,
+            "y": 2052,
+            "z": 1959
+          },
+          "accel_g": {
+            "x": -0.699707,
+            "y": 0.500977,
+            "z": 0.478271
+          },
+          "accel_ms2": {
+            "x": -6.861782,
+            "y": 4.912902,
+            "z": 4.690241
+          },
+          "magnitude_g": 0.984536,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:24.027Z"
+      }
+    },
+    {
+      "boot_count": 810,
+      "seq": 560,
+      "sample_idx": 10,
+      "ok": true,
+      "diffs": [],
+      "warnings": [],
+      "serial": {
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 560,
+        "sample_idx": 10,
+        "uptime_ms": 58422,
+        "ts_local": "2026-10-08T14:07:24.928+0800",
+        "raw": {
+          "x": -2875,
+          "y": 2059,
+          "z": 1927
+        },
+        "accel_g": {
+          "x": -0.702,
+          "y": 0.503,
+          "z": 0.47
+        },
+        "accel_ms2": {
+          "x": -6.88,
+          "y": 4.93,
+          "z": 4.61
+        },
+        "magnitude_g": 0.983
+      },
+      "db": {
+        "id": 21309,
+        "device_id": "esp32s3eye-1C701C",
+        "boot_count": 810,
+        "seq": 560,
+        "sample_idx": 10,
+        "sample_count": 10,
+        "sample_period_ms": 100,
+        "uptime_ms": 58422,
+        "ts_local": "2026-10-08T14:07:24.928+0800",
+        "ts_utc_ms": 1791439644928,
+        "received_at_utc": "2026-10-08T06:07:25.017Z",
+        "raw": {
+          "x": -2875,
+          "y": 2059,
+          "z": 1927
+        },
+        "accel_g": {
+          "x": -0.701904,
+          "y": 0.502686,
+          "z": 0.470459
+        },
+        "accel_ms2": {
+          "x": -6.88333,
+          "y": 4.929661,
+          "z": 4.613626
+        },
+        "magnitude_g": 0.983206,
+        "verify_ok": 1,
+        "verify_note": "后端按 raw/lsb_per_g 重算结果与板端上报一致(误差<=0.001g)"
+      },
+      "post_echo": {
+        "http": 201,
+        "stored": {
+          "raw": {
+            "x": -2875,
+            "y": 2059,
+            "z": 1927
+          },
+          "accel_g": {
+            "x": -0.701904,
+            "y": 0.502686,
+            "z": 0.470459
+          },
+          "accel_ms2": {
+            "x": -6.88333,
+            "y": 4.929661,
+            "z": 4.613626
+          },
+          "magnitude_g": 0.983206,
+          "unit": {
+            "raw": "LSB(14bit signed)",
+            "accel_g": "g",
+            "accel_ms2": "m/s^2",
+            "magnitude_g": "g"
+          }
+        },
+        "raw_sha256": null,
+        "received_at_utc": "2026-10-08T06:07:25.017Z"
+      }
+    }
+  ],
+  "passed": 15,
+  "failed": 0,
+  "api_check": {
+    "latest_id": 21309,
+    "ok": true,
+    "diffs": [],
+    "records_count": 120,
+    "records_mismatch": 0,
+    "after_id_ok": true,
+    "after_id_note": "after_id=21250 返回 59 条，全部 > 锚点且与数据库顺序一致"
+  }
+}

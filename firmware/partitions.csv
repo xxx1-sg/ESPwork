@@ -1,0 +1,20 @@
+# ============================================================================
+#  partitions.csv -- partition table for ESP32-S3-EYE (8MB flash)
+#
+#  NOTE: keep this file ASCII-only. PlatformIO parses it with the system
+#  default codec (GBK on Chinese Windows), so non-ASCII comments break parsing.
+#
+#  Why a custom table:
+#    The ESP-IDF default single-app table gives the factory partition only 1MB.
+#    This firmware (Wi-Fi + TLS certificate bundle) is already close to 1MB,
+#    so the factory partition is enlarged to 4MB for headroom.
+#    No OTA is used by this project, hence no ota_0/ota_data partitions.
+#
+#  Keep offsets consistent with:
+#    sdkconfig.defaults -> CONFIG_PARTITION_TABLE_OFFSET=0x8000
+#    sdkconfig.defaults -> CONFIG_ESPTOOLPY_FLASHSIZE=8MB
+# ============================================================================
+# Name,     Type, SubType, Offset,   Size,     Flags
+nvs,        data, nvs,     0x9000,   0x6000,
+phy_init,   data, phy,     0xf000,   0x1000,
+factory,    app,  factory, 0x10000,  0x400000,

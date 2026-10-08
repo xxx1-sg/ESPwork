@@ -1,0 +1,47 @@
+﻿# ============================================================================
+#  systemd 服务单元 —— 传感器接收/存储/查询服务
+#  安装位置: /etc/systemd/system/sensor-ingest.service
+#  启用步骤:
+#     sudo cp sensor-ingest.service /etc/systemd/system/
+#     sudo systemctl daemon-reload
+#     sudo systemctl enable --now sensor-ingest
+#     sudo systemctl status sensor-ingest
+# ============================================================================
+[Unit]
+Description=Sensor Ingest & Query Service (ESP32-S3-EYE IMU)
+Documentation=file:/opt/sensor-ingest/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=sensor
+Group=sensor
+WorkingDirectory=/opt/sensor-ingest/backend
+
+# ---- 运行参数（按需修改） ----
+Environment=SENSOR_HOST=127.0.0.1
+Environment=SENSOR_PORT=8000
+Environment=SENSOR_DB=/var/lib/sensor-ingest/sensor.db
+Environment=SENSOR_WEB_DIR=/opt/sensor-ingest/web
+# ★ 务必改成你自己的设备令牌，并与固件 app_config.h 的 APP_DEVICE_TOKEN 一致
+Environment=SENSOR_TOKEN=CHANGE_ME_DEVICE_TOKEN
+
+ExecStart=/usr/bin/python3 /opt/sensor-ingest/backend/server.py
+
+Restart=always
+RestartSec=3
+
+# ---- 安全加固：只允许写数据目录 ----
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sensor-ingest
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sensor-ingest
+
+[Install]
+WantedBy=multi-user.target

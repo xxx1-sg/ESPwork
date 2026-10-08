@@ -1,0 +1,8 @@
+
+===== 采集开始 2026-09-24T16:15:52.630 端口=COM5 =====
+[2026-09-24T16:15:53.936] I (208) esp_image: segment 4: paddr=000fc1c8 vaddr=4037ac88 sizeESP-ROM:esp32s3-20210327
+[2026-09-24T16:15:53.936] Build:Mar 27 2021
+[2026-09-24T16:15:53.936] rst:0x15 (USB_UART_CHIP_RESET),boot:0x22 (DOWNLOAD(USB/UART0))
+[2026-09-24T16:15:53.936] Saved PC:0x4037ba7e
+[2026-09-24T16:15:53.936] waiting for download
+===== 采集结束 2026-09-24T16:17:23.771，共 5 行 =====
