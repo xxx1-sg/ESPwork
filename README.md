@@ -1,4 +1,4 @@
-﻿# ESP32-S3-EYE 真实物理传感器采集 → VPS 后端 → Web 实时可视化
+# ESP32-S3-EYE 真实物理传感器采集 → VPS 后端 → Web 实时可视化
 
 一套完整可跑通的端到端系统：**板载物理传感器真实读数 → 开发板独立 Wi-Fi 上传 → 后端持久化 → 网页实时展示**。
 
@@ -88,8 +88,10 @@ D:\ESP
 │   └── src/
 │       ├── main.c                  # 主流程：sampler_task(10Hz) + uploader_task(攒包上传)
 │       ├── imu_qma6100p.c/.h       # QMA6100P 真实读数驱动（寄存器级）
-│       ├── uploader.c/.h           # Wi-Fi 联网 + SNTP 对时 + HTTP(S) POST
+│       ├── uploader.c/.h           # Wi-Fi 联网 + SNTP 对时 + HTTP(S) POST（第2周加了 URL 参数化 + 请求互斥锁）
+│       ├── cmd_client.c/.h         # ★ 第2周：远程采集指令轮询/回执/单采一次/观测回传（复用上面的 HTTP 栈）
 │       ├── app_config.h            # ★ Wi-Fi / 服务器地址 / 令牌 / 采样率 在这里改
+│       ├── app_config.local.h      # 本地私密覆盖（不进版本库，.gitignore 已忽略）
 │       └── CMakeLists.txt
 ├── backend/                        # 后端服务（零依赖，Python 标准库）
 │   ├── server.py
@@ -111,6 +113,11 @@ D:\ESP
 │   ├── gen_ca_header.py            # ★ 抓取服务器真实 CA 链 → 生成固件内嵌证书
 │   ├── switch_endpoint.py          # ★ 换后端地址一条命令（改 URL+重生成 CA+重烧）
 │   ├── selftest_backend.py         # 后端自检（用临时库，不污染生产）
+│   ├── selftest_collect.py         # ★ 第2周：远程采集闭环接口层自检（103 项，覆盖当堂验证全部分支）
+│   ├── test_web_collect.js         # ★ 第2周：前端五状态徽标 + 超时/回执文案红线（打桩 DOM 跑真实 app.js）
+│   ├── live_w2_01..04_*.ps1        # ★ 第2周：真机当堂验证 4 项（暂停/改状态/关机/旧记录）
+│   ├── trace_collect_request.py    # ★ 用真实 request_id 复盘请求–回执–观测三表联查
+│   ├── check_w2_schema.py          # ★ 核对第2周新表/新列是否按迁移建立
 │   ├── fix_idf_venv.py             # 修复 ESP-IDF Python 虚拟环境（见 docs/02）
 │   ├── fetch_url.py                # 通用下载器（本机 curl 被拦，用 Python 下载）
 │   └── bin/cloudflared.exe         # 内网穿透（本机联调用，可选）
@@ -297,10 +304,58 @@ python tools\analyze_db_rate.py --minutes 10
 | [docs/06](docs/06_第2-3周接口文档_远程采集与按键反馈.md) | **第 2–3 周接口文档**：远程采集请求模型、请求状态机、L1∧L2∧L3 新采集判定、按键求助闭环、新增表 DDL 与错误码 |
 | [docs/07](docs/07_第2-3周开发任务清单.md) | **第 2–3 周开发任务清单**：按学时拆分的任务ID、交付物、DoD、依赖与关键路径、角色分工、备用路径 |
 | [docs/08](docs/08_第2-3周测试用例.md) | **第 2–3 周测试用例**：接口/集成/系统用例、两条当堂验证专节、缺陷分级与可复制测试命令 |
+| [docs/09](docs/09_第2周交付_远程采集功能与状态图.md) | **第 2 周交付（已真机验证）**：刷新 vs 采集的代码级区分、请求–回执–观测三表联查、请求状态图、动作执行追踪、当堂验证 4 项实测结果、踩坑与修法 |
 
 ---
 
-## 6. 安全提示
+## 6. 第 2 周：远程采集功能（已交付并真机验证）
+
+第 1 周的能力是「板子按自己的节奏周期上报」；第 2 周新增的问题是：
+
+> **点击「采集最新数据」，如何证明开发板做了新采集，而不是读取数据库里的旧值？**
+
+答案是一套**请求—回执—观测**的闭环，用三层互锁证据（L1∧L2∧L3）判定：
+
+| 概念 | 端点 | 说明 |
+|---|---|---|
+| 刷新已存数据 | `GET /api/v1/records`、`/latest` | 只查库，**零设备侧流量** |
+| 采集最新数据 | `POST /api/v1/collect_requests` | 排一条 `collect_now` 指令，等设备取走 |
+| 设备取指令 | `POST /api/v1/device/commands/poll` | 下行**唯一**通道（设备主动轮询，无 MQTT/WebSocket） |
+| 设备回执 | `POST /api/v1/device/ack` | `received` → 页面「设备接收回执」。**回执 ≠ 完成** |
+| 观测回传 | `POST /api/v1/observations` | 带 `request_id`+`nonce`+新 `seq`，过 L1∧L2∧L3 才 `completed` |
+| 暂停周期上报 | `POST /api/v1/device/pause` | 暂停的是**上报**，不是采集能力 |
+| 请求详情/追踪 | `GET /api/v1/collect_requests[/<id>]` | 页面 1s 轮询状态；连点两次能看到两条记录 |
+
+**两条红线（都有真机证据 + 自动化断言）**：
+
+1. **旧记录不可改写为本次完成** —— 任一校验层不成立 → `409` + `rejected_observations` 留痕，
+   `collect_requests.status` **绝不改写**（`web/app.js` 会把被拒收的原因显示出来）。
+2. **超时 ≠ 硬件故障** —— `timeout` 只由服务端 `deadline_utc` 计时产生，只写
+   `device_events(command_timeout, source='server')`，**不写 `sensor_error`、不改 `devices.last_status`**；
+   只有设备 `ack_type=rejected` 且 `reason=SENSOR_ERROR` 才算硬件问题。
+   页面文案禁止对超时使用"设备故障/传感器损坏"字样。
+
+自检与真机验证命令：
+
+```powershell
+# 接口层自检（临时库，103 项，覆盖当堂验证全部分支）
+.\.venv\Scripts\python.exe tools\selftest_collect.py
+# 前端：五状态徽标 + 两条文案红线（打桩 DOM 跑真实 app.js）
+node tools\test_web_collect.js
+# 真机当堂验证 4 项（需板子在线；③ 需按提示拔掉电源）
+powershell -ExecutionPolicy Bypass -File tools\live_w2_01_pause_collect.ps1
+powershell -ExecutionPolicy Bypass -File tools\live_w2_02_state_change.ps1
+powershell -ExecutionPolicy Bypass -File tools\live_w2_03_shutdown_timeout.ps1
+powershell -ExecutionPolicy Bypass -File tools\live_w2_04_immutable.ps1
+```
+
+> 板端新增 `firmware/src/cmd_client.c`（1Hz 轮询/回执/单采/回传），**复用第 1 周的 HTTP(S) 客户端**，
+> 只把 URL 参数化并加了请求互斥锁（两个任务共用一个 keep-alive 句柄时，响应会张冠李戴）。
+> 详见 [docs/09](docs/09_第2周交付_远程采集功能与状态图.md) §1.4 的两条真机踩坑记录。
+
+---
+
+## 7. 安全提示
 
 - `app_config.h` 里的 Wi-Fi 密码与设备令牌是明文，**交付/开源前请替换**；
   生产环境请把令牌换成随机长字符串，并同步修改后端 `SENSOR_TOKEN`。

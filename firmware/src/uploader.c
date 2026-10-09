@@ -13,6 +13,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
+#include "freertos/semphr.h"
 
 #include "esp_log.h"
 #include "esp_wifi.h"
@@ -34,6 +35,12 @@ static const char *TAG = "uploader";
 
 /** @brief 释放复用的 HTTP 客户端句柄（断网/失败时调用）—— 定义在文件后半部分。 */
 static void client_drop(void);
+
+/**
+ * @brief 真正执行一次 POST（调用者必须已持有 s_http_lock）—— 定义在文件后半部分。
+ */
+static esp_err_t uploader_post_json_locked(const char *url, const char *json,
+                                           char *resp, size_t resp_len, int *http_status);
 
 // ---- 事件组：用于等待「连上 AP」与「拿到 IP」 ----
 #define WIFI_CONNECTED_BIT  BIT0
@@ -351,6 +358,28 @@ done:
  */
 static esp_http_client_handle_t s_client = NULL;
 
+/**
+ * @brief 保护 s_client 的互斥锁（★ 第 2 周新增，必须要有）。
+ *
+ * 为什么必须有：第 2 周多了一个任务（cmd_poll）也会发 HTTP 请求，它与
+ * uploader_task 共用同一个 keep-alive 句柄。两个任务同时在一个句柄上
+ * 做 open/write/read 会互相穿插 —— 实测现象是**响应张冠李戴**：
+ *   cmd 任务拿到的其实是 /ingest 的响应体，于是"指令解析失败"疯狂刷屏，
+ *   而真正的 poll 响应被 uploader 当成自己的回执打印出来。
+ * 加锁后每个请求串行完成，连接照旧复用（TLS 握手只做一次）。
+ *
+ * 注意：这里只锁"一次请求"，不锁整个网络状态，所以不会拖慢 10Hz 采样
+ * （采样任务不经过这里）。
+ */
+static SemaphoreHandle_t s_http_lock = NULL;
+
+static void http_lock_init(void)
+{
+    if (!s_http_lock) {
+        s_http_lock = xSemaphoreCreateMutex();
+    }
+}
+
 /** @brief 释放复用的客户端句柄（换网、长时间失败后调用）。 */
 static void client_drop(void)
 {
@@ -363,10 +392,28 @@ static void client_drop(void)
 
 esp_err_t uploader_post_json(const char *json, char *resp, size_t resp_len, int *http_status)
 {
+    // 保持第 1 周的签名与语义不变（老调用方一行不用改），内部转调通用实现
+    return uploader_post_json_url(APP_SERVER_URL, json, resp, resp_len, http_status);
+}
+
+esp_err_t uploader_post_json_url(const char *url, const char *json,
+                                 char *resp, size_t resp_len, int *http_status)
+{
+    // ★ 串行化：多个任务共用一个 keep-alive 句柄时必须排队，否则响应会错位
+    http_lock_init();
+    if (s_http_lock) xSemaphoreTake(s_http_lock, portMAX_DELAY);
+    esp_err_t ret = uploader_post_json_locked(url, json, resp, resp_len, http_status);
+    if (s_http_lock) xSemaphoreGive(s_http_lock);
+    return ret;
+}
+
+static esp_err_t uploader_post_json_locked(const char *url, const char *json,
+                                           char *resp, size_t resp_len, int *http_status)
+{
     if (http_status) *http_status = 0;
 
     // 根据 URL 协议决定是否启用 TLS 证书校验（三种信任方式见 app_config.h）
-    bool is_https = (strncmp(APP_SERVER_URL, "https://", 8) == 0);
+    bool is_https = (url && strncmp(url, "https://", 8) == 0);
 
     const char *ca_pem = NULL;    // 自定义 CA 链（方式 1）
     void       *bundle = NULL;    // 内置根证书包（方式 0）
@@ -383,7 +430,7 @@ esp_err_t uploader_post_json(const char *json, char *resp, size_t resp_len, int 
 #endif
 
         esp_http_client_config_t cfg = {
-            .url               = APP_SERVER_URL,
+            .url               = url,
             .method            = HTTP_METHOD_POST,
             .timeout_ms        = APP_HTTP_TIMEOUT_MS,
             .keep_alive_enable = true,          // 复用连接，避免每次重做 TLS 握手
@@ -403,6 +450,13 @@ esp_err_t uploader_post_json(const char *json, char *resp, size_t resp_len, int 
     }
 
     esp_http_client_handle_t client = s_client;
+
+    // ★ 同一句柄复用时，URL 必须每次重新设置：采集链路上会在
+    //   /ingest、/device/commands/poll、/device/ack、/observations 之间来回切换，
+    //   不重设就会把回执发到上一个端点去（表现为"指令收到了但后端说没回执"）。
+    if (url) {
+        esp_http_client_set_url(client, url);
+    }
 
     esp_err_t err = esp_http_client_open(client, strlen(json));
     if (err != ESP_OK) {

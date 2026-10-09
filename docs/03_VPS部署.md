@@ -30,7 +30,7 @@ cd /path/to/ESP/backend/deploy
 sudo bash install_vps.sh "你的设备令牌"
 
 # 例：
-sudo bash install_vps.sh "CHANGE_ME_DEVICE_TOKEN"
+sudo bash install_vps.sh "esp32s3eye-demo-token-2026"
 ```
 
 脚本会：创建 `/opt/sensor-ingest`、数据目录 `/var/lib/sensor-ingest`、
@@ -69,7 +69,7 @@ sudo systemctl daemon-reload && sudo systemctl enable --now sensor-ingest
 | `SENSOR_PORT` | `8000` | 监听端口 |
 | `SENSOR_DB` | `backend/data/sensor.db` | SQLite 文件路径 |
 | `SENSOR_WEB_DIR` | `../web` | 前端静态目录 |
-| `SENSOR_TOKEN` | `CHANGE_ME_DEVICE_TOKEN` | **必须改**，与固件一致 |
+| `SENSOR_TOKEN` | `esp32s3eye-demo-token-2026` | **必须改**，与固件一致 |
 | `SENSOR_MAX_BODY` | `16384` | 单条报文大小上限（字节） |
 
 ---
@@ -128,7 +128,7 @@ python D:\ESP\tools\switch_endpoint.py --url https://你的域名/api/v1/ingest
 $env:SENSOR_HOST='0.0.0.0'; $env:SENSOR_PORT='8000'
 $env:SENSOR_DB='D:\ESP\backend\data\sensor.db'
 $env:SENSOR_WEB_DIR='D:\ESP\web'
-$env:SENSOR_TOKEN='CHANGE_ME_DEVICE_TOKEN'
+$env:SENSOR_TOKEN='esp32s3eye-demo-token-2026'
 python D:\ESP\backend\server.py
 
 # ② 固件里把地址填成后端的内网地址（注意是 http://，不是 https://）

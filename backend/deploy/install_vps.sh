@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # ============================================================================
 #  install_vps.sh —— 在 VPS 上一键部署「传感器接收/存储/查询」服务
 #
@@ -18,7 +18,7 @@
 # ============================================================================
 set -euo pipefail
 
-TOKEN="${1:-CHANGE_ME_DEVICE_TOKEN}"
+TOKEN="${1:-esp32s3eye-demo-token-2026}"
 APP_DIR=/opt/sensor-ingest
 DATA_DIR=/var/lib/sensor-ingest
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"   # 仓库根目录

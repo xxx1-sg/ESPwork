@@ -83,11 +83,41 @@
 #define APP_TLS_TRUST_MODE  1
 
 // 与后端约定的设备令牌，后端用它拒绝来路不明的上传（防伪造/防误传）
-#define APP_DEVICE_TOKEN    "CHANGE_ME_DEVICE_TOKEN"
+//   ★ 现场排错记录：板子里烧录的固件实际发的是 "esp32s3eye-demo-token-2026"，
+//     而源文件/后端默认都是 "CHANGE_ME_DEVICE_TOKEN"，两边不一致 → 后端对每一次
+//     上传都回 401，数据一条也存不进去（网页表现为"检测不到实时数据"）。
+//     这里统一成板子里真实在用的那个值；后端默认值、部署脚本、测试用例同步改成
+//     同一个字符串，避免下次重新烧录后又对不上。
+//     改令牌时请四处一起改：本文件、backend/server.py、backend/deploy/*、
+//     docs 里的测试用例。
+#define APP_DEVICE_TOKEN    "esp32s3eye-demo-token-2026"
 
 // HTTP 超时与失败重试
 #define APP_HTTP_TIMEOUT_MS 10000
 #define APP_HTTP_RETRY      3
+
+// ===========================================================================
+// 2.5 第 2 周：远程采集指令通道（复用上面同一个 HTTP(S) 客户端与令牌）
+//     ★ 不引入 MQTT / WebSocket / 新端口：设备处于 NAT 后，只能靠"设备主动轮询"
+//       拉取指令 —— 这也是全工程**唯一**的下行通道（docs/06 §4.5）。
+//     ★ 端点路径由 APP_SERVER_URL 自动推导，不需要再维护第二份服务器地址：
+//         APP_SERVER_URL        = .../api/v1/ingest
+//         APP_CMD_POLL_URL      = .../api/v1/device/commands/poll
+//         APP_CMD_ACK_URL       = .../api/v1/device/ack
+//         APP_CMD_OBS_URL       = .../api/v1/observations
+// ===========================================================================
+
+// 指令轮询周期（毫秒）。docs/06 §4.1 约定 1Hz，与响应里的 poll_after_ms 一致。
+#define APP_COMMAND_POLL_MS   1000
+
+// 收到指令后必须在 min(1s, timeout_ms/3) 内发出回执，否则后端按未回执计时
+#define APP_ACK_MAX_DELAY_MS  1000
+
+// 设备侧缓存最近多少条回执（网络恢复后补发用；对应 poll 请求里的 last_ack）
+#define APP_ACK_CACHE_LEN     8
+
+// 单次采集为观测组包时，最多带几个采样点（本次请求单独采，通常就是 1 个）
+#define APP_OBS_MAX_SAMPLES   8
 
 // ===========================================================================
 // 3. 采集与上传参数

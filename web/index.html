@@ -107,6 +107,63 @@
   <div id="toolHint" class="tool-hint">就绪</div>
 </section>
 
+<!-- ══════════════════ ⑤ 第 2 周：远程采集（刷新 vs 采集） ══════════════════ -->
+<section class="card card-collect" id="collectPanel">
+  <div class="card-head">
+    <h2>远程采集<span class="h2-note">「刷新已存数据」只读库；「采集最新数据」会下发指令让设备当场读一次真实寄存器</span></h2>
+    <span class="chip" id="collectDeviceChip">—</span>
+  </div>
+
+  <!-- 两个按钮的语义差别直接写在页面上，避免把"刷新"误当成"采集" -->
+  <div class="collect-actions">
+    <button id="refreshBtn" class="tool" type="button"
+            title="只查数据库里已有的记录：调 GET /api/v1/records 与 /api/v1/latest，零设备侧流量、不产生任何采集任务">
+      <i>⟳</i><span>刷新已存数据</span>
+    </button>
+    <button id="collectBtn" class="tool tool-primary" type="button"
+            title="下发 collect_now 指令：设备收到后当场读一次 QMA6100P 寄存器，并把带 request_id 的新观测回传">
+      <i>◈</i><span>采集最新数据</span>
+    </button>
+    <button id="pauseBtn" class="tool" type="button"
+            title="暂停/恢复周期上报（暂停的是周期上报，不是采集能力：暂停后「采集最新数据」仍然可用）">
+      <i>⏸</i><span>暂停周期上报</span>
+    </button>
+  </div>
+
+  <p class="collect-note" id="refreshNote">
+    刷新只会读取数据库，<b>不会</b>让设备做任何事；要拿到"此刻"的真实读数，请点「采集最新数据」。
+  </p>
+
+  <!-- 当前请求状态：徽标文案与后端 status 一一对应，页面不自造状态 -->
+  <div class="req-status">
+    <span id="reqBadge" class="pill pill-wait">尚未发起采集</span>
+    <span class="req-meta" id="reqTimeline">—</span>
+  </div>
+  <div id="reqDetail" class="req-detail">点「采集最新数据」后，这里显示请求 → 设备回执 → 新观测的完整过程。</div>
+
+  <!-- 请求—回执—观测 三表联查结果 -->
+  <div id="reqObservation" class="req-obs hidden"></div>
+
+  <!-- 动作执行追踪：连点两次必须能看到两条记录，各自终局 -->
+  <div class="req-list-head">
+    <h3>动作执行追踪<span class="h2-note">每一次点击都是一条独立记录，含被拒收的观测</span></h3>
+    <button id="reqListRefresh" class="mini" type="button">刷新列表</button>
+  </div>
+  <div class="req-table-wrap">
+    <table class="req-table">
+      <thead>
+        <tr>
+          <th>提交时刻</th><th>request_id</th><th>状态</th>
+          <th>设备回执</th><th>完成</th><th>被拒</th><th>观测摘要</th>
+        </tr>
+      </thead>
+      <tbody id="reqList">
+        <tr><td colspan="7" class="req-empty">还没有采集记录</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
 <!-- ── 工具抽屉（默认隐藏，点上面的按钮展开） ── -->
 <section id="logPanel" class="card drawer hidden">
   <div class="drawer-head">

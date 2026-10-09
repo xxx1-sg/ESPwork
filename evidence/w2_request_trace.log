@@ -1,0 +1,24 @@
+﻿request_id : 7f6913ab-3fd9-461c-ad9e-0cc03ea78456
+status     : completed (��̬)
+submitted  : 2026-10-09T02:30:35.554Z  <-- submitted
+dispatched : 2026-10-09T02:30:35.971Z  <-- �豸 poll ȡ��ָ��
+acked      : 2026-10-09T02:30:36.194Z  <-- acked (ack_type=received)
+completed  : 2026-10-09T02:30:36.479Z  <-- completed (L1^L2^L3 ȫ��)
+baseline   : boot=841 seq=5294 up=534698
+attempt    : 1
+failure    : None
+
+request_acks:
+    {'ack_type': 'received', 'ack_at_utc': '2026-10-09T02:30:36.194Z', 'attempt': 1, 'boot_count': 841, 'device_uptime_ms': 536469}
+
+observations:
+    {'seq_first': 5316, 'seq_last': 5316, 'sample_count': 1, 'freshness': 'new_monotonic', 'verify_ok': 1, 'record_id': 114138, 'upload_id': 12612}
+    value = {'magnitude_g': 1.053036, 'raw': {'x': 270, 'y': -4068, 'z': 1408}, 'accel_g': {'x': 0.065918, 'y': -0.993164, 'z': 0.34375}, 'accel_ms2': {'x': 0.646434, 'y': -9.739613, 'z': 3.371036}}
+
+sensor_records (����):
+    {'id': 114138, 'request_id': '7f6913ab-3fd9-461c-ad9e-0cc03ea78456', 'report_mode': 'manual', 'seq': 5316, 'raw_x': 270, 'raw_y': -4068, 'raw_z': 1408, 'magnitude_g': 1.053036, 'verify_ok': 1}
+
+raw_uploads (���ֽ�ԭ��):
+    {'id': 12612, 'byte_len': 1089, 'sha256': 'dfff6052e7a31805459f778e43cc6f8ce76a67b46b42a7783d416078226ee0e4', 'b': '{"request_id":"7f6913ab-3fd9-461c-ad9e-0cc03ea78456","nonce":"40a3517a159740fb8dea42dfc516'}
+
+ʱ��˳�� �ύ<=�·�<=��ִ<=��� : True

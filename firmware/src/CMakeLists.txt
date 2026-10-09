@@ -21,6 +21,7 @@ idf_component_register(
         "main.c"              # 主流程: 初始化 -> 采集 -> 上传
         "imu_qma6100p.c"      # QMA6100P 真实物理传感器驱动 (I2C)
         "uploader.c"          # Wi-Fi 联网 + HTTP(S) POST 上传
+        "cmd_client.c"        # 第 2 周: 远程采集指令轮询/回执/观测回传（复用上述 HTTP 栈）
     INCLUDE_DIRS
         "."
     REQUIRES

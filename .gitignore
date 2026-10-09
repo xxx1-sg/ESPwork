@@ -43,6 +43,12 @@ backend/data/*.db-shm
 *.log
 !evidence/*.log
 
+# 后端常驻守护的运行期状态文件（PID / 互斥锁）——是本机进程状态，不进仓库
+evidence/backend.pid
+evidence/backend_guard.lock
+evidence/*.pid
+evidence/*.lock
+
 # ---- 第三方二进制（体积大且可重新下载）----
 tools/bin/cloudflared.exe
 tools/bin/*.exe

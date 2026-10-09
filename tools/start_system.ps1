@@ -21,7 +21,7 @@ param(
   [string]$Db = "D:\ESP\backend\data\sensor.db",
   [string]$WebDir = "D:\ESP\web",
   [int]$Port = 8000,
-  [string]$Token = "CHANGE_ME_DEVICE_TOKEN",
+  [string]$Token = "esp32s3eye-demo-token-2026",
   [string]$Python = "D:\ESP\.venv\Scripts\python.exe",
   [string]$LogDir = "D:\ESP\evidence",
   [switch]$Tunnel

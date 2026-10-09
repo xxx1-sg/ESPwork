@@ -168,7 +168,65 @@ b, dd, .ax-val b, .mini b{ font-variant-numeric: tabular-nums; }
 }
 .pill-ok{  color: var(--ok);   border-color: rgba(15,168,126,.32); background: rgba(15,168,126,.09); }
 .pill-bad{ color: var(--bad);  border-color: rgba(224,67,67,.32);  background: rgba(224,67,67,.09); }
+.pill-warn{ color: var(--warn); border-color: rgba(207,132,25,.34); background: rgba(207,132,25,.10); }
+.pill-info{ color: var(--primary); border-color: var(--primary-line); background: var(--primary-soft); }
 .pill-wait{ color: var(--muted); }
+
+/* ── 第 2 周：远程采集面板 ───────────────────────────────────────────── */
+.card-collect{ margin-bottom:14px; }
+.collect-actions{ display:flex; gap:9px; flex-wrap:wrap; margin:10px 0 6px; }
+.tool-primary{ color: var(--primary); border-color: var(--primary-line); background: var(--primary-soft); font-weight:600; }
+.tool-primary:hover{ color: var(--primary); }
+.tool:disabled{ opacity:.55; cursor: progress; transform:none; }
+.collect-note{ font-size:12.5px; color: var(--muted); margin:6px 0 12px; line-height:1.6; }
+
+.req-status{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+.req-meta{ font-size:12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.req-detail{
+  font-size:13px; line-height:1.75; color: var(--text-2);
+  padding:11px 13px; border-radius:10px; border:1px solid var(--line);
+  background: var(--card-strong); min-height:42px;
+}
+.req-detail b{ color: var(--text); }
+
+.req-reject{ margin-top:9px; padding:9px 11px; border-radius:8px;
+  border:1px solid rgba(224,67,67,.32); background: rgba(224,67,67,.07); color: var(--bad); }
+.req-reject-note{ display:block; font-size:11.5px; color: var(--muted); margin:3px 0 5px; }
+.req-reject ul{ margin:4px 0 0 16px; padding:0; }
+.req-reject li{ font-size:12px; color: var(--text-2); line-height:1.7; }
+.req-reject code{ color: var(--bad); font-weight:600; }
+
+.req-obs{ margin-top:12px; padding:12px 14px; border-radius:10px;
+  border:1px solid rgba(15,168,126,.30); background: rgba(15,168,126,.06); }
+.req-obs-head{ display:flex; justify-content:space-between; align-items:center;
+  gap:10px; flex-wrap:wrap; margin-bottom:9px; }
+.req-obs-head b{ color: var(--ok); font-size:13px; }
+.req-obs-id{ font-size:11.5px; color: var(--muted); }
+.req-obs-id code{ color: var(--text-2); }
+.req-obs-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(178px, 1fr)); gap:9px; }
+.req-obs-grid > div{ display:flex; flex-direction:column; gap:2px;
+  padding:8px 10px; border-radius:8px; background: var(--card); border:1px solid var(--line); }
+.req-obs-grid label{ font-size:11px; color: var(--muted); }
+.req-obs-grid b{ font-size:13px; color: var(--text); font-variant-numeric: tabular-nums; }
+.req-obs-grid small{ font-size:10.5px; color: var(--muted); }
+
+.req-list-head{ display:flex; justify-content:space-between; align-items:center;
+  gap:10px; flex-wrap:wrap; margin:16px 0 8px; }
+.req-list-head h3{ font-size:13.5px; margin:0; color: var(--text); }
+.req-table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; }
+.req-table{ width:100%; border-collapse:collapse; font-size:12px; }
+.req-table th{ text-align:left; padding:8px 10px; color: var(--muted); font-weight:600;
+  background: var(--card-strong); border-bottom:1px solid var(--line); white-space:nowrap; }
+.req-table td{ padding:7px 10px; border-bottom:1px solid var(--line); color: var(--text-2);
+  font-variant-numeric: tabular-nums; white-space:nowrap; }
+.req-table tbody tr{ cursor:pointer; }
+.req-table tbody tr:hover{ background: var(--primary-soft); }
+.req-table tbody tr:last-child td{ border-bottom:none; }
+.req-empty{ text-align:center; color: var(--muted); padding:16px 0 !important; }
+.req-rid{ color: var(--primary); }
+.req-obs-cell{ color: var(--text); }
+.req-rej-badge{ display:inline-block; min-width:17px; text-align:center; padding:1px 6px;
+  border-radius:999px; background: rgba(224,67,67,.14); color: var(--bad); font-size:11px; }
 
 .field{
   display:flex; align-items:center; gap:7px; padding:4px 10px 4px 12px;

@@ -1026,6 +1026,20 @@
     return { status: r.status, body };
   }
 
+  /** POST JSON（第 2 周新增：创建采集请求 / 暂停周期上报）。 */
+  async function postJSON(url, obj) {
+    const r = await fetch(url, {
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj),
+    });
+    const text = await r.text();
+    let body = null;
+    try { body = JSON.parse(text); } catch (e) { body = { ok: false, error: text.slice(0, 200) }; }
+    return { status: r.status, body };
+  }
+
   function recordsURL(extra) {
     const dev = state.deviceFilter ? `&device_id=${encodeURIComponent(state.deviceFilter)}` : "";
     return `${API.records}?${extra}${dev}`;
@@ -1542,6 +1556,381 @@
   }
 
   // ==========================================================================
+  // 第 2 周：远程采集（刷新已存数据 vs 采集最新数据）
+  // ==========================================================================
+  /**
+   * ★ 本区块只做两件事：把用户意图变成正确的接口调用；把后端返回的 status
+   *   原样映射成徽标。**页面绝不自己造状态**，也绝不把 acked 显示成完成。
+   */
+  const COLLECT = {
+    create: "/api/v1/collect_requests",
+    list:   "/api/v1/collect_requests",
+    pause:  "/api/v1/device/pause",
+  };
+
+  /** 请求状态 → 中文徽标/颜色。判据与 docs/06 §6.2 的表一一对应。 */
+  const REQ_STATUS_TEXT = {
+    submitted:  { text: "已提交",       cls: "pill-wait" },
+    acked:      { text: "设备接收回执", cls: "pill-info" },
+    collecting: { text: "设备采集中",   cls: "pill-info" },
+    completed:  { text: "完成",         cls: "pill-ok" },
+    failed:     { text: "失败",         cls: "pill-bad" },
+    timeout:    { text: "超时",         cls: "pill-warn" },
+    rejected:   { text: "请求被拒",     cls: "pill-bad" },
+    cancelled:  { text: "已撤销",       cls: "pill-wait" },
+  };
+
+  // 采集相关的页面状态
+  const cstate = {
+    requestId: null,        // 当前正在跟踪的请求
+    pollUrl: null,          // 用创建响应给的 poll_url 轮询（不自造路径）
+    timer: null,            // 1s 轮询句柄
+    clientKey: null,        // 幂等键：同一意图恒定，双击不产生第二条
+    lastKeyAt: 0,
+    paused: false,
+    inflight: false,        // 防连点：提交期间不允许再次点击
+  };
+
+  function setBadge(st, extraText) {
+    const el = $("reqBadge");
+    if (!el) return;
+    if (!st || !REQ_STATUS_TEXT[st]) {
+      // 拿不到 status 时显示占位，**不猜**成任何业务状态
+      el.textContent = "—（未知状态）";
+      el.className = "pill pill-wait";
+      return;
+    }
+    const m = REQ_STATUS_TEXT[st];
+    el.textContent = extraText ? `${m.text}${extraText}` : m.text;
+    el.className = `pill ${m.cls}`;
+  }
+
+  /**
+   * 把后端 status 翻译成用户能看懂的一句话。
+   * ★ 红线：timeout 只能说"没等到"，**禁止**说成"设备故障/传感器损坏"
+   *   —— 超时是服务端计时结论，硬件故障必须有设备侧的 rejected/SENSOR_ERROR 证据。
+   */
+  function describeStatus(d, st) {
+    if (st === "submitted") {
+      return "请求已落库，等待设备下一次轮询取走指令（设备 1Hz 轮询，通常 1 秒内被取走）。";
+    }
+    if (st === "acked") {
+      return "设备已回执「收到指令」。注意：<b>这只是收到，还不算采集完成</b>——观测数据尚未回传。";
+    }
+    if (st === "collecting") {
+      return "设备已开始读取传感器，观测数据回传中（尚未完成）。";
+    }
+    if (st === "completed") {
+      return "已完成：本次观测通过 L1 身份 ∧ L2 新旧性 ∧ L3 时间性 三层校验，数值来自设备<b>当下</b>的寄存器读。";
+    }
+    if (st === "failed") {
+      const why = (d && d.failure_reason) || "未知";
+      if (why === "SENSOR_ERROR") {
+        return "失败：<b>设备明确拒绝——传感器读取失败</b>。这才是硬件问题的证据（设备自己说的）。";
+      }
+      return `失败：设备拒绝执行（${esc(why)}）。`;
+    }
+    if (st === "timeout") {
+      // 在线/离线两种情形文案不同，但都不得断言"硬件故障"
+      const online = d && d.device &&
+        (d.device.online === true || d.device.last_status === "online");
+      return online
+        ? "超时：<b>设备在线，但未在 15s 内回报</b>（可能指令未执行或回报丢失）。这不等于设备故障。"
+        : "超时：<b>设备当前离线</b>（可能关机或断网），本次请求超时。离线包含关机与断网两种，无法据此判定硬件状态。";
+    }
+    if (st === "cancelled") {
+      const why = (d && d.failure_reason) || "";
+      return why === "SUPERSEDED"
+        ? "已撤销：这条请求被更新的一次采集取代（同类型指令只执行最新一条）。"
+        : "已撤销：操作者取消了本次请求。";
+    }
+    return "状态：" + esc(String(st));
+  }
+
+  /** 渲染请求详情（时间线 + 说明 + 观测数值 + 拒收记录）。 */
+  function renderRequestDetail(d) {
+    const st = d.status;
+    setBadge(st, d.deduplicated ? "（去重）" : "");
+
+    // ---- 时间线：提交 → 下发 → 回执 → 完成 ----
+    const parts = [];
+    if (d.submitted_at_utc)  parts.push(`提交 ${hhmmss3(new Date(d.submitted_at_utc))}`);
+    if (d.dispatched_at_utc) parts.push(`下发 ${hhmmss3(new Date(d.dispatched_at_utc))}`);
+    if (d.acked_at_utc)      parts.push(`回执 ${hhmmss3(new Date(d.acked_at_utc))}`);
+    if (d.completed_at_utc)  parts.push(`完成 ${hhmmss3(new Date(d.completed_at_utc))}`);
+    const e = d.elapsed_ms || {};
+    if (Number.isFinite(e.submit_to_complete)) parts.push(`总耗时 ${e.submit_to_complete}ms`);
+    $("reqTimeline").textContent = parts.length ? parts.join(" → ") : "—";
+
+    let html = describeStatus(d, st);
+
+    // 被拒收的观测：必须显式呈现，这是"旧记录不可改写为本次完成"的可见证据
+    if (d.rejections && d.rejections.length) {
+      html += `<div class="req-reject"><b>⚠ 有 ${d.rejections.length} 条观测被拒收</b>` +
+        `<span class="req-reject-note">被拒收的观测不会改变请求状态，只留痕。</span><ul>` +
+        d.rejections.map((r) =>
+          `<li><code>${esc(r.reason_code)}</code> · ${esc(r.reason_detail || "")}` +
+          ` <small>${esc(r.received_at_utc || "")}</i></small></li>`).join("") +
+        `</ul></div>`;
+    }
+    $("reqDetail").innerHTML = html;
+
+    // ---- 观测数值（只有真的完成了才有）----
+    const obs = d.observation;
+    const box = $("reqObservation");
+    if (!obs) {
+      box.classList.add("hidden");
+      box.innerHTML = "";
+      return;
+    }
+    box.classList.remove("hidden");
+    const raw = obs.raw || {};
+    const ag = obs.accel_g || {};
+    const am = obs.accel_ms2 || {};
+    box.innerHTML = `
+      <div class="req-obs-head">
+        <b>本次新观测</b>
+        <span class="req-obs-id">request_id <code>${esc(d.request_id)}</code></span>
+      </div>
+      <div class="req-obs-grid">
+        <div><label>合矢量 |a|</label><b>${fmt(obs.magnitude_g, 6)}</b><small>g</small></div>
+        <div><label>原始码值 raw</label><b>(${fmt(raw.x, 0)}, ${fmt(raw.y, 0)}, ${fmt(raw.z, 0)})</b><small>LSB</small></div>
+        <div><label>accel_g</label><b>(${fmt(ag.x, 4)}, ${fmt(ag.y, 4)}, ${fmt(ag.z, 4)})</b><small>g</small></div>
+        <div><label>accel_ms2</label><b>(${fmt(am.x, 3)}, ${fmt(am.y, 3)}, ${fmt(am.z, 3)})</b><small>m/s²</small></div>
+        <div><label>seq_first → seq_last</label><b>${fmt(obs.seq_first, 0)} → ${fmt(obs.seq_last, 0)}</b><small>相对基线递增</small></div>
+        <div><label>新鲜度 freshness</label><b>${obs.freshness === "new_after_reboot" ? "重启后新采" : "同次开机内新采"}</b><small>${esc(obs.freshness || "")}</small></div>
+        <div><label>后端自洽校验</label><b>${obs.verify_ok === 1 ? "通过" : "见备注"}</b><small>verify_ok=${fmt(obs.verify_ok, 0)}</small></div>
+        <div><label>落库引用</label><b>obs#${fmt(obs.observation_id, 0)} / rec#${fmt(obs.record_id, 0)} / upl#${fmt(obs.upload_id, 0)}</b><small>三表联查</small></div>
+      </div>`;
+  }
+
+  /** 请求列表：动作执行追踪（连点两次应当看到两条）。 */
+  async function loadRequestList() {
+    const tbody = $("reqList");
+    if (!tbody) return;
+    const dev = state.deviceFilter ? `?device_id=${encodeURIComponent(state.deviceFilter)}&limit=50` : "?limit=50";
+    try {
+      const { status, body } = await getJSON(COLLECT.list + dev);
+      if (status !== 200 || !body || !body.ok) {
+        tbody.innerHTML = `<tr><td colspan="7" class="req-empty">列表读取失败（HTTP ${status}）</td></tr>`;
+        return;
+      }
+      const rows = body.requests || [];
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="req-empty">还没有采集记录</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows.map((r) => {
+        const m = REQ_STATUS_TEXT[r.status] || { text: r.status, cls: "pill-wait" };
+        const obs = r.observation;
+        const obsTxt = obs
+          ? `|a|=${fmt(obs.magnitude_g, 4)}g · seq ${fmt(obs.seq_first, 0)}→${fmt(obs.seq_last, 0)}`
+          : "—";
+        const rej = r.rejections_count ? `<span class="req-rej-badge">${r.rejections_count}</span>` : "0";
+        return `<tr data-rid="${esc(r.request_id)}">
+          <td>${r.submitted_at_utc ? hhmmss3(new Date(r.submitted_at_utc)) : "—"}</td>
+          <td><code class="req-rid" title="${esc(r.request_id)}">${esc(String(r.request_id).slice(0, 8))}…</code></td>
+          <td><span class="pill ${m.cls}">${m.text}</span></td>
+          <td>${r.acked_at_utc ? hhmmss3(new Date(r.acked_at_utc)) : "—"}</td>
+          <td>${r.completed_at_utc ? hhmmss3(new Date(r.completed_at_utc)) : "—"}</td>
+          <td>${rej}</td>
+          <td class="req-obs-cell">${obsTxt}</td>
+        </tr>`;
+      }).join("");
+
+      // 点列表任意一行 → 把详情切到那条请求（便于复盘"连点两次"各自的终局）
+      tbody.querySelectorAll("tr[data-rid]").forEach((tr) => {
+        tr.addEventListener("click", () => {
+          const rid = tr.getAttribute("data-rid");
+          cstate.requestId = rid;
+          cstate.pollUrl = COLLECT.create + "/" + rid;
+          pollRequestOnce();
+          addLog("info", `追踪到请求 ${rid.slice(0, 8)}…（来自执行追踪列表）`);
+        });
+      });
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="7" class="req-empty">列表读取异常</td></tr>`;
+    }
+  }
+
+  /** 轮询一次当前请求详情。 */
+  async function pollRequestOnce() {
+    if (!cstate.pollUrl) return null;
+    try {
+      const { status, body } = await getJSON(cstate.pollUrl);
+      if (status === 404) {
+        setBadge(null);
+        $("reqDetail").textContent = "该请求不存在或已被清理。";
+        stopRequestPoll();
+        return null;
+      }
+      if (status !== 200 || !body || !body.ok) return null;
+      const d = body.data;
+      renderRequestDetail(d);
+      // 终态 → 停止轮询（不再打后端）
+      if (["completed", "failed", "timeout", "rejected", "cancelled"].includes(d.status)) {
+        stopRequestPoll();
+        loadRequestList();
+      }
+      return d;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function startRequestPoll() {
+    stopRequestPoll();
+    cstate.timer = setInterval(pollRequestOnce, 1000);
+  }
+
+  function stopRequestPoll() {
+    if (cstate.timer) {
+      clearInterval(cstate.timer);
+      cstate.timer = null;
+    }
+  }
+
+  /**
+   * 点「采集最新数据」：创建请求 → 跟踪状态。
+   *
+   * ★ 幂等键：2 秒内重复点击复用同一个 client_request_key，后端据此返回
+   *   **同一个** request_id（deduplicated:true），所以"手抖双击"不会产生两条任务；
+   *   超过 2 秒的刻意连点则生成两条独立请求，各自留记录。
+   */
+  async function createCollectRequest() {
+    if (cstate.inflight) return;                      // 本地也防一手
+    const devId = state.deviceFilter || ($("deviceSelect") && $("deviceSelect").value) || "";
+    if (!devId) {
+      $("reqDetail").innerHTML =
+        "请先在右上角「设备分组」里选定一台设备：<b>采集是按设备下发的</b>，不指定设备无法创建任务。";
+      addLog("warn", "未选择设备，采集请求未创建");
+      return;
+    }
+
+    const now = Date.now();
+    if (!cstate.clientKey || now - cstate.lastKeyAt > 2000) {
+      // 新的一次意图 → 新 key；同一意图内的重复点击复用旧 key
+      cstate.clientKey = `web-${devId}-${now}`;
+      cstate.lastKeyAt = now;
+    }
+
+    cstate.inflight = true;
+    $("collectBtn").disabled = true;
+    try {
+      const { status, body } = await postJSON(COLLECT.create, {
+        device_id: devId,
+        sensor: "qma6100p",
+        requested_by: "web",
+        client_request_key: cstate.clientKey,
+        note: "网页点击采集最新数据",
+      });
+
+      if (status === 201 || status === 200) {
+        const d = body.data;
+        cstate.requestId = d.request_id;
+        cstate.pollUrl = d.poll_url || (COLLECT.create + "/" + d.request_id);
+        addLog("info",
+          `${d.deduplicated ? "重复点击已合并到同一条请求" : "已创建采集请求"} ` +
+          `${d.request_id}（超时 ${d.timeout_ms}ms，基线 seq=${d.baseline ? d.baseline.seq_last : "?"}）`);
+        $("toolHint").textContent = "采集请求已提交，正在跟踪设备回执与观测…";
+        await pollRequestOnce();
+        startRequestPoll();
+        loadRequestList();
+      } else {
+        // 失败原因如实呈现（例如 NO_BASELINE / NO_DEVICE），不吞掉
+        const code = (body && body.error && body.error.code) || "未知";
+        const msg  = (body && body.error && body.error.message) || "";
+        setBadge(null);
+        $("reqDetail").innerHTML =
+          `<b>创建失败</b>：<code>${esc(code)}</code> ${esc(msg)}` +
+          (code === "NO_BASELINE"
+            ? "<br>设备还没有轮询过，后端拿不到基线快照。请等待设备首次轮询（上电后约 1 秒）再试。"
+            : "");
+        addLog("bad", `创建采集请求失败：${code} ${msg}（HTTP ${status}）`);
+      }
+    } catch (e) {
+      addLog("bad", `创建采集请求异常：${(e && e.message) ? e.message : e}`);
+    } finally {
+      cstate.inflight = false;
+      $("collectBtn").disabled = false;
+    }
+  }
+
+  /**
+   * 点「刷新已存数据」：只读库，绝不触碰任何 collect_* 接口。
+   *
+   * ★ 这里**故意不刷新**动作执行追踪列表：那个列表也属于 collect_requests 接口族，
+   *   而「刷新已存数据」的语义是"只读已入库的传感记录、零设备侧流量"。
+   *   要更新追踪列表请用列表自己的「刷新列表」按钮。
+   *   （测试用例 TC-W2-01 会断言：点刷新后 collect_requests 调用数增量必须为 0。）
+   */
+  async function refreshStoredData() {
+    addLog("info", "刷新已存数据：只调 GET /api/v1/records 与 /api/v1/latest（零设备侧流量）");
+    $("toolHint").textContent = "正在刷新已存数据…";
+    await seedHistory();
+    await pollNew();
+    await refreshStats();
+    await loadDevices();
+    $("toolHint").textContent = "已刷新已存数据（数据库内容，未向设备下发任何指令）";
+  }
+
+  /** 暂停/恢复周期上报。 */
+  async function togglePauseReports() {
+    const devId = state.deviceFilter || ($("deviceSelect") && $("deviceSelect").value) || "";
+    if (!devId) {
+      addLog("warn", "未选择设备，暂停/恢复未执行");
+      return;
+    }
+    const enable = cstate.paused;      // 当前是暂停态 → 这次点就是恢复
+    try {
+      const { status, body } = await postJSON(COLLECT.pause, {
+        device_id: devId,
+        enable: enable,
+        reason: "网页手动切换周期上报",
+      });
+      if (status === 200 && body.ok) {
+        cstate.paused = !enable;
+        const b = $("pauseBtn");
+        b.classList.toggle("tool-off", cstate.paused);
+        b.querySelector("span").textContent = cstate.paused ? "恢复周期上报" : "暂停周期上报";
+        addLog("info",
+          `${cstate.paused ? "已请求暂停" : "已请求恢复"}周期上报（指令已入队，等待设备轮询取走）`);
+        $("toolHint").textContent = cstate.paused
+          ? "已请求暂停周期上报：周期包应停止增长，但「采集最新数据」仍然可用"
+          : "已请求恢复周期上报";
+        loadDevices();
+      } else {
+        const code = (body && body.error && body.error.code) || "未知";
+        addLog("bad", `暂停/恢复失败：${code}（HTTP ${status}）`);
+      }
+    } catch (e) {
+      addLog("bad", `暂停/恢复异常：${(e && e.message) ? e.message : e}`);
+    }
+  }
+
+  function bindCollectUI() {
+    if (!$("collectBtn")) return;     // 页面被裁剪时不影响其它功能
+    $("refreshBtn").addEventListener("click", refreshStoredData);
+    $("collectBtn").addEventListener("click", createCollectRequest);
+    $("pauseBtn").addEventListener("click", togglePauseReports);
+    $("reqListRefresh").addEventListener("click", loadRequestList);
+
+    // 设备分组变化时，重新拉一次该设备的追踪列表
+    const sel = $("deviceSelect");
+    if (sel) sel.addEventListener("change", () => { loadRequestList(); updateCollectChip(); });
+
+    updateCollectChip();
+    loadRequestList();
+  }
+
+  function updateCollectChip() {
+    const el = $("collectDeviceChip");
+    if (!el) return;
+    const devId = state.deviceFilter || ($("deviceSelect") && $("deviceSelect").value) || "";
+    el.textContent = devId ? `目标设备 ${devId}` : "未选择设备";
+  }
+
+  // ==========================================================================
   // 启动
   // ==========================================================================
   initTheme();
@@ -1556,6 +1945,7 @@
   $("rawJson").classList.remove("hidden");
 
   bindUI();
+  bindCollectUI();
   renderLogs();
 
   loadDevices();

@@ -68,6 +68,18 @@ void uploader_scan_and_log(void);
  */
 esp_err_t uploader_post_json(const char *json, char *resp, size_t resp_len, int *http_status);
 
+/**
+ * @brief 与 uploader_post_json 完全相同，但可指定目标 URL（第 2 周新增）。
+ *
+ * ★ 为什么复用同一个函数而不是另写一套：第 2 周的指令通道（轮询取指令、发回执、
+ *   回传观测）必须与第 1 周的上传共用**同一个** keep-alive 连接、同一套 TLS 校验
+ *   配置与同一个 X-Device-Token，否则每多一个端点就多一次 TLS 握手
+ *   （实测约 3.5 秒），1Hz 轮询会立刻退化成几秒一次。
+ *   因此这里只是把 URL 参数化，网络层实现一行没改。
+ */
+esp_err_t uploader_post_json_url(const char *url, const char *json,
+                                 char *resp, size_t resp_len, int *http_status);
+
 #ifdef __cplusplus
 }
 #endif

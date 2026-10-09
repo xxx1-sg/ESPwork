@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 #  systemd 服务单元 —— 传感器接收/存储/查询服务
 #  安装位置: /etc/systemd/system/sensor-ingest.service
 #  启用步骤:
@@ -24,8 +24,8 @@ Environment=SENSOR_HOST=127.0.0.1
 Environment=SENSOR_PORT=8000
 Environment=SENSOR_DB=/var/lib/sensor-ingest/sensor.db
 Environment=SENSOR_WEB_DIR=/opt/sensor-ingest/web
-# ★ 务必改成你自己的设备令牌，并与固件 app_config.h 的 APP_DEVICE_TOKEN 一致
-Environment=SENSOR_TOKEN=CHANGE_ME_DEVICE_TOKEN
+# ★ 务必与固件 app_config.h 的 APP_DEVICE_TOKEN 一致，否则上传会被 401 全部拒收
+Environment=SENSOR_TOKEN=esp32s3eye-demo-token-2026
 
 ExecStart=/usr/bin/python3 /opt/sensor-ingest/backend/server.py
 

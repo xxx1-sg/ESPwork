@@ -34,6 +34,7 @@
 #include "app_config.h"
 #include "imu_qma6100p.h"
 #include "uploader.h"
+#include "cmd_client.h"
 
 static const char *TAG = "main";
 
@@ -45,6 +46,47 @@ static char     s_mac_str[24]   = { 0 };   /**< 完整 MAC（形如 94:A9:90:1C:
 static uint32_t s_boot_count     = 0;      /**< 第几次开机（保存在 NVS，掉电不丢） */
 // 采样点的全局序号 seq 由采样任务内部维护（每个采样点自带 seq，见 batch_sample_t）
 static uint32_t s_post_fail      = 0;      /**< 上传失败计数（如实统计，便于排错） */
+
+/**
+ * @brief 采样序号的"对外可见"副本（第 2 周新增）。
+ *
+ * ★ 为什么不能只让采样任务自己持有 seq：远程采集在**另一个任务**里为本次请求
+ *   单独采一个点，它必须知道"当前进度到哪了"，才能给自己的点分配一个
+ *   严格大于基线的 seq（后端的 L2 新旧性判定就靠这个）。
+ *   所以把 seq 放进一个 volatile 全局量，两边共享。
+ */
+static volatile uint32_t s_seq = 0;
+
+/** @brief 周期上报当前是否使能（收到 pause_reports/resume_reports 后切换）。 */
+static volatile bool s_periodic_enabled = true;
+
+/**
+ * @brief 把设备当前状态提供给 cmd_client（组 poll/ack/观测报文时用）。
+ *
+ * 每次组包都现取，避免把 seq 定格成过期值 —— 采样任务以 10Hz 推进它。
+ */
+static void cmd_state_provider(cmd_device_state_t *out)
+{
+    out->device_id  = s_device_id;
+    out->mac_str    = s_mac_str;
+    out->boot_count = s_boot_count;
+    out->seq_last   = s_seq;
+    out->periodic   = s_periodic_enabled;
+}
+
+/**
+ * @brief 应用后端下发的 pause_reports / resume_reports。
+ *
+ * ★ 语义：暂停的是**周期上报**，不是采集能力 —— 暂停后远程 collect_now
+ *   仍必须能读到当下寄存器（当堂验证要证明的正是这一点）。
+ */
+static void cmd_periodic_handler(bool enable)
+{
+    if (s_periodic_enabled == enable) return;
+    s_periodic_enabled = enable;
+    ESP_LOGI(TAG, "周期上报已%s（采集能力不受影响，远程采集仍可用）",
+             enable ? "恢复" : "暂停");
+}
 
 /**
  * @brief 用芯片出厂 eFuse MAC 生成设备唯一 ID。
@@ -420,7 +462,6 @@ static void sampler_task(void *arg)
 {
     (void)arg;
     batch_packet_t *pkt = NULL;
-    uint32_t        seq = 0;
     int64_t         next_us = esp_timer_get_time() + (int64_t)APP_SAMPLE_PERIOD_MS * 1000;
 
     while (1) {
@@ -436,12 +477,30 @@ static void sampler_task(void *arg)
         service_network_fast();
 
         // ---- ① 读取真实硬件测量值（多次采样平均，抑制噪声）----
+        //   与远程采集的读互斥：两个任务并发读同一条 I2C 会偶发失败，
+        //   而失败会被如实报成 SENSOR_ERROR，造成"假故障"。
         imu_raw_sample_t raw = { 0 };
+        SemaphoreHandle_t lock = (SemaphoreHandle_t)cmd_client_imu_lock();
+        if (lock) xSemaphoreTake(lock, portMAX_DELAY);
         esp_err_t err = imu_read_raw_averaged(&raw, APP_OVERSAMPLE, APP_OVERSAMPLE_US);
+        if (lock) xSemaphoreGive(lock);
         if (err != ESP_OK) {
             // 读失败就如实报错并丢弃这个点，绝不用任何构造值顶替
             ESP_LOGE(TAG, "传感器读取失败(%s), 丢弃该采样点 (累计失败 %u 次)",
                      esp_err_to_name(err), (unsigned)imu_read_error_count());
+            continue;
+        }
+
+        // ---- ①.5 暂停周期上报时：照常采点、照常推进 seq，但**不发包** ----
+        //   ★ 语义要点：暂停的是"周期上报"，不是采集能力。远程 collect_now
+        //     依然能读到当下寄存器（这正是当堂验证要证明的事）。
+        //   这里仍要推进 seq：否则恢复上报后 seq 会与远程采集分配过的号码撞车。
+        if (!s_periodic_enabled) {
+            s_seq++;
+            if (s_seq % 50 == 0) {          // 每 5 秒提示一次，避免刷屏
+                ESP_LOGI(TAG, "周期上报已暂停（采点继续，seq 推进到 %u，不发包）",
+                         (unsigned)s_seq);
+            }
             continue;
         }
 
@@ -475,7 +534,7 @@ static void sampler_task(void *arg)
         }
 
         // ---- ③ 填充采样点（每个点带自己的 seq/idx/时间戳）----
-        seq++;
+        const uint32_t seq = ++s_seq;          // 共享计数器：远程采集也按它分配 seq
         batch_sample_t *b = &pkt->s[pkt->n];
         b->raw   = raw;
         b->gx    = imu_raw_to_g(raw.x);
@@ -693,6 +752,17 @@ void app_main(void)
     xTaskCreatePinnedToCore(uploader_task, "uploader", 12288, NULL, 5, NULL, 0);
     ESP_LOGI(TAG, "采样任务与上传任务已启动");
 
-    // app_main 自身的使命到此为止（两个任务会一直跑下去）
+    // ---- 第 2 周：启动远程采集指令客户端（1Hz 轮询，复用房第 1 周 HTTP 栈）----
+    //   它与上面两个任务完全解耦：轮询慢/失败都不会影响 10Hz 采样。
+    cmd_client_set_state_provider(cmd_state_provider);
+    cmd_client_set_periodic_handler(cmd_periodic_handler);
+    if (cmd_client_start() == ESP_OK) {
+        ESP_LOGI(TAG, "远程采集指令客户端已启动（下行通道＝设备主动轮询，无 MQTT/WebSocket）");
+    } else {
+        // 起不来只影响远程采集，周期上报仍照常工作 —— 如实说明而不是假装成功
+        ESP_LOGE(TAG, "远程采集指令客户端启动失败！周期上报继续，但网页点「采集最新数据」会超时");
+    }
+
+    // app_main 自身的使命到此为止（三个任务会一直跑下去）
     vTaskDelete(NULL);
 }
