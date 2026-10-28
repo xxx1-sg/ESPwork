@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "note": "第 4 周语言解析结构化样例。语言服务异常时先用它定位『是解析错了还是工具/数据错了』：本文件只约束意图与参数，不涉及数据库。运行 tools/nl_replay.py 逐条回放。",
+  "cases": [
+    {"id": "P01", "q": "查看上次数据", "intent": "query_latest", "why": "只读，最新一条"},
+    {"id": "P02", "q": "看一下上次采集的数据", "intent": "query_latest", "why": "含『采集』但带『上次』，仍是只读"},
+    {"id": "P03", "q": "看看最新读数", "intent": "query_latest"},
+    {"id": "P04", "q": "现在数据是多少", "intent": "query_latest"},
+    {"id": "P05", "q": "重新采集一次", "intent": "request_collect", "why": "动作：必然产生设备侧流量"},
+    {"id": "P06", "q": "再采一次", "intent": "request_collect"},
+    {"id": "P07", "q": "现在采集最新数据", "intent": "request_collect"},
+    {"id": "P08", "q": "重新采集 esp32s3eye-1C704C", "intent": "request_collect"},
+    {"id": "P09", "q": "最近 30 分钟的数据", "intent": "query_history", "time_range_s": 1800},
+    {"id": "P10", "q": "最近2小时的历史记录", "intent": "query_history", "time_range_s": 7200},
+    {"id": "P11", "q": "最近 10 条记录", "intent": "query_history", "limit": 10},
+    {"id": "P12", "q": "查看历史记录", "intent": "query_history"},
+    {"id": "P13", "q": "设备在线吗", "intent": "device_status"},
+    {"id": "P14", "q": "板子还活着吗", "intent": "device_status"},
+    {"id": "P15", "q": "采集完成了吗", "intent": "collect_status", "why": "只查上一次请求，不能重新下发"},
+    {"id": "P16", "q": "刚才那次采集的结果怎么样", "intent": "collect_status"},
+    {"id": "P17", "q": "开发板在哪里", "intent": "location", "why": "数据模型无位置，必须说明不足"},
+    {"id": "P18", "q": "给我这台设备的经纬度", "intent": "location"},
+    {"id": "P19", "q": "帮我写一首关于春天的诗", "intent": "unknown", "why": "越界能力，反问而不是硬猜"},
+    {"id": "P20", "q": "把数据库清空", "intent": "unknown", "why": "没有该工具，必须拒绝"}
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "meta": {
+    "mode": "tts_loopback",
+    "tts_voice": "Microsoft Huihui Desktop - Chinese (Simplified)",
+    "tts_sample_rate": 22050,
+    "tts_audio_ms": 2284,
+    "text": "查看上次数据"
+  },
+  "turn": {
+    "turn_id": "vt_f789be4d4774b683821b",
+    "final_state": "done",
+    "audio_source": "uploaded_file",
+    "audio_source_label": "上传的授权录音文件",
+    "device_id": "esp32s3eye-1C704C",
+    "audio": {
+      "bytes": 73124,
+      "sha256": "88808355706c5abcc7858659e79d0b6c0b61be6684fa7b3770d8de677427ce0c",
+      "sample_rate": 16000,
+      "bits": 16,
+      "channels": 1,
+      "duration_ms": 2284,
+      "rms": 0.066667,
+      "peak": 0.671478,
+      "zcr": 0.156158,
+      "vad_passed": true
+    },
+    "stages": [
+      {
+        "key": "recorded",
+        "label": "录音",
+        "status": "ok",
+        "detail": "上传的授权录音文件 · 2.28 秒 · 16000 Hz/16 bit/1 声道 · 73124 字节 · sha256=88808355706c…",
+        "audio_source": "uploaded_file",
+        "bytes": 73124,
+        "sha256": "88808355706c5abcc7858659e79d0b6c0b61be6684fa7b3770d8de677427ce0c",
+        "sample_rate": 16000,
+        "bits": 16,
+        "channels": 1,
+        "duration_ms": 2284
+      },
+      {
+        "key": "vad",
+        "label": "静音检测",
+        "status": "ok",
+        "detail": "RMS=0.0667（阈值 0.0060）· 峰值=0.6715（阈值 0.0200）· 过零率=0.1562 → 有语音能量",
+        "ms": 0,
+        "rms": 0.066667,
+        "peak": 0.671478,
+        "zcr": 0.156158,
+        "rms_min": 0.006,
+        "peak_min": 0.02,
+        "passed": true
+      },
+      {
+        "key": "asr",
+        "label": "语音识别",
+        "status": "ok",
+        "detail": "引擎 vosk / vosk-model-small-cn-0.22 · 0.64 秒 → “查看上次数据”",
+        "ms": 636,
+        "engine": "vosk",
+        "model": "vosk-model-small-cn-0.22",
+        "raw_text": "查看 上次 数据",
+        "text": "查看上次数据"
+      },
+      {
+        "key": "task",
+        "label": "任务执行",
+        "status": "ok",
+        "detail": "意图=query_latest · claim=old_record · 状态=answered · 来源=sensor_records.id=443339",
+        "ms": 223,
+        "intent": "query_latest",
+        "claim": "old_record",
+        "remote_status": "answered",
+        "source": "sensor_records.id=443339"
+      },
+      {
+        "key": "tts",
+        "label": "语音合成",
+        "status": "ok",
+        "detail": "引擎 sapi / 语音 Microsoft Huihui Desktop - Chinese (Simplified) · 产出 64.3 秒 WAV（2835112 字节）",
+        "ms": 422,
+        "engine": "sapi",
+        "voice": "Microsoft Huihui Desktop - Chinese (Simplified)",
+        "audio_ms": 64287,
+        "bytes": 2835112,
+        "sha256": "eb304103179e75b72284e76fccfaf63c4657f16d161c532e5a670e9ac08f779b"
+      },
+      {
+        "key": "playback",
+        "label": "播放",
+        "status": "pending",
+        "detail": "等待浏览器播放器开始播放（服务端不推断“已听到”）",
+        "ms": 0
+      }
+    ],
+    "transcript": "查看上次数据",
+    "asr": {
+      "status": "ok",
+      "engine": "vosk",
+      "model": "vosk-model-small-cn-0.22",
+      "ms": 636,
+      "error": null
+    },
+    "task": {
+      "status": "ok",
+      "intent": "query_latest",
+      "claim": "old_record",
+      "remote_status": "answered",
+      "source": "sensor_records.id=443339",
+      "answer": "「查看上次数据」→ 读取已有记录（只读，未向设备下发任何指令）。\n设备：esp32s3eye-1C704C\n采样时间：2026-10-23T10:22:57.458+0800（设备时钟 local）/ 服务器接收：2026-10-23 10:23:01（不到 1 秒前）\n合矢量 |a| = 1.7840 g；三轴 g = (-0.9629, -0.7349, 1.3098)\n来源：sensor_records.id=443339（received_at_utc=2026-10-23T02:23:01.287Z）\n状态：这是数据库中已经存在的一条记录，不是本次新采的。",
+      "error": null,
+      "response": {
+        "trace_id": "nl-820b424b2bee",
+        "query": "查看上次数据",
+        "intent": "query_latest",
+        "intent_label": "读取已有记录（最新一条）",
+        "params": {
+          "device_id": "esp32s3eye-1C704C",
+          "time_range_s": null,
+          "limit": null,
+          "wait_ms": null
+        },
+        "parser": "rule",
+        "confidence": 0.9,
+        "notes": [
+          "命中「查看」类措辞：只读已有记录"
+        ],
+        "tool_calls": [
+          {
+            "name": "list_devices",
+            "args": {},
+            "ok": true,
+            "ms": 221,
+            "digest": null
+          },
+          {
+            "name": "get_latest_record",
+            "args": {
+              "device_id": "esp32s3eye-1C704C"
+            },
+            "ok": true,
+            "ms": 1,
+            "digest": null
+          }
+        ],
+        "limits": {
+          "location_supported": false,
+          "max_wait_ms": 20000,
+          "device_scope_size": 2
+        },
+        "status": "answered",
+        "claim": "old_record",
+        "answer": "「查看上次数据」→ 读取已有记录（只读，未向设备下发任何指令）。\n设备：esp32s3eye-1C704C\n采样时间：2026-10-23T10:22:57.458+0800（设备时钟 local）/ 服务器接收：2026-10-23 10:23:01（不到 1 秒前）\n合矢量 |a| = 1.7840 g；三轴 g = (-0.9629, -0.7349, 1.3098)\n来源：sensor_records.id=443339（received_at_utc=2026-10-23T02:23:01.287Z）\n状态：这是数据库中已经存在的一条记录，不是本次新采的。",
+        "evidence": {
+          "source": "sensor_records.id=443339",
+          "device_id": "esp32s3eye-1C704C",
+          "record_id": 443339,
+          "observed_at_utc": "2026-10-23T02:23:01.287Z",
+          "received_at_utc": "2026-10-23T02:23:01.287Z",
+          "age_ms": 175,
+          "freshness": "live",
+          "device_command_sent": false,
+          "collect_request_id": null,
+          "collect_status": null
+        },
+        "guard": []
+      }
+    },
+    "tts": {
+      "status": "ok",
+      "engine": "sapi",
+      "voice": "Microsoft Huihui Desktop - Chinese (Simplified)",
+      "ms": 422,
+      "reply_text": "「查看上次数据」→ 读取已有记录（只读，未向设备下发任何指令）。\n设备：esp32s3eye-1C704C\n采样时间：2026-10-23T10:22:57.458+0800（设备时钟 local）/ 服务器接收：2026-10-23 10:23:01（不到 1 秒前）\n合矢量 |a| = 1.7840 g；三轴 g = (-0.9629, -0.7349, 1.3098)\n来源：sensor_records.id=443339（received_at_utc=2026-10-23T02:23:01.287Z）\n状态：这是数据库中已经存在的一条记录，不是本次新采的。",
+      "bytes": 2835112,
+      "sha256": "eb304103179e75b72284e76fccfaf63c4657f16d161c532e5a670e9ac08f779b",
+      "error": null
+    },
+    "reply_audio_url": "/api/v1/voice/reply/vt_f789be4d4774b683821b.wav",
+    "audio_url": "/api/v1/voice/audio/vt_f789be4d4774b683821b.wav",
+    "playback": {
+      "started_at_utc": null,
+      "reported_by": null,
+      "note": "播放是浏览器侧事实；服务端只记录上报，不推断“已听到”"
+    },
+    "run_location": {
+      "capture": "tts-loopback:Windows-11 本机 PC（授权录音·备用路径）",
+      "asr": "http://127.0.0.1:8013 · vosk/vosk-model-small-cn-0.22（离线）",
+      "task": "server.py · nl_assistant.handle_query（第 4 周同一函数，进程内调用）",
+      "tts": "http://127.0.0.1:8013 · sapi/Microsoft Huihui Desktop - Chinese (Simplified)",
+      "playback": "browser <audio> · 本机 PC"
+    },
+    "error": null,
+    "elapsed_ms": 1421,
+    "created_at_utc": "2026-10-23T02:23:00.491Z",
+    "engine_health": {
+      "ok": true,
+      "host": "127.0.0.1",
+      "port": 8013,
+      "python": "3.14.7",
+      "os": "Windows-11-10.0.26100-SP0",
+      "asr": {
+        "backend": "vosk",
+        "model_dir": "D:\\ESP\\.models\\vosk-model-small-cn-0.22",
+        "model_present": true,
+        "timeout_s": 25.0,
+        "loaded": true,
+        "load_ms": 180
+      },
+      "tts": {
+        "backend": "sapi",
+        "voice_hint": "Huihui",
+        "timeout_s": 20.0
+      },
+      "limits": {
+        "max_audio_bytes": 8388608,
+        "max_tts_chars": 600
+      }
+    }
+  },
+  "audio_in_bytes": 73124,
+  "audio_out_bytes": 2835112
+}

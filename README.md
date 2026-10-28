@@ -1,364 +1,233 @@
-# ESP32-S3-EYE 真实物理传感器采集 → VPS 后端 → Web 实时可视化
+# ESP32-S3-EYE · 第 4 周交付：用自然语言查询与请求采集
 
-一套完整可跑通的端到端系统：**板载物理传感器真实读数 → 开发板独立 Wi-Fi 上传 → 后端持久化 → 网页实时展示**。
+一台真实的 ESP32-S3-EYE 在做三轴加速度采集，后端是**零第三方依赖**的 Python 服务，
+网页上多了一个「语言助手」：你可以对它说 **「查看上次数据」**，也可以说 **「重新采集一次」**——
+这两句话会走**两条完全不同的路径**，而且助手**只有在拿到设备回执和新观测时才敢说"采到了"**。
 
-> ### 关于「真实数据」的硬性约定
-> 本工程**没有任何随机数、写死值或假测试数据**参与数据链路：
-> - 板端只从 QMA6100P 芯片寄存器读取物理测量值（`firmware/src/imu_qma6100p.c`）；
-> - 传感器读失败时，固件**如实报错并跳过本次上传**，不会用任何构造值顶替；
-> - 后端缺 `raw` 字段直接 400 拒收，**不会代为生成/补齐数据**；
-> - 网页每个数字都来自 API，页面代码里不存在任何传感器数值常量；
-> - 数据库里为空时，接口如实返回 404，页面显示「等待设备首次上传」。
-> - 后端还额外保存每一条上传的**原始报文 + SHA256**，可逐字节回溯证明未篡改。
+| 项目 | 说明 |
+|---|---|
+| 交付分支 | `feature/week4-nl-assistant` |
+| 运行环境 | Windows / Linux / macOS，Python 3.9+，**不需要 pip install** |
+| 本周新增 | 1 个后端模块（`backend/nl_assistant.py`）、1 个前端面板（`#nlPanel`）、3 套自检脚本 |
+| 自检结果 | 解析 20/20 · 接口 93/93 · 前端 38/38 |
+| 真机状态 | 已在真实板卡上跑通两次（2026-10-23 采集闭环、2026-10-28 只读查询） |
 
 ---
 
-## 0. 当前状态（已在真实硬件上跑通并验证）
+## 1. 本周要回答的问题
 
-| 环节 | 状态 | 证据 |
+> 「查看上次数据」和「重新采集一次」应怎样映射为不同任务，并复用前两周已验证的接口？
+
+答案是：**模型只负责把话翻译成意图，所有事实必须来自受控工具。**
+
+| | 查看上次数据 | 重新采集一次 |
 |---|---|---|
-| 板端读取真实 IMU（QMA6100P，I2C 0x12 / CHIP_ID 0x90） | ✅ 实机运行 | 串口 `[DATA] … raw=(…) g=(…) ms2=(…) \|a\|=0.94~0.99g` |
-| 开发板独立 Wi-Fi 联网（不依赖 USB） | ✅ 实机运行 | `获取 IP 成功: 10.1.42.183 (SSID="YOUR_WIFI_SSID")` |
-| SNTP 对时 + 本地时间戳 | ✅ 实机运行 | `SNTP 对时成功, 设备本地时间: 2026-10-08 13:43:57 +0800` |
-| 高密度采集：**10Hz 采样**（100ms 一个点） | ✅ 实测 10.01 Hz（15 分钟 9000 点） | 采样间隔中位 **100.0ms**，97% 落在 90~110ms（`evidence/final_10hz_suite.log`） |
-| 攒包上传：1 秒一个包，**一包 10 个点** | ✅ 实测 | 包间隔中位 **1.01s**，包大小分布恒为 `[10]` 点/包 |
-| 采集与上传**任务解耦**（网络慢不再拖慢采样） | ✅ 实机运行 | `sampler_task`(core1) / `uploader_task`(core0) + 两个队列 + 静态包池 |
-| 定时 POST 到后端（**真实网络**，非 USB 桥接） | ✅ 实机运行 | `[POST] seq=N..M n=10 http=201 resp={…}`；后端记录来源 IP = 板子 IP |
-| 后端持久化（逐字节原文 + 解析字段） | ✅ 已入库 1.7 万条 | `raw_uploads` 与 `sensor_records` 条数一致；`verify_ok` **全部为 1** |
-| 网页实时显示（数值全部来自接口） | ✅ 契约自检通过 | 30 个 DOM 齐全、15 个字段齐全、**0 处兜底假值** |
-| 网页数据密度（10Hz 下不丢样本） | ✅ 实测 60s 窗口 **590 个真实采样点** | `evidence/final_10hz_suite.log`（`after_id` 增量拉取） |
-| 网页渲染流畅度 | ✅ 实测 **61 FPS @60Hz / 120 FPS @120Hz** | `requestAnimationFrame` 每帧重绘，曲线沿真实时间轴连续滚动 |
-| 每帧开销 | ✅ 已按帧节流 | 61 帧内 DOM 写入 0 次、布局读取 0 次（自检断言） |
-| 断流行为（保留时间戳 + 提示「暂无新数据」） | ✅ 打桩 DOM 实测通过 | `node tools/test_web_stale.js` 全部用例通过 |
-| 三方核对（串口 = 数据库 = 网页接口） | ✅ **逐采样点全部一致** | `evidence/verify_report.json`（键 = `boot_count+seq+sample_idx`） |
-| 长时间稳定性 | ✅ **单次开机连续采集 15 分钟无重启** | `evidence/final_10hz_suite.log` 里 boot 808 运行 898.9s / 9000 点 |
+| 意图 | `query_latest` | `request_collect` |
+| 调用的工具 | `get_latest_record`（只读） | `request_collect`，再轮询 `get_collect_status` |
+| 会不会碰设备 | **不会**，设备侧零流量 | **会**，排一条 `collect_now` 下行指令 |
+| 回答里的时间 | 这条记录**原本**的采样时间 | 这次**新观测**的完成时间 |
+| 证据来源 | `sensor_records.id = …` | `observations.observation_id = …` |
+| 能不能说"完成" | 不涉及 | **只有** `completed` 且带 `record_id` 才允许 |
 
-复现命令与逐条对照数据见 **[docs/05_真实硬件采集记录样例.md](docs/05_真实硬件采集记录样例.md)**。
-
-> 📌 **当前实际运行方式（如实说明）**：本工程**当前跑的是「开发板 → 本机后端」的同网段直连**
-> —— 板子走 Wi-Fi、后端跑在 `10.1.41.182:8000`，两边在同一个可路由网络里，**全程走真实网络**
-> （不是 USB 桥接），RTT 约 50~60ms。
-> 之所以从「Cloudflare 临时隧道 + HTTPS」换成直连：10Hz 高密度采集下，隧道单次请求要约 0.88s，
-> 且临时隧道地址每次重启都变、本机 DNS 还被投毒过（`api.trycloudflare.com` 被解析到错误 IP），
-> 会频繁打断长时间采集。**协议层代码一行没删**：把 `APP_SERVER_URL` 换回 `https://…`
-> 就回到「真实 TLS 校验 + 公网」的 VPS 链路（`APP_TLS_TRUST_MODE 1` + 内嵌 CA 逻辑原样保留）。
-> `backend/deploy/` 里的 systemd / nginx / 一键部署脚本**尚未在真实 VPS 上执行过**（本次没有可用 VPS），
-> 部署到 VPS 请按 [docs/03](docs/03_VPS部署.md) 操作。
-
-> ⚠️ 已知硬件注意事项：本机 USB 口供电偏弱时，板子会在 Wi-Fi 射频启动瞬间掉电重启
-> （表现为约 1 次/秒反复重启，串口输出断在 `wifi_init` 之后）。固件已把 Wi-Fi 最大发射功率
-> 降到 8dBm 以降低峰值电流（`APP_WIFI_MAX_TX_POWER_QDBM`），实测可在该 USB 口稳定运行；
-> 换用供电充足的口/线后可调回 78（19.5dBm）。
+这两条路径不是靠提示词"嘱咐"模型别搞混，而是**在代码里根本没有交叉的入口**：
+读操作没有写库能力，写操作必须经过节流、设备在白名单内、并等到真实回执。
 
 ---
 
-## 1. 系统架构
+## 2. 数据怎么流
 
-```
-┌──────────────────────────────┐        ┌───────────────────────────┐        ┌──────────────────────┐
-│  ESP32-S3-EYE（实体开发板）   │        │  VPS / 本机后端           │        │  Web 前端            │
-│                              │        │  backend/server.py        │        │  web/                │
-│  板载 QMA6100P 加速度计       │  Wi-Fi │                           │  HTTP  │  index.html          │
-│  I2C: SDA=GPIO4 SCL=GPIO5    │ ─────► │  POST /api/v1/ingest      │ ◄───── │  app.js              │
-│  地址 0x12, CHIP_ID 0x90     │ 1包/秒 │    ├ 原始报文原样入库      │ 0.8s   │  style.css           │
-│                              │ 10点/包│    └ 每点一行入库          │ 增量   │                      │
-│  sampler_task  10Hz 采集      │        │  GET  /api/v1/latest …    │ 轮询   │  断流时保留时间戳      │
-│      │  指针队列（静态包池）   │        │  GET  /records?after_id=  │        │  并提示「暂无新数据」  │
-│  uploader_task 攒包 + POST    │        │  SQLite 持久化            │        │                      │
-│  USB 口：只用于烧录/看日志    │        │  （不伪造、不补齐）        │        │                      │
-└──────────────────────────────┘        └───────────────────────────┘        └──────────────────────┘
-        ▲ 串口只做调试                      ▲ 原样保存，不伪造
-        └── 三方核对：串口实测 = 数据库记录 = 网页数值（键 = boot+seq+包内序号）
+```text
+        浏览器（同源页面，不引任何第三方 CDN）
+          │  工具栏「语言助手」：输入框 → 回答 / 来源与时间芯片 / 工具调用轨迹
+          │  POST /api/v1/nl/query  {q, device_id, wait_ms}
+          ▼
+  backend/nl_assistant.py     意图解析（授权语言服务，或本地规则兜底）
+          │  只允许调 7 个白名单工具；参数、设备范围先校验
+          ├──────────────── 只读分支 ────────────────┐
+          │  get_latest_record / get_records          │
+          │  get_device_status / list_devices         │
+          │  list_collect_requests                    │
+          │        ▼                                  │
+          │  sensor_records（历史数据，原样返回）      │
+          │                                           │
+          └──────────────── 有副作用分支 ─────────────┘
+                 request_collect
+                 ├── 写 collect_requests（一条请求一行，状态机推进）
+                 └── 排 pending_commands（collect_now）
+                            │ 设备 1Hz 轮询 /api/v1/device/commands/poll
+                            ▼
+                    ESP32-S3-EYE 立即采一帧
+                            │ POST /api/v1/ingest（带 request_id 回执）
+                            ▼
+                    observations  ← ★ 唯一能证明"这次采集完成"的地方
 ```
 
-> **为什么要拆成两个任务**：一开始是"采集→上传→再采集"的单循环，结果隧道一次超时（10 秒）
-> 加上重试就把采样卡住 33 秒，数据出现 62 秒空洞。改成 **10Hz 采集任务 + 独立上传任务**后，
-> 网络再慢也只影响上传队列（丢包时明确打印 `ESP_LOGW` 说明丢弃原因），**采样节奏始终 100ms 不变**。
+`/api/v1/nl/query` 的返回里，`answer` 是给人看的话，`evidence` 是给程序看的证据，
+`claim` 是**允许说到什么程度**的档位（`new_record` / `old_record` / `pending` / `no_evidence` / `none`）。
 
 ---
 
-## 2. 目录结构
+## 3. 界面
 
-```
-D:\ESP
-├── firmware/                       # 板端工程（PlatformIO + ESP-IDF，带详细注释）
-│   ├── platformio.ini
-│   ├── sdkconfig.defaults
-│   ├── CMakeLists.txt
-│   └── src/
-│       ├── main.c                  # 主流程：sampler_task(10Hz) + uploader_task(攒包上传)
-│       ├── imu_qma6100p.c/.h       # QMA6100P 真实读数驱动（寄存器级）
-│       ├── uploader.c/.h           # Wi-Fi 联网 + SNTP 对时 + HTTP(S) POST（第2周加了 URL 参数化 + 请求互斥锁）
-│       ├── cmd_client.c/.h         # ★ 第2周：远程采集指令轮询/回执/单采一次/观测回传（复用上面的 HTTP 栈）
-│       ├── app_config.h            # ★ Wi-Fi / 服务器地址 / 令牌 / 采样率 在这里改
-│       ├── app_config.local.h      # 本地私密覆盖（不进版本库，.gitignore 已忽略）
-│       └── CMakeLists.txt
-├── backend/                        # 后端服务（零依赖，Python 标准库）
-│   ├── server.py
-│   ├── README.md                   # 接口文档
-│   └── deploy/                     # systemd / nginx / 一键部署脚本
-├── web/                            # 前端（原生 JS，无构建步骤）
-│   ├── index.html  app.js  style.css
-├── tools/                          # 辅助工具
-│   ├── serial_watch.py             # ★ 抓串口（"开两次"策略，抗芯片复位重枚举）
-│   ├── serial_capture.py           # 抓串口日志（简单版，留证据用）
-│   ├── verify_three_way.py         # ★ 三方核对（键 = boot+seq+包内序号，含增量接口核对）
-│   ├── analyze_db_rate.py          # ★ 用数据库当观察者统计真实密度（零干扰、不怕复位）
-│   ├── analyze_rate.py             # ★ 从串口日志统计采样节奏（用板端 up= 单调时钟）
-│   ├── live_web_probe.js           # ★ 真后端 + 真 app.js 的实时网页探针（10Hz 不丢样本）
-│   ├── start_system.ps1            # ★ 一条命令起「后端 + 网页」（可选 -Tunnel 一起开穿透）
-│   ├── decode_backtrace.py         # ★ 把 `Guru Meditation` 崩溃地址翻译成函数/行号
-│   ├── check_web_contract.py       # ★ 网页↔接口契约自检（DOM/字段/有无假值）
-│   ├── test_web_stale.js           # ★ 前端断流行为实测（打桩 DOM 跑真实 app.js）
-│   ├── gen_ca_header.py            # ★ 抓取服务器真实 CA 链 → 生成固件内嵌证书
-│   ├── switch_endpoint.py          # ★ 换后端地址一条命令（改 URL+重生成 CA+重烧）
-│   ├── selftest_backend.py         # 后端自检（用临时库，不污染生产）
-│   ├── selftest_collect.py         # ★ 第2周：远程采集闭环接口层自检（103 项，覆盖当堂验证全部分支）
-│   ├── test_web_collect.js         # ★ 第2周：前端五状态徽标 + 超时/回执文案红线（打桩 DOM 跑真实 app.js）
-│   ├── live_w2_01..04_*.ps1        # ★ 第2周：真机当堂验证 4 项（暂停/改状态/关机/旧记录）
-│   ├── trace_collect_request.py    # ★ 用真实 request_id 复盘请求–回执–观测三表联查
-│   ├── check_w2_schema.py          # ★ 核对第2周新表/新列是否按迁移建立
-│   ├── fix_idf_venv.py             # 修复 ESP-IDF Python 虚拟环境（见 docs/02）
-│   ├── fetch_url.py                # 通用下载器（本机 curl 被拦，用 Python 下载）
-│   └── bin/cloudflared.exe         # 内网穿透（本机联调用，可选）
-├── docs/                           # 文档
-│   ├── 01_硬件接线与传感器说明.md
-│   ├── 02_编译与烧录.md
-│   ├── 03_VPS部署.md
-│   ├── 04_三方核对验证.md
-│   └── 05_真实硬件采集记录样例.md   # ★ 真实采集数据
-└── evidence/                       # 实测证据（串口日志 / 数据库快照 / 核对报告）
-```
+![语言助手：只读查询](docs/img/nl_read.png)
+
+这张图是一次**真实**的只读查询（2026-10-28 09:19，设备 `esp32s3eye-1C704C`）。值得看的是下面四行：
+
+- 回答里明写「**只读，未向设备下发任何指令**」；
+- 时间给的是**记录的采样时间**，并标注「距今 N 秒」；
+- 底部芯片：`来源 sensor_records.id=524992`、`状态 answered`、`数据新鲜度 较新`、
+  `设备指令 未下发（只读）`、`数据年龄 24 秒`；
+- 工具轨迹只有两条：`list_devices` → `get_latest_record`（300ms / 2ms），**没有第五条**。
+
+歧义时不会瞎猜：不指定设备会反问「你想操作哪台设备？当前接入了 2 台，我不能替你猜」，
+并把候选设备做成按钮，**点了才发请求**。
 
 ---
 
-## 3. 快速开始
-
-### ① 部署后端
+## 4. 三步跑起来
 
 ```bash
-# VPS（推荐）：一键脚本
-sudo bash backend/deploy/install_vps.sh "你的设备令牌"
-# 本机测试（Windows，一条命令起后端+网页，并打印板子该填的地址）：
-powershell -ExecutionPolicy Bypass -File tools\start_system.ps1
-# 本机测试（通用）：
-python backend/server.py
+git clone -b feature/week4-nl-assistant https://github.com/xxx1-sg/ESPwork.git
+cd ESPwork
+python backend/server.py        # 浏览器打开 http://127.0.0.1:8000/
 ```
 
-> 本机测试时后端要监听 `0.0.0.0`（默认已是），否则开发板连不进来。
-> `start_system.ps1` 还会用本机真实内网 IP 打印出 `APP_SERVER_URL` 该填的那一行，
-> 不需要自己 `ipconfig` 猜地址。
+不需要 `pip install`：后端只用标准库（`http.server` + `sqlite3`），前端是原生 JS。
+数据库 `backend/data/sensor.db` 首次启动会自动建表；页面在没数据时显示「等待设备首次上传」，不会编数。
 
-### ② 改固件配置
+**可选**：接自己的语言服务（OpenAI 兼容接口）。密钥只从服务端环境变量读，永远不出现在响应里：
 
-编辑 `firmware/src/app_config.h`：
-
-```c
-// 主用 2.4G 热点（ESP32-S3 不支持 5GHz！）
-#define APP_WIFI_SSID           "你的2.4G热点"
-#define APP_WIFI_PASSWORD       "密码"
-// 备用热点：主用连不上会自动切过去（可留成同一个）
-#define APP_WIFI_FALLBACK_SSID      "备用热点"
-#define APP_WIFI_FALLBACK_PASSWORD  "备用密码"
-
-// 后端地址：https:// 开头会自动启用真实 TLS 校验（见下面 APP_TLS_TRUST_MODE）
-//   同网段直连（当前用的这条）: "http://10.1.41.182:8000/api/v1/ingest"
-//   VPS / 隧道:                "https://你的域名/api/v1/ingest"
-#define APP_SERVER_URL    "http://10.1.41.182:8000/api/v1/ingest"
-#define APP_DEVICE_TOKEN  "你的设备令牌"      // 与后端 SENSOR_TOKEN 一致
-
-// 采集密度：100ms 采一个点（10Hz），攒够 10 个点（1 秒）发一次 HTTPS
-#define APP_SAMPLE_PERIOD_MS  100     // 采样周期
-#define APP_BATCH_SIZE        10      // 一包几个点（= 上传周期 1000ms / 采样周期 100ms）
-#define APP_MAX_MERGE         30      // 网络慢时最多把几个包合成一次请求（只影响请求数，不丢点）
-
-// HTTPS 校验方式：0=用 IDF 内置根证书包；1=用工程内嵌的真实 CA 链；
-//                 2=不校验（★仅本机排错，生产严禁）
-#define APP_TLS_TRUST_MODE  1
+```bash
+export NL_LLM_BASE_URL=https://your-endpoint/v1
+export NL_LLM_API_KEY=***            # 只在服务端，日志与响应都不回显
+export NL_LLM_MODEL=your-model
 ```
 
-> **采集密度与上传频率是两件事**：板子 10Hz 采样，但只 1Hz 发请求（一包 10 个点）。
-> 这样既有 10Hz 的数据密度，又不会把连接数打满。网络慢时上传任务会把积压的包
-> 合并成一次请求（默认最多 30 个包），采样节奏不受影响。
-
-> 若目标域名的证书根不在 ESP-IDF 内置根证书包里（例如 Cloudflare 隧道用的
-> Google Trust Services），保持 `APP_TLS_TRUST_MODE 1`，并运行
-> `python tools/gen_ca_header.py` 重新生成内嵌 CA —— **不要**为了省事把校验关掉。
-> 换服务器地址时可以直接用一条命令完成「改地址 + 重生成 CA + 重新编译烧录」：
->
-> ```powershell
-> python tools\switch_endpoint.py --url https://新域名/api/v1/ingest
-> ```
-
-### ③ 编译 + 烧录（USB 口仅作调试通道）
-
-```powershell
-cd firmware
-..\.venv\Scripts\python.exe -m platformio run -t upload
-..\.venv\Scripts\python.exe -m platformio device monitor
-```
-
-### ④ 看网页
-
-浏览器打开后端地址（本机 `http://127.0.0.1:8000/`，VPS `https://你的域名/`）。
-
-图表用 `requestAnimationFrame` **每帧重绘（约 60 FPS）**，横轴按真实时间定位，
-所以曲线是连续左移的平滑滚动，而不是"来一条数据跳一格"。可用 URL 参数调整：
-
-| 参数 | 默认 | 含义 |
-|---|---|---|
-| `poll` | 800 | 轮询后端间隔（ms）。用 `after_id` 增量拉取，10Hz 数据一个点都不会漏 |
-| `stale` | 6000 | 超过多久没有新数据就提示「暂无新数据」 |
-| `window` | 60 | 曲线时间窗口（秒）。10Hz 下这个窗口里约有 600 个真实采样点 |
-| `history` | 700 | 页面初始化时拉取的历史点数（后端上限 2000） |
-| `chunk` | 400 | 每次增量拉取的最大条数 |
-
-例：`http://127.0.0.1:8000/?window=30&poll=500`
-
-> 平滑只发生在**画布动画**上：卡片里的数字、时间戳、原始码值全部原样来自接口，
-> 不做任何插值或滚动动画（自检脚本会断言"跑 61 帧后数值仍精确等于接口值"）。
-> 页面切到后台标签页时会自动停止重绘，不白烧 CPU。
-
-> **10Hz 下为什么必须用增量拉取**：以前每次轮询只取 `/api/v1/latest` 一条，
-> 800ms 里新产生的 8 个点会被直接跳过（曲线一段一段地跳）。
-> 现在改成 `GET /api/v1/records?after_id=<最后一条 id>&limit=400`：
-> 后端返回 `id > after_id` 的记录（按 id 升序），网页按 id 去重后**逐点追加**，
-> 一条不会重复、也一条不会丢。`tools/live_web_probe.js` 就是专门验证这件事的：
-> 它拿真实后端驱动真实 `app.js`，断言"60 秒窗口里确实有 580+ 个真实采样点"。
-
-> **帧率上限说明**：`requestAnimationFrame` 与显示器垂直同步对齐，所以帧率上限 = 显示器刷新率
-> （60Hz 屏就是 60FPS，120Hz 屏自动 120FPS，不需要改任何代码）。页脚会实测并显示
-> `显示器 ≈60Hz · 中位帧 16.7ms · 最慢 xx ms` —— 如果 FPS 明显低于这个上限，说明是掉帧
-> （性能问题），而不是被上限卡住；正常应看到 FPS 与括号里的刷新率一致。
-
-### ⑤ 三方核对
-
-```powershell
-# ① 抓串口（注意：打开串口会让芯片复位一次，属正常现象）
-python tools\serial_watch.py --port COM5 --seconds 70 --out evidence\serial_run.log
-# ② 三方核对：串口 = 数据库 = 接口；键 = boot_count + seq + sample_idx
-python tools\verify_three_way.py --serial evidence\serial_run.log ^
-       --db backend\data\sensor.db --api http://127.0.0.1:8000 --out evidence\verify_report.json
-# ③ 网页↔接口契约 + 前端行为 + 实时探针（不需要浏览器）
-python tools\check_web_contract.py --api http://127.0.0.1:8000
-node tools\test_web_stale.js
-node tools\live_web_probe.js --seconds 15
-# ④ 数据密度（零干扰：只读数据库，不碰串口，所以不会打断板子）
-python tools\analyze_db_rate.py --minutes 10
-```
-
-> 抓日志建议用 `serial_watch.py`：打开 USB-Serial-JTAG 串口会让芯片复位并重新枚举 USB，
-> 普通工具容易因此丢掉开机日志或读不到数据，该脚本用「开两次」策略规避（见 docs/05 第 8.3 节）。
-> **想看长时间稳定性就别抓串口**（每次抓都会复位板子）：用 `analyze_db_rate.py` 只读数据库，
-> 它能直接告出"这段时间里有没有出现短命 boot"——重启循环一眼可见。
+不配也能用：会自动降级到本地规则解析（`parser: rule_fallback`），
+**结论与配了模型时一致**，差别只在措辞的自然度。
 
 ---
 
-## 4. 数据包字段（开发板每次上报）
+## 5. 15 分钟验收路径
 
-板子 **1 秒发一个包**，包里是这一秒采到的 **10 个真实采样点**（每点 100ms 一个）。
-每个采样点**自带 `seq` 与包内序号 `idx`**，所以不管是"一包 10 点"还是"网络慢时几个包合并成一次请求"，
-每个点都能与串口 `[DATA]` 行、数据库行一一对上（这也是三方核对的键）。
+服务起来后，逐条复制即可（PowerShell 用 `curl.exe`）：
 
-包级字段：
+```bash
+# ① 只读：读最近一条，零设备流量
+curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query \
+  -H "Content-Type: application/json" \
+  -d '{"q":"查看上次数据","device_id":"esp32s3eye-1C704C"}'
+# 期望：intent=query_latest · claim=old_record · device_command_sent=false
 
-| 字段 | 含义 |
+# ② 采集：请求设备真的采一帧（需要板子在线）
+curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query \
+  -H "Content-Type: application/json" \
+  -d '{"q":"重新采集一次","device_id":"esp32s3eye-1C704C","wait_ms":15000}'
+# 期望：拿到回执 → status=completed · claim=new_record · evidence.record_id 非空
+#       没拿到   → status=pending/timeout · claim=pending/no_evidence · 回答明说"不能确认"
+
+# ③ 追问上一次采集结果（不会重新下发）
+curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query \
+  -H "Content-Type: application/json" \
+  -d '{"q":"刚才那次采集完成了吗","device_id":"esp32s3eye-1C704C"}'
+# 期望：intent=collect_status · 工具轨迹 list_collect_requests → get_collect_status
+
+# ④ 歧义 / 越界 / 危险动作
+curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query -H "Content-Type: application/json" -d '{"q":"查看上次数据"}'
+#   → status=clarify + 2 个候选设备，不下发任何请求
+curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query -H "Content-Type: application/json" -d '{"q":"查看 esp32s3eye-HACK 的数据"}'
+#   → 403 DEVICE_OUT_OF_SCOPE
+curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query -H "Content-Type: application/json" -d '{"q":"把数据库清空"}'
+#   → intent=unknown，明说"没有删除/修改/重启能力"，不写库、不下发
+```
+
+三套自检（不依赖上面的手工步骤，可进 CI）：
+
+```bash
+python tools/nl_replay.py       # 20 条结构化样例，只测解析，不连库不碰设备
+python tools/selftest_nl.py     # 93 项断言，独立端口 + 临时数据库
+node   tools/test_web_nl.js     # 38 项，打桩 DOM 跑真实 app.js
+```
+
+---
+
+## 6. 五道校验与三条红线
+
+客户最容易问的是"它会不会乱来"。这里的答案是**能力上就不允许**：
+
+| 校验 | 做法 |
 |---|---|
-| `device_id` | 设备唯一 ID，由芯片 eFuse MAC 派生（重启不变） |
-| `boot_count` | 第几次开机（重启后 `seq` 从 1 重新开始，所以核对必须带它） |
-| `sample_period_ms` / `sample_count` | 采样间隔（100ms）/ 本包点数（10） |
-| `seq_first` / `seq_last` | 本包第一个 / 最后一个采样点的全局序号 |
-| `sensor.*` | 型号、I2C 地址、CHIP_ID、量程、灵敏度(LSB/g)、输出率、平均次数 |
-| `unit.*` | 每个数值的物理单位声明 |
-| `samples[]` | **本包的全部采样点**（下面每项都在数组里逐点给出） |
+| 权限最小化 | 7 个工具白名单，**只有 1 个**（`request_collect`）有副作用；没有删除、修改、重置、重启类工具 |
+| 设备范围 | 设备不在 `devices` 表 → `403 DEVICE_OUT_OF_SCOPE`；连"句子里点了名"的陌生设备也拦 |
+| 参数校验 | 时间窗、条数、`wait_ms` 全部夹到合法区间，非法值直接拒绝 |
+| 写操作限流 | 同一设备 5 秒内只允许一次请求；已有在途请求时**复用**，不重复下指令 |
+| 歧义处理 | 多设备未指明 → `clarify` + 候选列表，不猜、不执行 |
 
-`samples[]` 里每个点：
+三条红线（都有自检用例钉住，不是口号）：
 
-| 字段 | 含义 |
-|---|---|
-| `seq` / `idx` | 采样点全局序号 / 包内第几个（1..N） |
-| `up_ms` | 上电以来的单调时间（毫秒） |
-| `ts_utc_ms` / `ts_local` | SNTP 对时后的 UTC 毫秒 / 带时区的本地时间字符串 |
-| `raw.x/y/z` | **传感器原始测量码值**（14 位有符号） |
-| `accel_g.x/y/z` | 换算后的重力倍数（单位 g） |
-| `accel_ms2.x/y/z` | 换算后的国际单位制加速度（m/s²） |
-| `magnitude_g` | 合矢量 √(x²+y²+z²)，静止时应 ≈ 1.000 g |
-
-> 为兼容早期版本，包顶层**同时**给出了 `raw` / `accel_g` / `accel_ms2` / `magnitude_g`，
-> 它们等于本包**最后一个**采样点的值；`seq` / `ts_local` / `uptime_ms` 同理。
-
-换算关系（板端与后端完全一致）：`g = raw / lsb_per_g`，`m/s² = g × 9.80665`，
-`lsb_per_g = 8192 / 量程(g)`。
+1. **没有 `observations.record_id` 就不许说"已采到"。** 完成措辞只对 `claim=new_record` 放开，
+   另有一道 `_guard_answer` 兜底：万一模板拼错，出口处再拦一次。
+2. **只读路径不许产生设备流量。** `device_command_sent` 必须为 `false`，前端也会标「未下发（只读）」。
+3. **不生成坐标。** 数据包里没有位置字段，问到位置就如实说"证据不足"，不猜、不编。
 
 ---
 
-## 5. 文档索引
+## 7. 真机实测记录
 
-| 文档 | 内容 |
-|---|---|
-| [docs/01](docs/01_硬件接线与传感器说明.md) | 传感器型号/引脚/寄存器表、USB 两口的区别、I2C 接线、可选外接传感器 |
-| [docs/02](docs/02_编译与烧录.md) | 工具链安装、编译、烧录、串口查看、常见问题 |
-| [docs/03](docs/03_VPS部署.md) | VPS 部署、HTTPS、运维、备份、本机穿透联调 |
-| [docs/04](docs/04_三方核对验证.md) | 三方核对步骤与脚本、断流验证、对不上的排查 |
-| [docs/05](docs/05_真实硬件采集记录样例.md) | **真实硬件采集记录样例**（含原始串口日志与数据库记录） |
-| [docs/06](docs/06_第2-3周接口文档_远程采集与按键反馈.md) | **第 2–3 周接口文档**：远程采集请求模型、请求状态机、L1∧L2∧L3 新采集判定、按键求助闭环、新增表 DDL 与错误码 |
-| [docs/07](docs/07_第2-3周开发任务清单.md) | **第 2–3 周开发任务清单**：按学时拆分的任务ID、交付物、DoD、依赖与关键路径、角色分工、备用路径 |
-| [docs/08](docs/08_第2-3周测试用例.md) | **第 2–3 周测试用例**：接口/集成/系统用例、两条当堂验证专节、缺陷分级与可复制测试命令 |
-| [docs/09](docs/09_第2周交付_远程采集功能与状态图.md) | **第 2 周交付（已真机验证）**：刷新 vs 采集的代码级区分、请求–回执–观测三表联查、请求状态图、动作执行追踪、当堂验证 4 项实测结果、踩坑与修法 |
+**2026-10-23 09:54，`esp32s3eye-1C704C` 在线，完整采集闭环：**
 
----
-
-## 6. 第 2 周：远程采集功能（已交付并真机验证）
-
-第 1 周的能力是「板子按自己的节奏周期上报」；第 2 周新增的问题是：
-
-> **点击「采集最新数据」，如何证明开发板做了新采集，而不是读取数据库里的旧值？**
-
-答案是一套**请求—回执—观测**的闭环，用三层互锁证据（L1∧L2∧L3）判定：
-
-| 概念 | 端点 | 说明 |
-|---|---|---|
-| 刷新已存数据 | `GET /api/v1/records`、`/latest` | 只查库，**零设备侧流量** |
-| 采集最新数据 | `POST /api/v1/collect_requests` | 排一条 `collect_now` 指令，等设备取走 |
-| 设备取指令 | `POST /api/v1/device/commands/poll` | 下行**唯一**通道（设备主动轮询，无 MQTT/WebSocket） |
-| 设备回执 | `POST /api/v1/device/ack` | `received` → 页面「设备接收回执」。**回执 ≠ 完成** |
-| 观测回传 | `POST /api/v1/observations` | 带 `request_id`+`nonce`+新 `seq`，过 L1∧L2∧L3 才 `completed` |
-| 暂停周期上报 | `POST /api/v1/device/pause` | 暂停的是**上报**，不是采集能力 |
-| 请求详情/追踪 | `GET /api/v1/collect_requests[/<id>]` | 页面 1s 轮询状态；连点两次能看到两条记录 |
-
-**两条红线（都有真机证据 + 自动化断言）**：
-
-1. **旧记录不可改写为本次完成** —— 任一校验层不成立 → `409` + `rejected_observations` 留痕，
-   `collect_requests.status` **绝不改写**（`web/app.js` 会把被拒收的原因显示出来）。
-2. **超时 ≠ 硬件故障** —— `timeout` 只由服务端 `deadline_utc` 计时产生，只写
-   `device_events(command_timeout, source='server')`，**不写 `sensor_error`、不改 `devices.last_status`**；
-   只有设备 `ack_type=rejected` 且 `reason=SENSOR_ERROR` 才算硬件问题。
-   页面文案禁止对超时使用"设备故障/传感器损坏"字样。
-
-自检与真机验证命令：
-
-```powershell
-# 接口层自检（临时库，103 项，覆盖当堂验证全部分支）
-.\.venv\Scripts\python.exe tools\selftest_collect.py
-# 前端：五状态徽标 + 两条文案红线（打桩 DOM 跑真实 app.js）
-node tools\test_web_collect.js
-# 真机当堂验证 4 项（需板子在线；③ 需按提示拔掉电源）
-powershell -ExecutionPolicy Bypass -File tools\live_w2_01_pause_collect.ps1
-powershell -ExecutionPolicy Bypass -File tools\live_w2_02_state_change.ps1
-powershell -ExecutionPolicy Bypass -File tools\live_w2_03_shutdown_timeout.ps1
-powershell -ExecutionPolicy Bypass -File tools\live_w2_04_immutable.ps1
+```text
+采集前 latest        : record_id=426678  seq=16600
+「重新采集一次」      → status=completed  claim=new_record
+新观测              : record_id=426699  |a|=1.3011 g   端到端约 1.9s
+证据链              : observations.observation_id=15
+                      + collect_requests.request_id=08b49375…
 ```
 
-> 板端新增 `firmware/src/cmd_client.c`（1Hz 轮询/回执/单采/回传），**复用第 1 周的 HTTP(S) 客户端**，
-> 只把 URL 参数化并加了请求互斥锁（两个任务共用一个 keep-alive 句柄时，响应会张冠李戴）。
-> 详见 [docs/09](docs/09_第2周交付_远程采集功能与状态图.md) §1.4 的两条真机踩坑记录。
+**2026-10-28 09:19，只读路径（就是上面那张截图）：**
+
+```text
+「查看上次数据」      → intent=query_latest  claim=old_record
+返回               : sensor_records.id=524992，采样时间 09:19:04，|a|=1.7491 g
+设备流量            : device_command_sent=false（零请求）
+```
 
 ---
 
-## 7. 安全提示
+## 8. 已知限制（如实说明）
 
-- `app_config.h` 里的 Wi-Fi 密码与设备令牌是明文，**交付/开源前请替换**；
-  生产环境请把令牌换成随机长字符串，并同步修改后端 `SENSOR_TOKEN`。
-- 生产必须走 HTTPS，并保持 `APP_TLS_TRUST_MODE` 为 `0` 或 `1`（真实校验证书）；
-  只有在**本机抓包排错**时才可临时设为 `2`，用完立刻改回。
-- 后端 `SENSOR_PORT` 建议只监听 `127.0.0.1`，由 nginx 反代对外提供 80/443。
+1. **真实语言服务尚未在本机接通**：本机没有授权端点，当前跑的是规则解析兜底。
+   接入代码与提示词已就绪，拿到校内服务后按 [docs/12 §11.2](docs/12_第4周_自然语言查询与请求采集.md) 四步补验即可。
+2. **没有多轮上下文**：每句话独立解析，设备上下文由页面当前选择提供，"它 / 那个"这类指代无法解析。
+3. **位置类问题不支持**：数据模型里没有位置字段，助手会说明不足，**不会生成坐标**。
+4. **现场演示提示**：若板子同时开着相机/语音任务，下行指令轮询可能被拖慢到 30s 以上，
+   此时「重新采集一次」会在 8s 后如实返回 `pending`（页面写"不能确认"）。
+   这不是撒谎，是红线生效——可以接着问「刚才那次采集完成了吗」看状态推进。
+5. 仓库里还包含第 5–6 周的语音链路（相机、按键说话、澄清/停止），**不在本分支的验收范围**，
+   为保证服务能正常启动而保留。
+
+---
+
+## 9. 目录导航
+
+| 目录 / 文件 | 是什么 |
+|---|---|
+| `backend/server.py` | 零依赖 HTTP 服务：采集、相机、求助、语言助手、语音全部接口 |
+| `backend/nl_assistant.py` | **本周新增**：意图解析 + 7 个受限工具 + claim 分档 + 兜底闸 |
+| `web/` | 原生 JS 页面：实时曲线、采集面板、按键求助、相机预览、语言助手 |
+| `firmware/src/` | 板端固件（ESP-IDF）：IMU 采样、上传、指令轮询、LCD、相机、按键反馈 |
+| `tools/` | 自检与验收脚本（20 / 93 / 38 三套是本周的） |
+| `docs/12_第4周_自然语言查询与请求采集.md` | **本周交付文档**：设计、五道校验、测试矩阵、真机记录、迁移选题 |
+| `docs/11_第4周_摄像头接入与拍照.md` | 同周硬件线：板载 OV2640 接入与拍照 |
+| `docs/00_完整工程手册.md` | 工程的完整技术手册（原 README，含 1–6 周全部细节） |
+| `evidence/` | 实测证据：串口日志、照片、验证报告 |
+
+---
+
+## 10. 关于这个分支
+
+- 分支：`feature/week4-nl-assistant`，从 `feature/week2-remote-collection` 继续，主分支 `main` 保持第 1 周基线；
+  按周分支便于逐周评审，最后再合并。
+- 本周提交包含第 3 周（按键求助 / LCD 反馈）与第 4 周（摄像头 + 语言助手）的能力，
+  因为语言助手的"设备在线吗 / 求助状态"回答依赖第 3 周已有的接口。
+- 想只看代码差异：`git diff main --stat`；想复跑全部自检：见第 5 节。

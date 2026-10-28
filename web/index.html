@@ -92,7 +92,7 @@
       <i>⤓</i><span>数据导出</span>
     </button>
     <button id="btnCamera" class="tool tool-off" type="button"
-            title="板载 OV2640 尚未接入图像链路（点击看说明，不显示任何伪造画面）">
+            title="板载 OV2640 实时画面（320×240，约 5 帧/秒）与「拍照」（1600×1200 原图存档）">
       <i>▣</i><span>相机预览</span>
     </button>
     <button id="btnLog" class="tool" type="button"
@@ -102,6 +102,14 @@
     <button id="btnAsk" class="tool" type="button"
             title="对已加载的真实采样点做统计问答（本地规则解析，不调用外部模型）">
       <i>✦</i><span>AI 自然语言交互</span>
+    </button>
+    <button id="btnNl" class="tool" type="button"
+            title="受限工具语言助手：把「查看上次数据」映射为只读查询，把「重新采集一次」映射为一次真实采集请求">
+      <i>❯</i><span>语言助手</span>
+    </button>
+    <button id="btnVoice" class="tool" type="button"
+            title="说话 → 识别 → 执行任务 → 播报回答。音频在浏览器采集，识别与合成跑在本机语音引擎">
+      <i>◍</i><span>语音助手</span>
     </button>
   </div>
   <div id="toolHint" class="tool-hint">就绪</div>
@@ -164,6 +172,86 @@
   </div>
 </section>
 
+<!-- ══════════════════ ⑥ 第 3 周：按键求助闭环（本地确认 / VPS 接收 / 查看者回应） ══════════════════ -->
+<section class="card card-help" id="helpPanel">
+  <div class="card-head">
+    <h2>按键求助<span class="h2-note">佩戴者按键 → 本地蜂鸣+LED（断网也发生）→ 上传 → 查看者回应 → 设备确认</span></h2>
+    <span class="chip" id="helpChip">—</span>
+  </div>
+
+  <!-- 三个概念的差别直接写在页面上：这是第 3 周的核心理论点 -->
+  <div class="help-legend">
+    <div class="help-legend-item">
+      <b>① 本地确认</b><span>佩戴者设备自己知道"我按下了"：蜂鸣 + LED。<b>不依赖外网</b>，断网也照样发生。</span>
+    </div>
+    <div class="help-legend-item">
+      <b>② VPS 接收</b><span>事件上传到后端 <code>help_events</code>。<b>需要网络</b>；断网时事件留在设备本地队列，联网后补传。</span>
+    </div>
+    <div class="help-legend-item">
+      <b>③ 查看者回应</b><span>你点「我看到了」是<b>服务端事件</b>；只有设备取走 <code>help_ack</code> 并回执后，才算真正送达佩戴者设备。</span>
+    </div>
+  </div>
+
+  <div class="collect-actions">
+    <button id="helpRefreshBtn" class="tool" type="button"
+            title="只读 GET /api/v1/help_events，不会向设备下发任何指令">
+      <i>⟳</i><span>刷新求助列表</span>
+    </button>
+    <button id="helpRespondBtn" class="tool tool-primary" type="button"
+            title="对选中的求助表示「我看到了」。这只会记录回应并下发 help_ack —— 在设备确认之前，页面不会声称对方已经知道">
+      <i>✓</i><span>我看到了</span>
+    </button>
+    <button id="helpCancelBtn" class="tool" type="button"
+            title="取消选中的求助（取消原因必填）。会下发 clear_alert，设备收到后停蜂鸣、指示灯回待机色">
+      <i>✕</i><span>取消求助</span>
+    </button>
+  </div>
+
+  <!-- 单项状态与"已收到"专属文案区：ID 由 docs/08 约定，自检脚本据此断言 -->
+  <div class="req-status">
+    <span id="helpItemStatus" class="pill pill-wait">尚未选择求助事件</span>
+    <span class="req-meta" id="helpItemMeta">—</span>
+  </div>
+  <!-- ★ 这个区域**只在** remote_acked_at_utc 非空时才有内容；其余情况必须为空 -->
+  <div id="helpItemRemoteAck" class="help-remote-ack"></div>
+  <div id="helpItemDetail" class="req-detail">
+    佩戴者按键后，这里显示该次求助的完整链路：本地反馈 → 上传 → 回应 → 设备确认。
+  </div>
+
+  <div class="help-feedback-row">
+    <span class="help-fb-label">本地反馈事实</span>
+    <span id="helpLocalFeedback" class="pill pill-wait">—</span>
+    <span class="help-fb-note" id="helpLocalFeedbackNote">
+      该字段由设备如实标注实际发生的反馈（buzzer+led / led / none），后端与页面都不得代为推断。
+    </span>
+  </div>
+
+  <div class="req-list-head">
+    <h3>求助事件列表<span class="h2-note">每条一个 help_id；点一行即选中它，可回应 / 取消</span></h3>
+    <span class="chip" id="helpCountChip">0 条</span>
+  </div>
+  <div class="req-table-wrap">
+    <table class="req-table">
+      <thead>
+        <tr>
+          <th>触发时刻</th><th>help_id</th><th>状态</th>
+          <th>触发方式</th><th>本地反馈</th><th>等待时长</th><th>远端回执</th>
+        </tr>
+      </thead>
+      <tbody id="helpList">
+        <tr><td colspan="7" class="req-empty">还没有求助事件</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="collect-note">
+    <b>为什么这里不会自己变绿：</b>「已送达」是一个<b>远端事实</b>，
+    唯一的依据是后端 <code>remote_acked_at_utc</code>（设备取走 <code>help_ack</code> 并回执后才会写入）。
+    仅当事件已上传、或仅当查看者点了回应，都<b>不足以</b>证明对方设备知道了 ——
+    页面因此只显示「佩戴者已按键（待回应）」或「我已回应，等待设备确认」。
+  </p>
+</section>
+
 <!-- ── 工具抽屉（默认隐藏，点上面的按钮展开） ── -->
 <section id="logPanel" class="card drawer hidden">
   <div class="drawer-head">
@@ -179,25 +267,279 @@
 
 <section id="cameraPanel" class="card drawer hidden">
   <div class="drawer-head">
-    <h2>相机预览<span class="h2-note">如实说明，不显示任何占位画面</span></h2>
-    <div class="drawer-acts"><button id="closeCamera" class="mini" type="button">收起</button></div>
+    <h2>相机预览<span class="h2-note">板载 OV2640 实时画面 · 每一帧都是这块板子此刻拍到的</span></h2>
+    <div class="drawer-acts">
+      <button id="camToggle" class="mini" type="button">暂停画面</button>
+      <button id="closeCamera" class="mini" type="button">收起</button>
+    </div>
   </div>
-  <p class="drawer-text">
-    这块板子（ESP32-S3-EYE）板载 <b>OV2640</b> 摄像头，但<b>当前固件没有接入图像链路</b>：
-    固件只做 QMA6100P 三轴采集与上传，没有图像采集、没有 MJPEG/JPEG 上传接口，
-    后端也没有图片存储或视频流端点。<b>所以这里不会显示任何画面</b>——用占位图或录播冒充实时预览，
-    与本工程「不出现任何非真实数据」的原则冲突。
-  </p>
-  <p class="drawer-text">
-    要真正接进来，需要三步（都属于新功能，不在本次范围内）：
-    ① 固件增加 <code>esp32-camera</code> 驱动，按需抓 JPEG；
-    ② 新增上传通道（例如 <code>POST /api/v1/image</code>，同样带设备令牌与原始字节 SHA256）；
-    ③ 后端提供帧输出接口，本页面用 <code>&lt;img&gt;</code> 轮询或 MJPEG 流显示。
+
+  <div class="cam-wrap">
+    <div class="cam-stage">
+      <img id="camImg" class="cam-img hidden" alt="开发板 OV2640 实时画面" />
+      <div id="camPlaceholder" class="cam-placeholder">
+        <div class="cam-ph-title" id="camPhTitle">还没有画面</div>
+        <div class="cam-ph-sub" id="camPhSub">正在等待开发板上传第一帧…</div>
+      </div>
+      <div class="cam-badge" id="camLiveBadge">● 等待画面</div>
+    </div>
+
+    <div class="cam-side">
+      <dl class="cam-meta">
+        <div><dt>设备</dt><dd id="camDevice">—</dd></div>
+        <div><dt>分辨率</dt><dd id="camSize">—</dd></div>
+        <div><dt>帧序号</dt><dd id="camSeq">—</dd></div>
+        <div><dt>帧大小</dt><dd id="camBytes">—</dd></div>
+        <div><dt>后端收到</dt><dd id="camRecv">—</dd></div>
+        <div><dt>网页刷新</dt><dd id="camFps">—</dd></div>
+      </dl>
+      <div class="cam-actions">
+        <button id="camShot" class="mini mini-primary" type="button"
+                title="下发一次拍照请求：设备在下一帧上传的响应里收到指令，随即切 1600×1200 抓拍并上传原图">
+          拍照 1600×1200
+        </button>
+        <button id="camRefresh" class="mini" type="button">刷新照片</button>
+      </div>
+      <div id="camShotHint" class="cam-hint">
+        未点拍照时，设备只上传 320×240 预览帧（约 5 帧/秒）。
+      </div>
+    </div>
+  </div>
+
+  <div class="cam-gallery-head">
+    <span>照片存档<span class="h2-note">点「拍照」才会产生；原图落盘并记录 SHA256，可下载核对</span></span>
+    <span id="camPhotoCount" class="chip">0 张</span>
+  </div>
+  <div id="camGallery" class="cam-gallery">
+    <div class="cam-empty" id="camGalleryEmpty">还没有照片。点上方「拍照」让开发板抓一张。</div>
+  </div>
+</section>
+
+<!-- ══════════════════ 第 4 周：受限工具语言助手 ══════════════════ -->
+<section id="nlPanel" class="card drawer hidden">  <div class="drawer-head">
+    <h2>语言助手（受限工具）<span class="h2-note">服务端解析意图 · 只读数据库或请求一次真实采集</span></h2>
+    <div class="drawer-acts">
+      <span id="nlCtx" class="chip">设备上下文：—</span>
+      <button id="nlClear" class="mini" type="button">清空</button>
+      <button id="closeNl" class="mini" type="button">收起</button>
+    </div>
+  </div>
+  <div class="nl-row">
+    <input id="nlInput" type="text"
+           placeholder="例如：查看上次数据 / 重新采集一次 / 设备在线吗 / 最近 30 分钟的数据" />
+    <button id="nlSend" class="mini mini-primary" type="button">发送</button>
+  </div>
+  <div id="nlExamples" class="ai-examples">
+    <span class="chip-ex">查看上次数据</span>
+    <span class="chip-ex">重新采集一次</span>
+    <span class="chip-ex">设备在线吗</span>
+    <span class="chip-ex">最近 30 分钟的数据</span>
+    <span class="chip-ex">开发板在哪里</span>
+  </div>
+  <div id="nlStatus" class="nl-status">未提问。助手只做两类事：读取已有记录（只读）或请求设备采集一次（会产生设备侧流量）。</div>
+  <div id="nlAnswer" class="nl-answer"></div>
+  <div id="nlEvidence" class="nl-evidence hidden"></div>
+  <div id="nlTools" class="nl-tools hidden"></div>
+</section>
+
+<!-- ══════════════════ 第 5 周：语音输入 → 任务 → 语音播报 ══════════════════ -->
+<section id="voicePanel" class="card drawer hidden">
+  <div class="drawer-head">
+    <h2>语音助手<span class="h2-note">按键说话 → 识别 → 执行任务 → 播报回答 · 每一段状态都由服务端实测产生</span></h2>
+    <div class="drawer-acts">
+      <!-- 第 6 周：半双工状态条。文字与颜色只由 VOICE.phase 驱动，
+           而 phase 只在"服务端真的说了什么"或"本地真的开始/停止了什么"时改变。 -->
+      <span id="voiceStateChip" class="vstate is-idle">空闲</span>
+      <span id="voiceCtx" class="chip">设备上下文：—</span>
+      <button id="voiceStopAll" class="mini mini-stop" type="button" disabled>■ 停止</button>
+      <button id="voiceClear" class="mini" type="button">清空</button>
+      <button id="closeVoice" class="mini" type="button">收起</button>
+    </div>
+  </div>
+
+  <!-- 第 6 周：会话条 —— 一个会话 = 一段短期上下文（在途任务、待澄清问题、轮次） -->
+  <div class="voice-sessbar">
+    <span class="vsb-item">会话<b id="voiceSid">—</b></span>
+    <span class="vsb-item">在途<b id="voiceInflight">—</b></span>
+    <span class="vsb-item">轮次<b id="voiceTurnSeq">—</b></span>
+    <span class="vsb-item">待澄清<b id="voiceClarifyRound2">—</b></span>
+    <span class="vsb-gap"></span>
+    <button id="voiceNewSession" class="mini" type="button"
+            title="新建一个会话：旧的待澄清问题与在途标记都会丢，历史记录不受影响">新建会话</button>
+    <button id="voiceTimelineBtn" class="mini" type="button">看事件时序</button>
+  </div>
+
+  <div class="voice-top">
+    <!-- 左：录音区 -->
+    <div class="voice-rec">
+      <button id="voiceTalk" class="voice-btn" type="button"
+              title="点击开始录音，再点一次结束并提交（也可以按住空格说话）">
+        <span class="vb-dot"></span>
+        <span id="voiceTalkLabel">点击开始说话</span>
+      </button>
+      <div class="voice-meta">
+        <span id="voiceTimer" class="voice-timer">0.0 s</span>
+        <span id="voiceFmt" class="voice-fmt">16 kHz · 16 bit · 单声道</span>
+      </div>
+      <!-- 实时电平：由 AnalyserNode 的样本算，不是假动画 -->
+      <div class="voice-meter" aria-hidden="true"><i id="voiceMeterBar"></i></div>
+      <div class="voice-src-row">
+        <label class="field">
+          <span class="field-label">音频来源</span>
+          <select id="voiceSource">
+            <option value="browser_mic">浏览器麦克风（电脑音频）</option>
+            <option value="uploaded_file">上传的授权录音文件</option>
+          </select>
+        </label>
+        <label class="mini voice-file-label" title="备用路径：录音设备故障时，用一段授权录音文件完成真实识别">
+          选择 WAV 文件<input id="voiceFile" type="file" accept=".wav,audio/wav" hidden />
+        </label>
+      </div>
+      <div class="voice-alt-note" id="voiceSrcNote">
+        录音发生在<b>本机浏览器</b>；识别与合成跑在<b>本机语音引擎</b>。运行位置会随每条记录一起保存。
+      </div>
+    </div>
+
+    <!-- 右：六段状态 -->
+    <div class="voice-flow">
+      <div class="voice-flow-title">链路状态<span class="h2-note">①录 ②检 ③识 ④务 ⑤合 ⑥播</span></div>
+      <ol id="voiceStages" class="voice-stages">
+        <li data-k="recorded"><b>①</b><span>录音</span><em>待开始</em></li>
+        <li data-k="vad"><b>②</b><span>静音检测</span><em>—</em></li>
+        <li data-k="asr"><b>③</b><span>语音识别</span><em>—</em></li>
+        <li data-k="task"><b>④</b><span>任务执行</span><em>—</em></li>
+        <li data-k="tts"><b>⑤</b><span>语音合成</span><em>—</em></li>
+        <li data-k="playback"><b>⑥</b><span>播放</span><em>—</em></li>
+      </ol>
+      <div class="voice-final" id="voiceFinal">还没有提交过语音。</div>
+    </div>
+  </div>
+
+  <!-- 第 6 周：澄清卡片 —— 听不清/有歧义时，系统先问一句，而不是硬猜或直接失败 -->
+  <div id="voiceClarify" class="voice-clarify hidden">
+    <div class="vcl-head">
+      <b>需要你说清楚一点</b>
+      <span id="voiceClarifyRound" class="h2-note">第 1/2 轮</span>
+    </div>
+    <div id="voiceClarifyQ" class="vcl-q">—</div>
+    <div id="voiceClarifyOpts" class="vcl-opts"></div>
+    <div class="vcl-input-row">
+      <input id="voiceClarifyInput" type="text" autocomplete="off"
+             placeholder="也可以直接打字回答，例如「第二个」/「查看上次数据」" />
+      <button id="voiceClarifySend" class="mini mini-primary" type="button">发送补充</button>
+    </div>
+    <div id="voiceClarifyNote" class="vcl-note">点上面的候选项，或者打一句话。补充轮走的是同一条链路（同一个函数、同一套取消与隔离），只是输入方式换成了键盘。</div>
+  </div>
+
+  <!-- 失败/提示区：任何失败都必须在这里说清"发生了什么、下一步怎么办" -->
+  <div id="voiceNotice" class="voice-notice hidden"></div>
+
+  <!-- 结果区：只有识别成功才会有内容（识别失败时这里必须为空） -->
+  <div id="voiceResult" class="voice-result hidden">
+    <div class="voice-block">
+      <div class="voice-block-head">
+        <span>识别到的文字</span>
+        <span class="h2-note">识别引擎原文，页面不改写、不"纠正"</span>
+      </div>
+      <div id="voiceTranscript" class="voice-transcript">—</div>
+      <div id="voiceAsrMeta" class="voice-asr-meta">—</div>
+    </div>
+
+    <div class="voice-block">
+      <div class="voice-block-head">
+        <span>任务执行</span>
+        <span class="h2-note">与「语言助手」同一个函数、同一套工具</span>
+      </div>
+      <div class="voice-task-line">
+        <span id="voiceIntent" class="pill pill-wait">—</span>
+        <span id="voiceClaim" class="pill pill-wait">—</span>
+        <span id="voiceSourceTag" class="chip">来源：—</span>
+      </div>
+      <div id="voiceAnswer" class="voice-answer"></div>
+    </div>
+
+    <div class="voice-block">
+      <div class="voice-block-head">
+        <span>语音播报</span>
+        <span class="h2-note">服务端只负责合成；是否真的听到，只能由现场判断</span>
+      </div>
+      <div class="voice-play-row">
+        <button id="voicePlay" class="mini mini-primary" type="button">▶ 播放回答</button>
+        <audio id="voiceAudio" preload="none"></audio>
+        <button id="voicePlayMine" class="mini" type="button">▶ 回放我的录音</button>
+        <audio id="voiceMineAudio" preload="none"></audio>
+        <span id="voicePlayState" class="voice-play-state">未播放</span>
+      </div>
+      <div id="voiceTtsNote" class="voice-tts-note"></div>
+      <div class="voice-play-row">
+        <button id="voiceCompare" class="mini" type="button"
+                title="把同一句话送进文字入口 /api/v1/nl/query，比对两条入口的意图与结论是否一致">
+          ⇄ 用文字入口问同一句
+        </button>
+        <span id="voiceCompareHint" class="h2-note">用来对照「语音入口」与「文字入口」是否给出同一结论</span>
+      </div>
+      <div id="voiceCompareOut" class="voice-compare hidden"></div>
+    </div>
+
+    <div class="voice-block">
+      <div class="voice-block-head">
+        <span>本轮时序</span>
+        <span class="h2-note">t0 = 服务端收到完整音频的那一刻；除「前端本地提示」外全部由服务端实测</span>
+      </div>
+      <table id="voiceTiming" class="voice-timing"></table>
+      <div id="voiceTimingNote" class="voice-tts-note"></div>
+    </div>
+
+    <div class="voice-block">
+      <div class="voice-block-head"><span>运行位置与音频来源</span></div>
+      <dl id="voiceRunLoc" class="voice-runloc"></dl>
+    </div>
+  </div>
+
+  <div class="voice-engine-row">
+    <span id="voiceEngine" class="chip">引擎：检查中…</span>
+    <span id="voiceHistoryChip" class="chip">历史：—</span>
+    <button id="voiceRefreshHist" class="mini" type="button">刷新最近记录</button>
+  </div>
+  <div id="voiceHistory" class="voice-history"></div>
+
+  <!-- 第 6 周：事件时序（request_id 串起来的服务端日志） -->
+  <div id="voiceTimelineBox" class="voice-timeline hidden">
+    <div class="vtl-head">
+      <b>事件时序</b>
+      <span id="voiceTimelineMeta" class="h2-note">—</span>
+      <button id="voiceTimelineClose" class="mini" type="button">关闭</button>
+    </div>
+    <div id="voiceTimelineRows" class="vtl-rows"></div>
+  </div>
+
+  <!-- 第 6 周：教师演示用的"注入"。默认收起，且强制在记录里留痕（asr.engine=injected） -->
+  <details id="voiceInjectBox" class="voice-inject">
+    <summary>教师演示：注入「慢响应 / 听错」（会在记录里留下 injected 标记）</summary>
+    <div class="vi-row">
+      <label class="field"><span class="field-label">识别前延迟</span>
+        <input id="voiceInjectDelay" type="number" min="0" max="20000" step="100" value="0" /> 毫秒</label>
+      <label class="field"><span class="field-label">任务段耗时</span>
+        <input id="voiceInjectTask" type="number" min="0" max="20000" step="100" value="0" /> 毫秒</label>
+      <label class="field"><span class="field-label">替换识别文本（留空=不替换）</span>
+        <input id="voiceInjectText" type="text" placeholder="例如：重新采集一次" /></label>
+    </div>
+    <p class="vi-note">
+      <b>这不是真实识别结果。</b>用它只是为了复现"响应很慢"或"听错了"这两类时序，
+      好在同一次演示里看到「取消」与「澄清」真的被触发。
+      用了注入的每一轮，记录里都会标 <code>asr.engine=injected</code> 并原样保存设定值；
+      正式验收请把三个输入都清成 0 或空（服务端也可以用 <code>VOICE_ALLOW_INJECT=0</code> 整体关闭）。
+    </p>
+  </details>
+
+  <p class="collect-note">
+    <b>这条链路里哪些是"事实"：</b>录音时长/字节/哈希、静音检测的 RMS、识别文本、任务结论、合成的音频，
+    全部由服务端实测并落库，可在「最近记录」里逐条回放核对。
+    <b>唯一不能由系统证明的是"人真的听到"</b> —— 页面最多说"播放器已开始播放"。
   </p>
 </section>
 
-<section id="aiPanel" class="card drawer hidden">
-  <div class="drawer-head">
+<section id="aiPanel" class="card drawer hidden">  <div class="drawer-head">
     <h2>AI 自然语言交互<span class="h2-note">本地规则解析 · 结果全部由已加载的真实采样点算出</span></h2>
     <div class="drawer-acts"><button id="closeAi" class="mini" type="button">收起</button></div>
   </div>

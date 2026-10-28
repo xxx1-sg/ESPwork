@@ -35,6 +35,15 @@
 #include "imu_qma6100p.h"
 #include "uploader.h"
 #include "cmd_client.h"
+#include "feedback.h"       // 第 3 周：按键求助 + 本地物理反馈
+// ★ 开关宏必须**先于** #if 可见：app_config.h（第 34 行）已在上面被包含，
+//   否则预处理器会把 APP_CAM_ENABLE 当 0，整段摄像头代码被静默编译掉（docs/10 D7）。
+#ifndef APP_CAM_ENABLE
+#error "APP_CAM_ENABLE 未定义：app_config.h 的包含顺序被改动了"
+#endif
+#if APP_CAM_ENABLE
+#include "camera.h"         // 第 4 周：板载 OV2640 画面采集/上传/拍照
+#endif
 
 static const char *TAG = "main";
 
@@ -87,6 +96,32 @@ static void cmd_periodic_handler(bool enable)
     ESP_LOGI(TAG, "周期上报已%s（采集能力不受影响，远程采集仍可用）",
              enable ? "恢复" : "暂停");
 }
+
+/**
+ * @brief 把设备身份提供给 feedback 模块（组求助报文时要 device_id 与 boot_count）。
+ *
+ * ★ 与 cmd_client 的 state provider 同一套路：**拉取**而不是推送 ——
+ *   按键可能在任意时刻发生，若在启动时拷一份快照，
+ *   重启后（boot_count 变了）求助报文的 boot_count 就会是过期值。
+ */
+static void fb_state_provider(fb_device_state_t *out)
+{
+    out->device_id  = s_device_id;
+    out->boot_count = s_boot_count;
+}
+
+#if APP_CAM_ENABLE
+/**
+ * @brief 把设备身份提供给摄像头模块（帧/照片上传时要带 device_id）。
+ *
+ * 同样用"拉取"而不是"启动时拷一份"：device_id 必须与采样链路上报的完全一致，
+ * 否则网页会出现"两个设备"（一个只有传感器数据、一个只有画面）。
+ */
+static void cam_state_provider(cam_state_t *out)
+{
+    out->device_id = s_device_id;
+}
+#endif
 
 /**
  * @brief 用芯片出厂 eFuse MAC 生成设备唯一 ID。
@@ -735,6 +770,22 @@ void app_main(void)
              APP_MAX_MERGE);
 
     // ---- 起两个任务：采集（高优先级、独立核）+ 上传（网络慢也不影响采样）----
+#if APP_CAM_ENABLE
+    // ★ 第 4 周：摄像头初始化必须放在采样/上传任务**之前**。
+    //   原因：摄像头的 SCCB 复用 IMU 在 I2C0 建的同一条总线（GPIO4/5 共用）。
+    //   如果采样任务已经以 10Hz 在总线上读写 0x12，摄像头探测会在初始化阶段
+    //   与它竞争 —— 实测表现为 SCCB 对所有地址 probe 都失败
+    //   （"Detected camera not supported"），而硬件其实是好的。
+    //   在这里初始化：总线上只有 SCCB 在访问，探测完再让采样任务跑起来。
+    camera_set_state_provider(cam_state_provider);
+    if (camera_start() == ESP_OK) {
+        ESP_LOGI(TAG, "摄像头已启动：网页「相机预览」可看实时画面，点「拍照」抓 1600x1200");
+    } else {
+        ESP_LOGE(TAG, "摄像头启动失败！传感器采集、上传、远程采集、按键求助均不受影响；"
+                      "网页会如实显示「摄像头未就绪」并给出原因，不放占位画面");
+    }
+#endif
+
     s_q_free  = xQueueCreate(APP_BATCH_QUEUE_LEN, sizeof(batch_packet_t *));
     s_q_ready = xQueueCreate(APP_BATCH_QUEUE_LEN, sizeof(batch_packet_t *));
     if (!s_q_free || !s_q_ready) {
@@ -748,8 +799,7 @@ void app_main(void)
     }
 
     // 采样任务放 core 1（Wi-Fi 协议栈在 core 0），避免互相抢 CPU 造成采样抖动
-    xTaskCreatePinnedToCore(sampler_task,  "sampler",  8192, NULL, 6, NULL, 1);
-    xTaskCreatePinnedToCore(uploader_task, "uploader", 12288, NULL, 5, NULL, 0);
+    xTaskCreatePinnedToCore(sampler_task,  "sampler",  8192, NULL, 6, NULL, 1);    xTaskCreatePinnedToCore(uploader_task, "uploader", 12288, NULL, 5, NULL, 0);
     ESP_LOGI(TAG, "采样任务与上传任务已启动");
 
     // ---- 第 2 周：启动远程采集指令客户端（1Hz 轮询，复用房第 1 周 HTTP 栈）----
@@ -763,6 +813,23 @@ void app_main(void)
         ESP_LOGE(TAG, "远程采集指令客户端启动失败！周期上报继续，但网页点「采集最新数据」会超时");
     }
 
-    // app_main 自身的使命到此为止（三个任务会一直跑下去）
-    vTaskDelete(NULL);
-}
+    // ---- 第 3 周：启动按键求助与本地物理反馈 ----
+    //   ★ 关键：**不依赖 Wi-Fi 是否连上**。按键识别与蜂鸣/LED 必须在断网时照常工作
+    //     （当堂验证第 1 项）；上传失败的事件留在本地队列，联网后自动补传。
+    //   ★ 放在 cmd_client 之后：下行指令（help_ack / clear_alert）要能落到
+    //     已经初始化好的反馈模块上。
+    feedback_set_state_provider(fb_state_provider);
+    if (feedback_start() == ESP_OK) {
+        ESP_LOGI(TAG, "按键求助已启动：实体按键=GPIO%d，本地反馈断网也可用（上传异步补传）",
+                 APP_BUTTON_GPIO);
+    } else {
+        // 如实报错：这只影响按键求助，采集与远程采集不受影响
+        ESP_LOGE(TAG, "按键求助启动失败！采集与远程采集继续，但按键不会产生求助事件");
+    }
+
+#if APP_CAM_ENABLE
+    // 摄像头已在采样任务启动前完成初始化（见上方说明：避免 SCCB 与 10Hz 采样抢总线）
+#endif
+
+    // app_main 自身的使命到此为止（五个任务会一直跑下去）
+    vTaskDelete(NULL);}

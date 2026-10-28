@@ -37,6 +37,7 @@
 #include "app_config.h"
 #include "imu_qma6100p.h"
 #include "uploader.h"
+#include "feedback.h"       // 第 3 周：help_ack / clear_alert 落到本地反馈上
 
 static const char *TAG = "cmd";
 
@@ -461,6 +462,26 @@ static void cmd_poll_task(void *arg)
             ESP_LOGI(TAG, "[CMD] %s 已应用（周期上报 = %s）", type,
                      enable ? "开启" : "暂停");
             send_ack(request_id, NULL, "received", NULL, 1);
+        } else if (strcmp(type, "help_ack") == 0) {
+            /* ---- 第 3 周：查看者已回应，设备确认收到（docs/06 §2.2）----
+             * ★★★ 这是全工程唯一允许让 LED 转"已送达"的路径。
+             *   顺序同样是"先改本地表现，再回执"：后端收到这条回执才会写
+             *   help_events.remote_acked_at_utc —— 而页面只有在那个字段非空时
+             *   才被允许显示「对方已收到」。顺序反了就会出现
+             *   "页面说已送达、板子灯还没变"。
+             */
+            const char *hid = (strncmp(request_id, "helpcmd-", 8) == 0)
+                              ? request_id + 8 : request_id;
+            feedback_on_help_ack(hid);
+            // ack_type=help_ack 是 docs/06 §4.2 为第 3 周定义的专用回执类型
+            send_ack(request_id, nonce, "help_ack", NULL, 1);
+        } else if (strcmp(type, "clear_alert") == 0) {
+            /* ---- 第 3 周：佩戴者取消求助 → 停蜂鸣、灯回待机色 ---- */
+            const char *hid = (strncmp(request_id, "helpcmd-", 8) == 0)
+                              ? request_id + 8 : request_id;
+            feedback_on_clear_alert(hid);
+            // 先本地复位，再回执（与 pause/resume 同一道理：状态一致优先）
+            send_ack(request_id, nonce, "received", NULL, 1);
         } else {
             ESP_LOGW(TAG, "[CMD] 未知指令类型 %s，如实回执 rejected", type);
             send_ack(request_id, nonce, "rejected", "UNSUPPORTED_COMMAND", 1);

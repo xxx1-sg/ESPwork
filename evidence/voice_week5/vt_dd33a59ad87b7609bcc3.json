@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "mode": "silence",
+    "ms": 1500
+  },
+  "turn": {
+    "turn_id": "vt_dd33a59ad87b7609bcc3",
+    "final_state": "no_speech",
+    "audio_source": "uploaded_file",
+    "audio_source_label": "上传的授权录音文件",
+    "device_id": null,
+    "audio": {
+      "bytes": 48044,
+      "sha256": "20c51a2ccfac3b8373f678d9f14b68c2e3ffc33dac17956b738f9241e4c0725b",
+      "sample_rate": 16000,
+      "bits": 16,
+      "channels": 1,
+      "duration_ms": 1500,
+      "rms": 0.0,
+      "peak": 0.0,
+      "zcr": 0.0,
+      "vad_passed": false
+    },
+    "stages": [
+      {
+        "key": "recorded",
+        "label": "录音",
+        "status": "ok",
+        "detail": "上传的授权录音文件 · 1.50 秒 · 16000 Hz/16 bit/1 声道 · 48044 字节 · sha256=20c51a2ccfac…",
+        "audio_source": "uploaded_file",
+        "bytes": 48044,
+        "sha256": "20c51a2ccfac3b8373f678d9f14b68c2e3ffc33dac17956b738f9241e4c0725b",
+        "sample_rate": 16000,
+        "bits": 16,
+        "channels": 1,
+        "duration_ms": 1500
+      },
+      {
+        "key": "vad",
+        "label": "静音检测",
+        "status": "failed",
+        "detail": "RMS=0.0000（阈值 0.0060）· 峰值=0.0000（阈值 0.0200）· 过零率=0.0000 → 判定为无有效语音，**未提交识别**",
+        "ms": 0,
+        "rms": 0.0,
+        "peak": 0.0,
+        "zcr": 0.0,
+        "rms_min": 0.006,
+        "peak_min": 0.02,
+        "passed": false
+      },
+      {
+        "key": "asr",
+        "label": "语音识别",
+        "status": "skipped",
+        "detail": "静音检测未通过，本次没有提交给识别引擎（不会凭空产生文本）",
+        "ms": 0
+      },
+      {
+        "key": "task",
+        "label": "任务执行",
+        "status": "skipped",
+        "detail": "没有识别文本，未执行任何任务",
+        "ms": 0
+      },
+      {
+        "key": "tts",
+        "label": "语音合成",
+        "status": "skipped",
+        "detail": "没有回答，未合成语音",
+        "ms": 0
+      },
+      {
+        "key": "playback",
+        "label": "播放",
+        "status": "skipped",
+        "detail": "本次没有可播放的音频",
+        "ms": 0
+      }
+    ],
+    "transcript": null,
+    "asr": {
+      "status": "skipped",
+      "engine": null,
+      "model": null,
+      "ms": null,
+      "error": null
+    },
+    "task": {
+      "status": "skipped",
+      "intent": null,
+      "claim": null,
+      "remote_status": null,
+      "source": null,
+      "answer": null,
+      "error": null,
+      "response": null
+    },
+    "tts": {
+      "status": "skipped",
+      "engine": null,
+      "voice": null,
+      "ms": null,
+      "reply_text": null,
+      "bytes": null,
+      "sha256": null,
+      "error": null,
+      "truncated": false,
+      "full_chars": 0,
+      "note": null
+    },
+    "reply_audio_url": null,
+    "audio_url": "/api/v1/voice/audio/vt_dd33a59ad87b7609bcc3.wav",
+    "playback": {
+      "started_at_utc": null,
+      "reported_by": null,
+      "note": "播放是浏览器侧事实；服务端只记录上报，不推断“已听到”"
+    },
+    "run_location": {
+      "capture": "tts-loopback:Windows-11 本机 PC（授权录音·备用路径）",
+      "asr": "http://127.0.0.1:8013 · vosk/vosk-model-small-cn-0.22（离线）",
+      "task": "server.py · nl_assistant.handle_query（第 4 周同一函数，进程内调用）",
+      "tts": "http://127.0.0.1:8013 · —/—",
+      "playback": "browser <audio> · 本机 PC"
+    },
+    "error": {
+      "code": "NO_SPEECH",
+      "message": "没有检测到有效语音：这段录音的 RMS 为 0.0000（需要 ≥ 0.0060），峰值 0.0000（需要 ≥ 0.0200）。可能麦克风被静音、输入音量太小，或者没有对着麦克风说话。"
+    },
+    "elapsed_ms": 1,
+    "created_at_utc": "2026-10-23T02:40:31.604Z",
+    "engine_health": {
+      "ok": true,
+      "host": "127.0.0.1",
+      "port": 8013,
+      "python": "3.14.7",
+      "os": "Windows-11-10.0.26100-SP0",
+      "asr": {
+        "backend": "vosk",
+        "model_dir": "D://ESP//.models//vosk-model-small-cn-0.22",
+        "model_present": true,
+        "timeout_s": 25.0,
+        "loaded": true,
+        "load_ms": 181
+      },
+      "tts": {
+        "backend": "sapi",
+        "voice_hint": "Huihui",
+        "timeout_s": 20.0
+      },
+      "limits": {
+        "max_audio_bytes": 8388608,
+        "max_tts_chars": 600
+      }
+    }
+  },
+  "audio_in_bytes": 48044
+}

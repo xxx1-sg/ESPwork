@@ -50,7 +50,38 @@ PORT = int(os.environ.get("SENSOR_PORT", "8000"))
 
 # 数据库文件：默认放在脚本同级的 data/ 目录
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# ---- 第 4 周：受限工具语言助手 ----
+#   ★ 放在这里 import，是因为它以 `python backend/server.py` 方式启动时
+#     sys.path[0] 就是 backend/；用 `python -m backend.server` 启动时再补一次路径。
+try:
+    import nl_assistant
+except ImportError:
+    sys.path.insert(0, BASE_DIR)
+    import nl_assistant
+
+# ---- 第 5 周：语音链路（录音 → 识别 → 任务 → 合成 → 播放）----
+#   ★ 同样以补路径的方式兼容两种启动形式；本模块只用标准库，
+#     真正吃运行时的是独立进程 backend/voice_engine.py（HTTP 调用）。
+try:
+    import voice_pipeline
+except ImportError:
+    sys.path.insert(0, BASE_DIR)
+    import voice_pipeline
+
+# ---- 第 6 周：语音会话状态（澄清 / 取消 / 迟到结果隔离）----
+#   ★ 纯标准库、纯 SQLite，只回答"这一轮还要不要"这一个问题；
+#     不碰识别、不碰任务、不碰合成。
+try:
+    import voice_session
+except ImportError:
+    sys.path.insert(0, BASE_DIR)
+    import voice_session
+
 DB_PATH = os.environ.get("SENSOR_DB", os.path.join(BASE_DIR, "data", "sensor.db"))
+
+# 第 5 周：录音与播报音频的落盘目录（与照片目录并列，便于一起备份/取证）
+VOICE_DIR = os.environ.get("SENSOR_VOICE_DIR", os.path.join(BASE_DIR, "data", "voice"))
 
 # Web 前端目录（同仓库的 web/ 目录）
 WEB_DIR = os.environ.get("SENSOR_WEB_DIR",
@@ -63,6 +94,21 @@ DEVICE_TOKEN = os.environ.get("SENSOR_TOKEN", "esp32s3eye-demo-token-2026")
 
 # 单条上传报文大小上限（真实报文约 700 字节，给足余量）
 MAX_BODY = int(os.environ.get("SENSOR_MAX_BODY", str(16 * 1024)))
+
+# ---- 第 4 周：摄像头 ----
+# 预览帧/照片是**二进制 JPEG**，不能走上面的 JSON 报文上限（16KB 连一张 VGA 都装不下）。
+#   QVGA(320x240) 一帧约 8~15KB；UXGA(1600x1200) 高质量照片可达 150~300KB。
+#   这里给 2MB 余量，同时仍然是一个**明确的上限**（不是无限读，避免被灌爆内存）。
+CAM_MAX_BODY = int(os.environ.get("SENSOR_CAM_MAX_BODY", str(2 * 1024 * 1024)))
+# 照片落盘目录（按设备分子目录，文件名含 UTC 时间与 photo_id，便于人工核对）
+CAM_DIR = os.environ.get("SENSOR_CAM_DIR", os.path.join(BASE_DIR, "data", "photos"))
+# 网页点「拍照」后，多久之内到达的下一帧会被附上 capture 指令（超时则丢弃，不让指令"悬空")
+CAM_CAPTURE_TTL_S = float(os.environ.get("SENSOR_CAM_CAPTURE_TTL_S", "10"))
+
+# ---- 第 5 周：语音 ----
+# 录音是**二进制 WAV**：16kHz/16bit/mono 约 32KB/秒，40 秒的一句话约 1.28MB。
+#   给 8MB 上限（对应约 4 分钟），同时它仍是一个明确上限，不是无限读。
+VOICE_MAX_BODY = int(os.environ.get("SENSOR_VOICE_MAX_BODY", str(8 * 1024 * 1024)))
 
 # 重力加速度常数（物理常数，用于自洽校验；不是测量值）
 G0 = 9.80665
@@ -257,6 +303,78 @@ CREATE TABLE IF NOT EXISTS pending_commands (
     UNIQUE(device_id, request_id, type)
 );
 CREATE INDEX IF NOT EXISTS idx_pcmd_device ON pending_commands(device_id, id);
+
+-- ===========================================================================
+-- 第 3 周新增表：按键求助与物理反馈闭环（字段级约定见 docs/06 §7）
+--   ★ 同样是 CREATE TABLE IF NOT EXISTS：第 1、2 周的表一行不动，
+--     历史记录不需要任何转换，verify_three_way.py / selftest_backend.py 继续可用。
+-- ===========================================================================
+
+-- 表9: 按键求助事件（佩戴者按一次键 = 行；断网时本地排队，恢复后补传仍是同一行）
+--   ★ 时间字段口径（docs/06 §7.1 口径表，实现必须严格遵守）：
+--       trigger_at_utc / queued_at_utc / local_feedback_at_utc = **设备侧**墙上时钟（未对时则 NULL）
+--       local_feedback_received_at_utc / received_at_utc       = **服务端**接收时刻（永远非空）
+--       trigger_up_ms                                          = 设备单调时钟（仅同 boot_count 内可比）
+--     ★ 绝不用 trigger_up_ms 与任何 *_at_utc 相减（单调时钟 ≠ 墙上时钟）。
+CREATE TABLE IF NOT EXISTS help_events (
+    help_id           TEXT PRIMARY KEY,          -- UUIDv4
+    device_id         TEXT NOT NULL,
+    client_request_key TEXT,                     -- 幂等键：按一次键一个 key（btn-<boot>-<up_ms>）
+    status            TEXT NOT NULL,             -- created|uploaded|acked|viewed|responded|cancelled|unreachable|expired
+    trigger_type      TEXT NOT NULL,             -- button|touch
+    trigger_at_utc    TEXT,                      -- 设备侧触发时刻（未对时=NULL，绝不用服务端时间顶替）
+    trigger_up_ms     INTEGER,                   -- 设备侧单调时间（断网时唯一可靠时间）
+    boot_count        INTEGER,
+    queued_at_utc     TEXT,                      -- 设备首次尝试上传的时刻（算断网滞留真实时长）
+    local_feedback    TEXT NOT NULL,             -- 本地反馈事实：buzzer+led|led|none
+    local_feedback_at_utc TEXT,                  -- 设备侧：本地反馈**实际发生**的时刻
+    local_feedback_received_at_utc TEXT NOT NULL,-- 服务端：收到该事件的时刻（未对时兜底口径）
+    received_at_utc   TEXT,                      -- 服务端收到上传的时刻
+    created_at_utc    TEXT NOT NULL,
+    remote_acked_at_utc TEXT,                    -- 设备确认已收到「查看者回应」→ 唯一允许显示"已收到"的依据
+    viewed_at_utc     TEXT,
+    responded_at_utc  TEXT,
+    cancelled_at_utc  TEXT,
+    cancel_reason     TEXT,
+    accepted_by       TEXT,                      -- 回应者（查看者）
+    pending_local     INTEGER NOT NULL DEFAULT 0,-- 1 = 断网期间产生、现在补传
+    message           TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_help_device_time ON help_events(device_id, created_at_utc DESC);
+CREATE INDEX IF NOT EXISTS idx_help_status      ON help_events(status);
+CREATE INDEX IF NOT EXISTS idx_help_client_key  ON help_events(client_request_key);
+
+-- 表10: 求助事件的查看者动作流水（回应/取消/查看）—— 必须留痕，取消不等于删除
+CREATE TABLE IF NOT EXISTS help_actions (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    help_id       TEXT NOT NULL,
+    action        TEXT NOT NULL,   -- viewed|responded|cancelled
+    actor         TEXT,
+    at_utc        TEXT NOT NULL,
+    detail_json   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_hact_help ON help_actions(help_id, id);
+
+-- ===========================================================================
+-- 第 4 周新增表：摄像头照片（预览帧不落盘，只在内存里保留"最新一帧"）
+--   ★ 为什么预览帧不写库：5fps × 24h ≈ 43 万帧，写库既无意义又会把磁盘写满。
+--     网页要的是"此刻的画面"，内存里保存最新一帧即可（服务重启后为无画面，
+--     如实显示"还没有画面"，绝不回放旧帧冒充实时）。
+--   ★ 照片必须落盘 + 留痕：它是用户主动触发的**证据**，要能下载、能核对字节数。
+-- ===========================================================================
+CREATE TABLE IF NOT EXISTS cam_photos (
+    photo_id        TEXT PRIMARY KEY,          -- 时间戳派生，天然按时间排序
+    device_id       TEXT NOT NULL,
+    created_at_utc  TEXT NOT NULL,             -- 服务器接收时刻（UTC）
+    width           INTEGER,                   -- 设备声明的实际宽高（来自帧元数据）
+    height          INTEGER,
+    byte_len        INTEGER NOT NULL,          -- 真实字节数
+    sha256          TEXT NOT NULL,             -- 原始 JPEG 的 SHA256（可逐字节核对）
+    seq             INTEGER,                   -- 设备端帧序号（排查乱序/重放）
+    remote_addr     TEXT,
+    filename        TEXT NOT NULL              -- 相对 CAM_DIR 的路径
+);
+CREATE INDEX IF NOT EXISTS idx_cam_photos_dev ON cam_photos(device_id, created_at_utc DESC);
 """
 
 # 旧库升级用的补列（老库没有这些列；ALTER TABLE 是幂等的，缺了才加）
@@ -279,6 +397,21 @@ DEVICE_ONLINE_WINDOW_S = int(os.environ.get("DEVICE_ONLINE_WINDOW_S", "15"))
 TIMEOUT_SCAN_PERIOD_S = 1.0
 # 请求状态机终态集合
 FINAL_STATUSES = ("completed", "failed", "timeout", "rejected", "cancelled")
+
+# ---- 第 3 周参数（按键求助，全部可用环境变量覆盖） ----
+# 求助事件上传超时（docs/06 §5.3：help 上传默认 30000）
+HELP_UPLOAD_TIMEOUT_MS = int(os.environ.get("HELP_UPLOAD_TIMEOUT_MS", "30000"))
+# 求助状态机终态集合（终态后不能再回应/取消；重复取消走幂等）
+HELP_FINAL_STATUSES = ("cancelled", "expired")
+# 合法的求助状态取值（docs/06 §2.2）—— 越界取值一律拒绝，不允许自造状态
+HELP_STATUSES = ("created", "uploaded", "acked", "viewed", "responded",
+                 "cancelled", "unreachable", "expired")
+# 合法触发类型与本地反馈取值（docs/06 §7.1）
+HELP_TRIGGER_TYPES = ("button", "touch")
+HELP_LOCAL_FEEDBACKS = ("buzzer+led", "led", "none")
+# 允许的指令类型全集（docs/06 §2.2）—— 越界即契约违约
+COMMAND_TYPES = ("collect_now", "pause_reports", "resume_reports",
+                 "clear_alert", "help_ack")
 
 
 def db_connect():
@@ -303,7 +436,19 @@ def db_init():
         conn.commit()
     finally:
         conn.close()
+    # 照片目录：提前建好，避免第一次拍照时才因权限/路径问题失败
+    os.makedirs(CAM_DIR, exist_ok=True)
+    # 第 5 周：语音记录表 + 录音目录（独立建表脚本，不掺进上面的大 SCHEMA）
+    conn = db_connect()
+    try:
+        voice_pipeline.db_init(conn)
+    finally:
+        conn.close()
+    os.makedirs(VOICE_DIR, exist_ok=True)
     print("[db] 数据库就绪:", DB_PATH)
+    print("[cam] 照片目录:", CAM_DIR)
+    print("[voice] 语音记录目录:", VOICE_DIR)
+    print("[voice] 语音引擎地址:", voice_pipeline.VOICE_ENGINE_URL)
 
 
 def utc_now_iso() -> str:
@@ -1192,6 +1337,498 @@ def set_device_pause(payload):
             conn.close()
 
 
+# ===========================================================================
+# 第 3 周：按键求助与物理反馈闭环（docs/06 §7）
+#
+#   ★ 本节的**核心红线**（当堂验证第 2 项）：
+#     只有 `remote_acked_at_utc` 被写入（设备真的把 help_ack 指令取走并回执）
+#     才允许任何一方显示「对方已收到」。本地反馈只证明"本机知道自己按下了"，
+#     后台把指令"放进队列"也不算送达 —— 这就是 §4.5 的关键推论。
+# ===========================================================================
+def _help_upload_response(row, deduplicated=False):
+    """求助上传响应（docs/06 §7.1）。
+
+    ★ `remote_ack_required` 恒为 true：本地反馈已经发生，但远端可见性**必须**
+      等查看者回应 + 设备确认，两者缺一不可。这条字段就是"不许显示已收到"的源头。
+    """
+    return {
+        "help_id": row["help_id"],
+        "status": row["status"],
+        "remote_ack_required": True,
+        "notice": "本地反馈已发生；远端可见性待查看者回应",
+        "deduplicated": bool(deduplicated),
+    }
+
+
+def create_help_event(payload, remote_addr=""):
+    """设备上传一条按键求助事件（docs/06 §7.1）。
+
+    ★ 红线一：**先本地反馈，再尝试上传**。所以本函数只负责"接收与落库"，
+      设备即使上传失败（断网）也已经在本地完成了蜂鸣/LED —— 恢复后补传时带
+      `pending_local=true`，且 `trigger_up_ms` 必须是**触发那一刻**的值，绝不改写。
+    ★ 红线二：缺必填字段一律 400，**绝不**代为生成 `help_id` 或补时间戳。
+    """
+    if not isinstance(payload, dict):
+        return HTTPStatus.BAD_REQUEST, _error("BAD_JSON", "报文必须是 JSON 对象")
+
+    device_id = payload.get("device_id")
+    if not device_id or not isinstance(device_id, str):
+        return HTTPStatus.BAD_REQUEST, _error("MISSING_FIELD", "缺少必填字段 device_id")
+
+    help_id = payload.get("help_id")
+    if not help_id or not isinstance(help_id, str):
+        return HTTPStatus.BAD_REQUEST, _error("MISSING_FIELD", "缺少必填字段 help_id")
+
+    trigger_type = payload.get("trigger_type")
+    if trigger_type not in HELP_TRIGGER_TYPES:
+        return HTTPStatus.BAD_REQUEST, _error(
+            "MISSING_FIELD",
+            "trigger_type 非法: %r（必须是 %s）" % (trigger_type, "/".join(HELP_TRIGGER_TYPES)))
+
+    local_feedback = payload.get("local_feedback")
+    if local_feedback not in HELP_LOCAL_FEEDBACKS:
+        # ★ 必须如实标注：没接蜂鸣器却报 buzzer+led 就是"谎报本地反馈"（TC-W3-04）
+        return HTTPStatus.BAD_REQUEST, _error(
+            "MISSING_FIELD",
+            "local_feedback 非法: %r（必须是 %s）"
+            % (local_feedback, "/".join(HELP_LOCAL_FEEDBACKS)))
+
+    trigger_up_ms = payload.get("trigger_up_ms")
+    boot_count = payload.get("boot_count")
+    client_key = payload.get("client_request_key")
+    pending_local = bool(payload.get("pending_local"))
+    message = payload.get("message")
+
+    # 设备侧墙上时钟字段：未对时就是 NULL —— 绝不用服务端时间顶替（TC-W3-05(c)）
+    trigger_at_utc = payload.get("trigger_at_utc")
+    queued_at_utc = payload.get("queued_at_utc")
+    local_feedback_at_utc = payload.get("local_feedback_at_utc")
+
+    now = utc_now_iso()
+
+    with _db_lock:
+        conn = db_connect()
+        try:
+            # ---- 幂等：长按/连按被去抖成一条（client_request_key = btn-<boot>-<up_ms>）----
+            if client_key:
+                dup = conn.execute(
+                    "SELECT * FROM help_events WHERE client_request_key=?",
+                    (client_key,)).fetchone()
+                if dup is not None:
+                    # 不新增行、不改触发时间、状态不倒退
+                    conn.commit()
+                    return HTTPStatus.OK, _ok(_help_upload_response(dup, deduplicated=True))
+
+            dup_id = conn.execute("SELECT help_id FROM help_events WHERE help_id=?",
+                                  (help_id,)).fetchone()
+            if dup_id is not None:
+                conn.commit()
+                return HTTPStatus.OK, _ok(_help_upload_response(dup_id, deduplicated=True))
+
+            conn.execute(
+                """INSERT INTO help_events
+                   (help_id, device_id, client_request_key, status, trigger_type,
+                    trigger_at_utc, trigger_up_ms, boot_count, queued_at_utc,
+                    local_feedback, local_feedback_at_utc, local_feedback_received_at_utc,
+                    received_at_utc, created_at_utc, pending_local, message)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (help_id, device_id, client_key, "uploaded", trigger_type,
+                 trigger_at_utc, trigger_up_ms, boot_count, queued_at_utc,
+                 local_feedback, local_feedback_at_utc, now,
+                 now, now, 1 if pending_local else 0, message))
+            # 上传动作留痕（help_actions 的 action 只有 viewed/responded/cancelled 三个，
+            # 上传本身记在 device_events 里，不与查看者动作混在一张表）
+            add_device_event(conn, device_id, "help_uploaded", "device",
+                             {"help_id": help_id, "trigger_type": trigger_type,
+                              "local_feedback": local_feedback,
+                              "pending_local": bool(pending_local),
+                              "trigger_up_ms": trigger_up_ms,
+                              "boot_count": boot_count})
+            device_touch(conn, device_id, boot_count=boot_count)
+            conn.commit()
+
+            row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                               (help_id,)).fetchone()
+            return HTTPStatus.CREATED, _ok(_help_upload_response(row, deduplicated=False))
+        finally:
+            conn.close()
+
+
+def _help_age_ms(row, now_iso):
+    """`age_ms` 的算法（docs/06 §7.4）—— 不得用错，否则会把"滞留 5 分钟"显示成"刚按下"。
+
+    | 事件类型 | age_ms = | 理由 |
+    |---|---|---|
+    | 断网滞留补传且设备时钟已对时 | now - trigger_at_utc | 最精确 |
+    | 断网滞留补传（未对时）       | now - queued_at_utc  | 设备首次尝试上传时刻 |
+    | 正常在线事件                 | now - received_at_utc| 上传几乎即时 |
+
+    ★ 禁止用 trigger_up_ms 直接减服务端时间（单调时钟与墙上时钟不可比，跨重启更不可比）。
+    """
+    if row["pending_local"] and row["trigger_at_utc"]:
+        base = row["trigger_at_utc"]
+    elif row["pending_local"] and row["queued_at_utc"]:
+        base = row["queued_at_utc"]
+    else:
+        base = row["received_at_utc"] or row["created_at_utc"]
+    # 设备侧本地串带时区（2026-10-08T13:49:31.437+0800），服务端串是 …Z：
+    # 统一换算成 UTC 再相减，绝不相减两个不同口径的字符串
+    d = _parse_any_iso(base)
+    n = _parse_any_iso(now_iso)
+    if d is None or n is None:
+        return None
+    return int((n - d).total_seconds() * 1000)
+
+
+def _parse_any_iso(s):
+    """同时吃"服务端 UTC 串（…Z）"和"设备侧带时区本地串（…+0800）"。
+
+    ★ 为什么需要：docs/06 §7.1 的口径表里 trigger_at_utc 是设备侧本地串，
+      而 received_at_utc 是服务端 Z 串。两者要在同一个 age_ms 里相减，
+      必须先统一到 UTC —— 直接字符串相减或当成本地时间处理都会算错时区。
+    """
+    if not s:
+        return None
+    dt = _iso_to_dt(s)                     # 先试服务端格式（…Z）
+    if dt is not None:
+        return dt
+    for fmt in ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z"):
+        try:
+            return datetime.strptime(s, fmt)
+        except ValueError:
+            continue
+    return None
+
+
+def help_to_dict(conn, row, now_iso=None):
+    """求助事件的对外表示（docs/06 §7.4）。
+
+    ★ 键集合是**契约**（TC-W3-12：少一键即失败），不要随意增删。
+    """
+    now_iso = now_iso or utc_now_iso()
+    dev = device_effective_status(conn, row["device_id"])
+    return {
+        "help_id": row["help_id"],
+        "device_id": row["device_id"],
+        "status": row["status"],
+        "trigger_type": row["trigger_type"],
+        "trigger_up_ms": row["trigger_up_ms"],
+        "trigger_at_utc": row["trigger_at_utc"],
+        "queued_at_utc": row["queued_at_utc"],
+        "received_at_utc": row["received_at_utc"],
+        "local_feedback": row["local_feedback"],
+        "local_feedback_at_utc": row["local_feedback_at_utc"],
+        "local_feedback_received_at_utc": row["local_feedback_received_at_utc"],
+        "pending_local": bool(row["pending_local"]),
+        "viewed_at_utc": row["viewed_at_utc"],
+        "responded_at_utc": row["responded_at_utc"],
+        # ★★ 前端渲染"对方已收到"的**唯一**判据就是这个字段非空（TC-W3-20(c)）
+        "remote_acked_at_utc": row["remote_acked_at_utc"],
+        "accepted_by": row["accepted_by"],
+        "cancel_reason": row["cancel_reason"],
+        "created_at_utc": row["created_at_utc"],
+        "cancelled_at_utc": row["cancelled_at_utc"],
+        "message": row["message"],
+        "boot_count": row["boot_count"],
+        "device": dev,
+        "age_ms": _help_age_ms(row, now_iso),
+    }
+
+
+def list_help_events(device_id=None, status=None, limit="50"):
+    """查看者列表（docs/06 §7.4）。
+
+    ★ **绝不**在这里推导/回填 remote_acked_at_utc：它只有 device_ack 里
+      ack_type='help_ack' 那一条路径能写。列表里它是 NULL 就如实是 NULL。
+    """
+    try:
+        lim = max(1, min(int(limit or 50), 500))
+    except (TypeError, ValueError):
+        lim = 50
+    with _db_lock:
+        conn = db_connect()
+        try:
+            sql = "SELECT * FROM help_events WHERE 1=1"
+            args = []
+            if device_id:
+                sql += " AND device_id=?"
+                args.append(device_id)
+            if status:
+                sql += " AND status=?"
+                args.append(status)
+            sql += " ORDER BY created_at_utc DESC, rowid DESC LIMIT ?"
+            args.append(lim)
+            rows = conn.execute(sql, args).fetchall()
+            now = utc_now_iso()
+            return HTTPStatus.OK, _ok({
+                "count": len(rows),
+                "help_events": [help_to_dict(conn, r, now) for r in rows],
+            })
+        finally:
+            conn.close()
+
+
+def get_help_event(help_id, mark_viewed=True, actor=None):
+    """求助详情。
+
+    ★ 默认**打开即记为 viewed**（docs/06 §2.2 状态机 created→uploaded→acked→viewed，
+      TC-W3-13：查看者打开详情必须写 1 行 help_actions(action='viewed') 且
+      viewed_at_utc 非空）。状态只前进不回退 —— 已经是 responded/cancelled 的
+      事件不会被这条查看动作拉回去。
+
+    ★ 只读不改的场景（例如测试脚本只想取值）可传 mark_viewed=False。
+    """
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                               (help_id,)).fetchone()
+            if row is None:
+                return HTTPStatus.NOT_FOUND, _error(
+                    "REQUEST_NOT_FOUND", "help_id 不存在或已被清理")
+
+            now = utc_now_iso()
+            if mark_viewed and row["status"] not in HELP_FINAL_STATUSES:
+                # 幂等：viewed_at_utc 只写第一次；重复打开不重复记动作行
+                if row["viewed_at_utc"] is None:
+                    conn.execute(
+                        "UPDATE help_events SET viewed_at_utc=? WHERE help_id=?",
+                        (now, help_id))
+                    if row["status"] in ("created", "uploaded", "acked"):
+                        conn.execute(
+                            "UPDATE help_events SET status='viewed' WHERE help_id=?",
+                            (help_id,))
+                    conn.execute(
+                        """INSERT INTO help_actions
+                           (help_id, action, actor, at_utc, detail_json)
+                           VALUES (?,?,?,?,NULL)""",
+                        (help_id, "viewed", actor, now))
+                    conn.commit()
+                    row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                                       (help_id,)).fetchone()
+
+            data = help_to_dict(conn, row, now)
+            acts = conn.execute(
+                """SELECT action, actor, at_utc FROM help_actions
+                   WHERE help_id=? ORDER BY id ASC""", (help_id,)).fetchall()
+            data["actions"] = [{"action": a["action"], "actor": a["actor"],
+                                "at_utc": a["at_utc"]} for a in acts]
+            # 已有的 help_ack / clear_alert 指令（用于核对"已下发但未确认"）
+            cmds = conn.execute(
+                """SELECT type, request_id, issued_at_utc, dispatched_at_utc, taken_count
+                   FROM pending_commands WHERE request_id=?""",
+                ("helpcmd-%s" % help_id,)).fetchall()
+            data["pending_commands"] = [
+                {"type": c["type"], "request_id": c["request_id"],
+                 "issued_at_utc": c["issued_at_utc"],
+                 "dispatched_at_utc": c["dispatched_at_utc"],
+                 "taken_count": c["taken_count"]} for c in cmds]
+            return HTTPStatus.OK, _ok(data)
+        finally:
+            conn.close()
+
+
+def _queue_help_command(conn, device_id, help_id, cmd_type, nonce=None):
+    """把 help_ack / clear_alert 排进设备指令队列。
+
+    ★ 关键推论（docs/06 §4.5）：**"放进队列" ≠ "已送达"**。
+      本函数只入队；`remote_acked_at_utc` 必须等设备轮询取走并
+      `POST /device/ack`（ack_type=help_ack）之后才由 device_ack 写入。
+
+    ★ request_id 用 `helpcmd-<help_id>` 前缀：pending_commands 有
+      UNIQUE(device_id, request_id, type)，两种指令各占一行、互不覆盖。
+    """
+    rid = "helpcmd-%s" % help_id
+    conn.execute(
+        """INSERT OR REPLACE INTO pending_commands
+           (device_id, request_id, type, nonce, sensor, timeout_ms, issued_at_utc,
+            attempt, dispatched_at_utc, taken_at_utc, taken_count)
+           VALUES (?,?,?,?,?,?,?,1,NULL,NULL,0)""",
+        (device_id, rid, cmd_type, nonce, None, HELP_UPLOAD_TIMEOUT_MS, utc_now_iso()))
+    return rid
+
+
+def _latest_help_ack_ctx(conn, help_id):
+    """取该 help_id 关联的 help_ack 指令的 nonce（供 ack 校验；没有则为 None）。"""
+    r = conn.execute(
+        """SELECT nonce FROM pending_commands
+           WHERE request_id=? AND type='help_ack' LIMIT 1""",
+        ("helpcmd-%s" % help_id,)).fetchone()
+    return r["nonce"] if r is not None else None
+
+
+def respond_help_event(help_id, payload):
+    """查看者回应「我看到了」（docs/06 §7.2）。
+
+    ★★ 本响应**不代表设备已知晓**。`remote_acked_at_utc` 在这一步**必须**是 null，
+       它只能由设备 ack（ack_type=help_ack）写入 —— 这是当堂验证第 2 项的判定核心。
+    """
+    payload = payload or {}
+    actor = payload.get("actor")
+    message = payload.get("message")
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                               (help_id,)).fetchone()
+            if row is None:
+                return HTTPStatus.NOT_FOUND, _error(
+                    "REQUEST_NOT_FOUND", "help_id 不存在或已被清理")
+            if row["status"] in HELP_FINAL_STATUSES:
+                return HTTPStatus.CONFLICT, _error(
+                    "REQUEST_ALREADY_FINAL",
+                    "该求助已结束（%s），不能再回应" % row["status"])
+
+            now = utc_now_iso()
+            # 状态推进（不回退）：cancelled/expired 已排除，其余一律 → responded
+            conn.execute(
+                """UPDATE help_events
+                   SET status='responded', responded_at_utc=COALESCE(responded_at_utc,?),
+                       accepted_by=COALESCE(accepted_by,?)
+                   WHERE help_id=?""", (now, actor, help_id))
+            if message is not None:
+                conn.execute("UPDATE help_events SET message=? WHERE help_id=?",
+                             (message, help_id))
+            conn.execute(
+                """INSERT INTO help_actions (help_id, action, actor, at_utc, detail_json)
+                   VALUES (?,?,?,?,?)""",
+                (help_id, "responded", actor, now,
+                 json.dumps({"message": message}, ensure_ascii=False) if message else None))
+            # 自动生成 help_ack 指令 —— 但请注意：**入队 ≠ 送达**
+            _queue_help_command(conn, row["device_id"], help_id, "help_ack")
+            add_device_event(conn, row["device_id"], "help_responded", "operator",
+                             {"help_id": help_id, "actor": actor})
+            conn.commit()
+
+            fresh = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                                 (help_id,)).fetchone()
+            return HTTPStatus.OK, _ok({
+                "help_id": help_id,
+                "status": "responded",
+                "responded_at_utc": fresh["responded_at_utc"],
+                "remote_ack_command": "help_ack",
+                # ★ 恒为 null（此刻设备还没取走指令）—— 放开这个字段造成"假已收到"
+                #   是本周最严重的一类缺陷
+                "remote_acked_at_utc": fresh["remote_acked_at_utc"],
+                "accepted_by": fresh["accepted_by"],
+                "note": "已记录回应，并已向设备下发 help_ack；"
+                        "设备确认后 remote_acked_at_utc 才会写入",
+            })
+        finally:
+            conn.close()
+
+
+def cancel_help_event(help_id, payload):
+    """取消求助（docs/06 §7.3）—— 取消逻辑 C1–C4 的落地点。
+
+    C1 只有佩戴者侧可发起（教学环境以操作者声明为准，记 actor）
+    C2 任意非终态都可取消（created/uploaded/acked/viewed/responded → cancelled）
+    C3 取消**不删除**任何记录，`cancel_reason` 必填（缺则 400，且不改写状态）
+    C4 终态重复取消 → 200 + deduplicated:true（幂等，不报错）
+    """
+    payload = payload or {}
+    actor = payload.get("actor")
+    reason = payload.get("reason")
+    if not reason or not isinstance(reason, str) or not reason.strip():
+        # C3：cancel_reason 必填。★ 此时**绝不**改写状态（TC-W3-23(b)）
+        return HTTPStatus.BAD_REQUEST, _error(
+            "MISSING_FIELD", "缺少必填字段 reason（取消原因必须填写，记录全程留痕）")
+
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                               (help_id,)).fetchone()
+            if row is None:
+                return HTTPStatus.NOT_FOUND, _error(
+                    "REQUEST_NOT_FOUND", "help_id 不存在或已被清理")
+
+            # C4：终态重复取消 → 幂等 200，不新增动作行、时间戳一字不改
+            if row["status"] in HELP_FINAL_STATUSES:
+                conn.commit()
+                return HTTPStatus.OK, _ok({
+                    "help_id": help_id,
+                    "status": row["status"],
+                    "cancelled_at_utc": row["cancelled_at_utc"],
+                    "cancel_reason": row["cancel_reason"],
+                    "device_command": None,
+                    "deduplicated": True,
+                    "note": "该求助已处于终态（%s），本次取消为幂等重复，未做任何改动"
+                            % row["status"],
+                })
+
+            # C2：非终态 → cancelled
+            now = utc_now_iso()
+            conn.execute(
+                """UPDATE help_events
+                   SET status='cancelled', cancelled_at_utc=COALESCE(cancelled_at_utc,?),
+                       cancel_reason=?
+                   WHERE help_id=?""", (now, reason, help_id))
+            conn.execute(
+                """INSERT INTO help_actions (help_id, action, actor, at_utc, detail_json)
+                   VALUES (?,?,?,?,?)""",
+                (help_id, "cancelled", actor, now,
+                 json.dumps({"reason": reason}, ensure_ascii=False)))
+            # 取消时把可能还在队列里的 help_ack 作废：已取消的求助不该再让灯转绿
+            conn.execute(
+                """DELETE FROM pending_commands
+                   WHERE request_id=? AND type='help_ack'""", ("helpcmd-%s" % help_id,))
+            # 下发 clear_alert：设备取走后停蜂鸣、LED 回待机色
+            _queue_help_command(conn, row["device_id"], help_id, "clear_alert")
+            add_device_event(conn, row["device_id"], "help_cancelled", "operator",
+                             {"help_id": help_id, "actor": actor, "reason": reason})
+            conn.commit()
+
+            fresh = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                                 (help_id,)).fetchone()
+            return HTTPStatus.OK, _ok({
+                "help_id": help_id,
+                "status": "cancelled",
+                "cancelled_at_utc": fresh["cancelled_at_utc"],
+                "cancel_reason": fresh["cancel_reason"],
+                "cancelled_by": actor,
+                "device_command": "clear_alert",
+                "deduplicated": False,
+                "note": "已下发 clear_alert；设备收到后停止蜂鸣并复位指示灯",
+            })
+        finally:
+            conn.close()
+
+
+def mark_help_viewed(help_id, actor=None):
+    """查看者打开详情 → viewed（记录动作流水，状态不回退）。"""
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                               (help_id,)).fetchone()
+            if row is None:
+                return HTTPStatus.NOT_FOUND, _error(
+                    "REQUEST_NOT_FOUND", "help_id 不存在或已被清理")
+            if row["status"] in HELP_FINAL_STATUSES:
+                return HTTPStatus.OK, _ok({"help_id": help_id, "status": row["status"],
+                                           "viewed": False,
+                                           "note": "终态事件只读，不再记录 viewed"})
+            now = utc_now_iso()
+            conn.execute(
+                "UPDATE help_events SET viewed_at_utc=COALESCE(viewed_at_utc,?) WHERE help_id=?",
+                (now, help_id))
+            # 状态机：created→uploaded→acked→viewed，只前进
+            if row["status"] in ("created", "uploaded", "acked"):
+                conn.execute("UPDATE help_events SET status='viewed' WHERE help_id=?",
+                             (help_id,))
+            conn.execute(
+                """INSERT INTO help_actions (help_id, action, actor, at_utc, detail_json)
+                   VALUES (?,?,?,?,NULL)""", (help_id, "viewed", actor, now))
+            conn.commit()
+            fresh = conn.execute("SELECT status FROM help_events WHERE help_id=?",
+                                 (help_id,)).fetchone()
+            return HTTPStatus.OK, _ok({"help_id": help_id, "status": fresh["status"],
+                                       "viewed": True, "viewed_at_utc": now})
+        finally:
+            conn.close()
+
+
 # ---------------------------------------------------------------- 设备侧 ----
 def poll_commands(payload, remote_addr):
     """设备拉取待执行指令（docs/06 §4.1）—— 下行的唯一通道。
@@ -1294,12 +1931,23 @@ def poll_commands(payload, remote_addr):
                         "attempt": r["attempt"],
                     })
                 else:
-                    # pause_reports / resume_reports：取走即视为已下发，直接出队
+                    # pause_reports / resume_reports / help_ack / clear_alert：
+                    # 取走即视为已下发，直接出队。
+                    # ★ 注意：出队只说明"设备取到了指令"，**不等于**设备已执行 ——
+                    #   真正的确认要走 POST /device/ack（见 device_ack 里的 help_ack 分支）。
+                    is_help_cmd = r["type"] in ("help_ack", "clear_alert")
                     conn.execute("DELETE FROM pending_commands WHERE id=?", (r["id"],))
+                    # 记录下发时刻，供核对"回应 → 设备取到指令"的时间线
+                    if is_help_cmd:
+                        hid = (r["request_id"] or "")[len("helpcmd-"):] or None
+                        add_device_event(conn, device_id, "help_command_taken", "device",
+                                         {"help_id": hid, "type": r["type"],
+                                          "request_id": r["request_id"]})
                     commands.append({
                         "request_id": r["request_id"],
                         "type": r["type"],
-                        "nonce": None,
+                        # help 指令带上 nonce（设备 ack 时回传，后端据此绑定"同一次")
+                        "nonce": r["nonce"],
                         "sensor": None,
                         "timeout_ms": r["timeout_ms"],
                         "issued_at_utc": r["issued_at_utc"],
@@ -1312,6 +1960,86 @@ def poll_commands(payload, remote_addr):
             return HTTPStatus.OK, _ok({
                 "commands": commands,
                 "poll_after_ms": 1000,
+            })
+        finally:
+            conn.close()
+
+
+def _device_ack_help_ack(payload, remote_addr, nonce, attempt, boot_count, up_ms, reason):
+    """设备确认已收到「查看者回应」（docs/06 §4.2 的 help_ack 行）。
+
+    ★★★ 这是全工程**唯一**允许写入 `remote_acked_at_utc` 的地方。
+       写在这里 = 设备真的把 help_ack 指令取走并回了执，
+       于是页面才被允许显示「佩戴者设备已收到回应」（TC-W3-17/20）。
+
+    ★ 幂等（TC-W3-17(d)）：重复 ack → 200 + deduplicated:true，
+      `remote_acked_at_utc` **逐字符不变**，绝不被第二次 ack 的时间覆盖。
+    """
+    payload = payload or {}
+    device_id = payload.get("device_id")
+    request_id = payload.get("request_id")
+    if not device_id or not request_id:
+        return HTTPStatus.BAD_REQUEST, _error(
+            "MISSING_FIELD", "缺少必填字段 device_id/request_id")
+
+    # request_id 形如 helpcmd-<help_id>；也接受直接传 help_id（健壮性）
+    help_id = payload.get("help_id")
+    if not help_id:
+        if request_id.startswith("helpcmd-"):
+            help_id = request_id[len("helpcmd-"):]
+        else:
+            help_id = request_id
+
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM help_events WHERE help_id=?",
+                               (help_id,)).fetchone()
+            if row is None:
+                return HTTPStatus.NOT_FOUND, _error(
+                    "REQUEST_NOT_FOUND", "help_id 不存在: %s" % help_id)
+
+            # 幂等：已经确认过就直接返回原值，时间戳一字不改
+            if row["remote_acked_at_utc"] is not None:
+                conn.commit()
+                return HTTPStatus.OK, _ok({
+                    "request_id": request_id, "help_id": help_id,
+                    "status": row["status"],
+                    "remote_acked_at_utc": row["remote_acked_at_utc"],
+                    "deduplicated": True,
+                })
+
+            now = utc_now_iso()
+            conn.execute(
+                "UPDATE help_events SET remote_acked_at_utc=? WHERE help_id=?",
+                (now, help_id))
+            # 同名回执落 request_acks，便于与 collect_now 的回执统一检索
+            #   （唯一键 (request_id, ack_type, attempt)，重复即冲突 → 前面已 return）
+            try:
+                conn.execute(
+                    """INSERT INTO request_acks
+                       (request_id, device_id, ack_type, ack_at_utc, device_uptime_ms,
+                        boot_count, attempt, reason, detail_json, remote_addr)
+                       VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                    (request_id, device_id, "help_ack", now, up_ms, boot_count, attempt,
+                     reason, json.dumps({"help_id": help_id}, ensure_ascii=False),
+                     remote_addr))
+            except sqlite3.IntegrityError:
+                # 已存在同名回执行 → 属于重复，不影响本次语义
+                pass
+            # 队列里若还有未取走的 help_ack，清掉（已确认，无需重复下发）
+            conn.execute("DELETE FROM pending_commands WHERE request_id=? AND type='help_ack'",
+                         (request_id,))
+            add_device_event(conn, device_id, "help_remote_acked", "device",
+                             {"help_id": help_id, "request_id": request_id})
+            device_touch(conn, device_id, boot_count=boot_count, uptime_ms=up_ms)
+            conn.commit()
+            return HTTPStatus.OK, _ok({
+                "request_id": request_id, "help_id": help_id,
+                "status": row["status"],
+                # ★ 这是权威写入值：等于服务端接收时刻（TC-W3-17(b)）
+                "remote_acked_at_utc": now,
+                "deduplicated": False,
             })
         finally:
             conn.close()
@@ -1330,7 +2058,7 @@ def device_ack(payload, remote_addr):
     if not request_id or not device_id or not ack_type:
         return HTTPStatus.BAD_REQUEST, _error(
             "MISSING_FIELD", "缺少必填字段 request_id/device_id/ack_type")
-    if ack_type not in ("received", "started", "rejected", "superseded"):
+    if ack_type not in ("received", "started", "rejected", "superseded", "help_ack"):
         return HTTPStatus.BAD_REQUEST, _error("MISSING_FIELD", "ack_type 非法: %s" % ack_type)
 
     nonce = payload.get("nonce")
@@ -1341,6 +2069,14 @@ def device_ack(payload, remote_addr):
     reason = payload.get("reason")
     boot_count = payload.get("boot_count")
     up_ms = payload.get("up_ms")
+
+    # ---- 第 3 周：help_ack 走**独立**分支 ------------------------------------
+    #   ★ 为什么不在下面 collect_requests 的查询里混着处理：help_ack 的
+    #     request_id 是 `helpcmd-<help_id>` 而不是 collect_requests 的主键，
+    #     混在一起会 404 REQUEST_NOT_FOUND，把"设备已确认"误报成"请求不存在"。
+    if ack_type == "help_ack":
+        return _device_ack_help_ack(payload, remote_addr, nonce, attempt,
+                                    boot_count, up_ms, reason)
 
     with _db_lock:
         conn = db_connect()
@@ -1792,6 +2528,249 @@ def _timeout_scanner():
 
 
 # ===========================================================================
+# 第 4 周：摄像头 —— 预览帧（内存最新一帧）+ 照片（落盘留痕）
+#
+# ★ 三条不可突破的原则：
+#   1) 预览帧**不落库、不回放**：内存里只保留"该设备最新一帧"。服务重启后无画面，
+#      网页如实显示"还没有画面"——绝不拿旧帧当实时画面。
+#   2) 照片必须**落盘 + 记录 SHA256**：它是用户主动触发的证据，要能下载、能逐字节核对。
+#   3) 设备上报的宽高/序号只作为**元数据**记录，不据此编造任何图像内容。
+# ===========================================================================
+_cam_lock = threading.Lock()
+_cam_latest = {}      # device_id -> {jpeg:bytes, seq:int, w:int, h:int, received_at_utc:str,
+                      #               bytes:int, remote:str, frame_no:int}
+_cam_capture = {}     # device_id -> 请求拍照的时刻（time.monotonic）
+_cam_state = {}       # device_id -> 设备自报的摄像头状态（ready/pid/error/at）
+_cam_frame_counter = 0  # 后端累计收到的帧数（只用于诊断，不参与判新旧）
+
+
+def _cam_norm_device(device_id):
+    """把 device_id 规范化成一个安全、有界的键（空值不参与合并）。"""
+    return (device_id or "").strip()[:64] or "unknown"
+
+
+def _jpeg_looks_valid(data):
+    """只做最基本的完整性检查：SOI(FFD8) 开头、EOI(FFD9) 结尾。
+
+    ★ 这不是"图片识别"，也不判断内容；只是防止把半截 TCP 报文或任意二进制
+      当成画面存下来 —— 那种"残帧"在网页上会显示成灰块/裂图，比不显示更误导。
+    """
+    return (len(data) > 4 and data[0] == 0xFF and data[1] == 0xD8
+            and data[-2] == 0xFF and data[-1] == 0xD9)
+
+
+def cam_store_frame(device_id, jpeg, seq, w, h, remote):
+    """保存最新预览帧；返回 (是否要求设备拍照, 该帧是否比上一帧新)。"""
+    global _cam_frame_counter
+    dev = _cam_norm_device(device_id)
+    now = utc_now_iso()
+    with _cam_lock:
+        _cam_frame_counter += 1
+        prev = _cam_latest.get(dev)
+        is_new = (prev is None) or (prev["seq"] != seq) or (prev["bytes"] != len(jpeg))
+        _cam_latest[dev] = {
+            "device_id": dev,
+            "jpeg": jpeg,
+            "seq": seq,
+            "w": w,
+            "h": h,
+            "received_at_utc": now,
+            "bytes": len(jpeg),
+            "remote": remote,
+            "frame_no": _cam_frame_counter,
+        }
+        want_photo = _cam_capture.pop(dev, None)
+    if want_photo is None:
+        return False, is_new
+    # 超时的拍照请求直接丢弃：不在几秒后"补拍"一张让人误解时间点的照片
+    if (time.monotonic() - want_photo) > CAM_CAPTURE_TTL_S:
+        print("[cam] 设备 %s 的拍照请求已超时(%.1fs)，丢弃" % (dev, CAM_CAPTURE_TTL_S))
+        return False, is_new
+    return True, is_new
+
+
+def cam_latest_frame(device_id):
+    """取最新帧（返回副本，避免调用方在读的同时被新帧替换）。"""
+    dev = _cam_norm_device(device_id)
+    with _cam_lock:
+        item = _cam_latest.get(dev)
+        if item is None:
+            return None
+        out = dict(item)
+        return out
+
+
+def cam_all_devices():
+    with _cam_lock:
+        return sorted(_cam_latest.keys())
+
+
+def cam_report_state(payload):
+    """设备启动时自报摄像头状态（ready/pid/error）。
+
+    ★ 只作为**诊断信息**保存，绝不参与"有没有画面"的判断：
+      画面是否存在只由 /cam/frame 是否真的收到帧决定。
+    """
+    if not isinstance(payload, dict):
+        return HTTPStatus.BAD_REQUEST, _error("BAD_REQUEST", "报文必须是 JSON 对象")
+    device_id = payload.get("device_id")
+    if not device_id:
+        return HTTPStatus.BAD_REQUEST, _error("BAD_REQUEST", "缺少 device_id")
+    dev = _cam_norm_device(device_id)
+    rec = {
+        "device_id": dev,
+        "ready": bool(payload.get("ready")),
+        "pid": payload.get("pid"),
+        "error": payload.get("error") or "",
+        "w": payload.get("w"),
+        "h": payload.get("h"),
+        "reported_at_utc": utc_now_iso(),
+    }
+    with _cam_lock:
+        _cam_state[dev] = rec
+    print("[cam] 设备 %s 自报摄像头状态: ready=%s pid=%s error=%s"
+          % (dev, rec["ready"], rec["pid"], rec["error"] or "-"))
+    return HTTPStatus.OK, {"ok": True, "device_id": dev, "ready": rec["ready"]}
+
+
+def cam_request_capture(device_id):
+    """网页点「拍照」：打一个待拍照标记，等设备下一次上传帧时通过响应带下去。"""
+    dev = _cam_norm_device(device_id)
+    with _cam_lock:
+        _cam_capture[dev] = time.monotonic()
+        has_frame = dev in _cam_latest
+    return has_frame
+
+
+def cam_save_photo(device_id, jpeg, w, h, seq, remote):
+    """把照片写入磁盘并落库；返回记录 dict。"""
+    dev = _cam_norm_device(device_id)
+    now_dt = datetime.now(timezone.utc)
+    photo_id = now_dt.strftime("%Y%m%dT%H%M%S%fZ") + "-" + uuid.uuid4().hex[:6]
+    rel_name = "%s/%s.jpg" % (dev, photo_id)
+    abs_path = os.path.join(CAM_DIR, dev, photo_id + ".jpg")
+    os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+
+    # ★ 先写临时文件再原子改名：避免"网页恰好在这时来下载"读到半截 JPEG
+    tmp_path = abs_path + ".part"
+    with open(tmp_path, "wb") as f:
+        f.write(jpeg)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp_path, abs_path)
+
+    digest = hashlib.sha256(jpeg).hexdigest()
+    with _db_lock:
+        conn = db_connect()
+        try:
+            conn.execute(
+                """INSERT INTO cam_photos
+                   (photo_id, device_id, created_at_utc, width, height,
+                    byte_len, sha256, seq, remote_addr, filename)
+                   VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                (photo_id, dev, now_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+                 w, h, len(jpeg), digest, seq, remote, rel_name))
+            conn.commit()
+        finally:
+            conn.close()
+    print("[cam] 收到照片 %s: %s %dx%d %d 字节 sha256=%s"
+          % (dev, photo_id, w, h, len(jpeg), digest[:16]))
+    return {
+        "photo_id": photo_id,
+        "device_id": dev,
+        "created_at_utc": now_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+        "width": w, "height": h, "byte_len": len(jpeg),
+        "sha256": digest, "seq": seq,
+        "url": "/api/v1/cam/photo/%s.jpg" % photo_id,
+        "filename": rel_name,
+    }
+
+
+def cam_list_photos(device_id=None, limit=20):
+    try:
+        limit = max(1, min(int(limit), 100))
+    except (TypeError, ValueError):
+        limit = 20
+    with _db_lock:
+        conn = db_connect()
+        try:
+            if device_id:
+                rows = conn.execute(
+                    """SELECT * FROM cam_photos WHERE device_id=?
+                       ORDER BY created_at_utc DESC, rowid DESC LIMIT ?""",
+                    (_cam_norm_device(device_id), limit)).fetchall()
+            else:
+                rows = conn.execute(
+                    """SELECT * FROM cam_photos
+                       ORDER BY created_at_utc DESC, rowid DESC LIMIT ?""",
+                    (limit,)).fetchall()
+            items = [{
+                "photo_id": r["photo_id"],
+                "device_id": r["device_id"],
+                "created_at_utc": r["created_at_utc"],
+                "width": r["width"], "height": r["height"],
+                "byte_len": r["byte_len"], "sha256": r["sha256"],
+                "seq": r["seq"],
+                "url": "/api/v1/cam/photo/%s.jpg" % r["photo_id"],
+            } for r in rows]
+            return HTTPStatus.OK, {"ok": True, "count": len(items), "photos": items}
+        finally:
+            conn.close()
+
+
+def cam_get_photo_path(photo_id):
+    """按 photo_id 查磁盘路径（ID 只允许安全字符，杜绝路径穿越）。"""
+    import re
+    if not re.fullmatch(r"[0-9A-Za-z\-]{8,80}", photo_id or ""):
+        return None, None
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM cam_photos WHERE photo_id=?",
+                               (photo_id,)).fetchone()
+        finally:
+            conn.close()
+    if row is None:
+        return None, None
+    rel = row["filename"]
+    base = os.path.abspath(CAM_DIR)
+    full = os.path.abspath(os.path.join(base, rel))
+    if not full.startswith(base + os.sep):
+        return None, None
+    return row, full
+
+
+# ===========================================================================
+# 第 4 周：把后端能力注入语言助手（助手只通过这 7 个回调接触数据与设备）
+#   ★ 助手不直接 import 本文件：避免 `python server.py` 与 `python -m backend.server`
+#     两种启动方式下模块名不同导致的"两份单例"问题。
+# ===========================================================================
+nl_assistant.bind(
+    # 返回 (200, {"ok":True,"devices":[...]}) 的原始结构
+    list_devices=lambda: query_devices(),
+    latest_record=lambda device_id: query_latest(device_id),
+    records=lambda device_id, limit: query_records(device_id, limit=limit),
+    create_collect=lambda payload: create_collect_request(payload),
+    get_collect=lambda request_id: get_collect_request(request_id),
+    list_requests=lambda **kw: list_collect_requests(**kw),
+    server_time=utc_now_iso,
+)
+
+# ===========================================================================
+# 第 5 周：把语音链路接到同一套能力上
+#   ★ 关键：task 段注入的是 nl_assistant.handle_query —— 语音入口与文字入口
+#     执行的是**同一个函数、同一套工具、同一套 claim 分档**。
+#     两条入口不许各自解读同一句话（红线 V2，见 voice_pipeline.py 顶部）。
+# ===========================================================================
+voice_pipeline.bind(
+    db_path=DB_PATH,
+    nl_query=lambda payload: nl_assistant.handle_query(payload),
+    utc_now=utc_now_iso,
+    voice_dir=VOICE_DIR,
+)
+
+
+# ===========================================================================
 # HTTP 层
 # ===========================================================================
 class Handler(BaseHTTPRequestHandler):
@@ -1843,7 +2822,13 @@ class Handler(BaseHTTPRequestHandler):
         # ---- 设备侧端点：统一要求 X-Device-Token（沿用第 1 周同一套令牌）----
         DEVICE_PATHS = ("/api/v1/ingest", "/api/v1/device/reports",
                         "/api/v1/device/commands/poll", "/api/v1/device/ack",
-                        "/api/v1/observations")
+                        "/api/v1/observations",
+                        # 第 3 周：设备上传按键求助（沿用同一套 X-Device-Token）
+                        "/api/v1/help_events",
+                        # 第 4 周：摄像头预览帧与照片（body 是原始 JPEG，不是 JSON）
+                        "/api/v1/cam/frame", "/api/v1/cam/photo",
+                        # 设备启动时自报摄像头可用性（JSON）——用于区分"没联网"与"摄像头没接"
+                        "/api/v1/cam/state")
 
         if path in DEVICE_PATHS:
             if not self._token_ok():
@@ -1856,6 +2841,18 @@ class Handler(BaseHTTPRequestHandler):
                 return
         elif not path.startswith("/api/v1/") and path not in ("", "/"):
             self._send_json(HTTPStatus.NOT_FOUND, {"ok": False, "error": "未知接口"})
+            return
+
+        # ★ 第 4 周：摄像头上传的 body 是**原始 JPEG 二进制**，必须先于 _read_json 分流。
+        #   若走 JSON 解析，每张图都会 400（"JSON 解析失败"）——这是很容易踩的坑。
+        if path in ("/api/v1/cam/frame", "/api/v1/cam/photo"):
+            self._handle_cam_upload(path, remote)
+            return
+
+        # ★ 第 5 周：语音 turn 的 body 是**原始 WAV 二进制**，同理必须先分流。
+        #   格式校验在 voice_pipeline.parse_wav 里做（不在这一层猜）。
+        if path == "/api/v1/voice/turn":
+            self._handle_voice_turn(remote)
             return
 
         body = self._read_json()
@@ -1880,6 +2877,66 @@ class Handler(BaseHTTPRequestHandler):
         elif path.startswith("/api/v1/collect_requests/") and path.endswith("/cancel"):
             rid = path[len("/api/v1/collect_requests/"):-len("/cancel")]
             handler = lambda: cancel_collect_request(rid, payload)
+        # ---- 第 3 周：按键求助闭环（docs/06 §7）----
+        elif path == "/api/v1/help_events":
+            # 设备上传求助事件（佩戴者按键产生）
+            handler = lambda: create_help_event(payload, remote)
+        elif path.startswith("/api/v1/help_events/") and path.endswith("/response"):
+            hid = path[len("/api/v1/help_events/"):-len("/response")]
+            # 查看者回应「我看到了」—— 注意：此响应**不代表**设备已知晓
+            handler = lambda: respond_help_event(hid, payload)
+        elif path.startswith("/api/v1/help_events/") and path.endswith("/cancel"):
+            hid = path[len("/api/v1/help_events/"):-len("/cancel")]
+            handler = lambda: cancel_help_event(hid, payload)
+        elif path.startswith("/api/v1/help_events/") and path.endswith("/viewed"):
+            hid = path[len("/api/v1/help_events/"):-len("/viewed")]
+            handler = lambda: mark_help_viewed(hid, payload.get("actor"))
+        # ---- 第 4 周：摄像头 ----
+        elif path == "/api/v1/cam/state":
+            handler = lambda: cam_report_state(payload)
+        elif path == "/api/v1/cam/capture":
+            handler = lambda: self._cam_capture_api(payload)
+        # ---- 第 4 周：受限工具语言助手（自然语言查询 / 请求采集）----
+        elif path == "/api/v1/nl/query":
+            handler = lambda: nl_assistant.handle_query(payload)
+        # ---- 第 5 周：前端上报「播放器已开始播放」（只记事实，不推断"已听到"）----
+        elif path.startswith("/api/v1/voice/turn/") and path.endswith("/played"):
+            tid = path[len("/api/v1/voice/turn/"):-len("/played")]
+            handler = lambda: voice_pipeline.mark_played(tid, payload, remote)
+        # ---- 第 6 周：文字补充轮（澄清时用键盘回答，走同一条 turn 链路）----
+        elif path == "/api/v1/voice/text":
+            handler = lambda: voice_pipeline.handle_text_turn(payload, remote)
+        # ---- 第 6 周：会话（短期上下文 / 半双工状态机）----
+        elif path == "/api/v1/voice/session":
+            handler = lambda: voice_session.create_session(
+                (payload or {}).get("device_id"), (payload or {}).get("note"))
+        elif path.startswith("/api/v1/voice/session/") and path.endswith("/state"):
+            sid = path[len("/api/v1/voice/session/"):-len("/state")]
+            handler = lambda: voice_session.note_local_state(
+                sid, (payload or {}).get("state"), (payload or {}).get("by"))
+        elif path.startswith("/api/v1/voice/session/") and path.endswith("/cancel"):
+            sid = path[len("/api/v1/voice/session/"):-len("/cancel")]
+            handler = lambda: voice_session.cancel(
+                sid, (payload or {}).get("request_id"), (payload or {}).get("turn_id"),
+                (payload or {}).get("reason") or "user_stop",
+                (payload or {}).get("requested_by") or remote)
+        elif path.startswith("/api/v1/voice/session/") and path.endswith("/reset"):
+            sid = path[len("/api/v1/voice/session/"):-len("/reset")]
+            handler = lambda: voice_session.reset(
+                sid, (payload or {}).get("reason") or "user_reset")
+        # ---- 第 6 周：单轮取消 / 停止播报 ----
+        elif path.startswith("/api/v1/voice/turn/") and path.endswith("/cancel"):
+            tid = path[len("/api/v1/voice/turn/"):-len("/cancel")]
+            handler = lambda: voice_session.cancel(
+                (payload or {}).get("session_id"), None, tid,
+                (payload or {}).get("reason") or "user_stop",
+                (payload or {}).get("requested_by") or remote)
+        elif path.startswith("/api/v1/voice/turn/") and path.endswith("/stop"):
+            tid = path[len("/api/v1/voice/turn/"):-len("/stop")]
+            handler = lambda: voice_session.stop_playback(
+                tid, (payload or {}).get("played_ms"),
+                (payload or {}).get("reason") or "user_stop",
+                (payload or {}).get("reported_by") or remote)
         else:
             handler = None
 
@@ -1891,6 +2948,14 @@ class Handler(BaseHTTPRequestHandler):
         #   真正的原因（服务端 traceback 混在 stderr 里，很难与请求对上号）。
         try:
             status, resp = handler()
+        except voice_pipeline.StorageBusy as e:
+            # ★ 存储层瞬时不可写（板子 ingest + 摄像头并发写同一个库时的实测现象）
+            #   不是"逻辑坏了"，也不是调用方的错 ⇒ 503 + retryable，
+            #   让前端可以原样重试一次，而不是看到"服务端异常"就以为代码有 bug。
+            status, resp = HTTPStatus.SERVICE_UNAVAILABLE, _error(
+                "VOICE_STORAGE_BUSY",
+                "存储层这一刻写不进去（%s），本轮没有做任何动作，可以重试。" % (e,),
+                retryable=True)
         except Exception as e:
             import traceback
             traceback.print_exc()
@@ -1918,6 +2983,205 @@ class Handler(BaseHTTPRequestHandler):
             return None
         return raw_body, payload
 
+    # ---- 第 4 周：摄像头（二进制） ----
+    def _read_raw(self, max_len):
+        """读**原始二进制**请求体（JPEG）。失败时已自行回错并返回 None。"""
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            length = 0
+        if length <= 0 or length > max_len:
+            # 明确报错，不静默截断：截断的 JPEG 在网页上是裂图，比没有更误导
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False,
+                             "error": "图像长度非法: %d（上限 %d 字节）" % (length, max_len)},
+                            close=True)
+            return None
+        return self.rfile.read(length)
+
+    def _send_bytes(self, status, data, ctype, extra_headers=None):
+        """发送二进制响应（JPEG）。带 no-store，避免浏览器缓存把旧帧当新帧。"""
+        self.send_response(status)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        for k, v in (extra_headers or {}).items():
+            self.send_header(k, str(v))
+        self._cors()
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _handle_voice_turn(self, remote):
+        """POST /api/v1/voice/turn —— body = 原始 WAV（16k/16bit/mono）。
+
+        参数走 query string：
+            audio_source       必填，browser_mic / uploaded_file / device_mic
+            capture_location   必填，录音发生在哪台机器（红线 V5）
+            device_id          可选，任务上下文设备
+            wait_ms            可选，透传给语言助手的等待时间
+            playback_location  可选，播放发生在哪里（默认浏览器）
+        """
+        qs = parse_qs(urlparse(self.path).query)
+
+        def q(name, default=None):
+            v = qs.get(name)
+            return v[0] if v else default
+
+        raw = self._read_raw(VOICE_MAX_BODY)
+        if raw is None:
+            return
+        params = {
+            "audio_source": q("audio_source"),
+            "capture_location": q("capture_location"),
+            "device_id": q("device_id"),
+            "wait_ms": q("wait_ms"),
+            "playback_location": q("playback_location"),
+            # ---- 第 6 周：会话与关联日志 ----
+            "session_id": q("session_id"),
+            "request_id": q("request_id"),
+            "client_ack_ms": q("client_ack_ms"),
+            # ---- 第 6 周：教师侧测试注入（记录里会标 injected）----
+            "inject_delay_ms": q("inject_delay_ms"),
+            "inject_task_ms": q("inject_task_ms"),
+            "inject_asr_text": q("inject_asr_text"),
+        }
+        try:
+            status, resp = voice_pipeline.handle_turn(raw, params, remote)
+        except voice_pipeline.StorageBusy as e:
+            status, resp = HTTPStatus.SERVICE_UNAVAILABLE, _error(
+                "VOICE_STORAGE_BUSY",
+                "存储层这一刻写不进去（%s），本轮没有做任何动作，可以重试。" % (e,),
+                retryable=True)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            status, resp = HTTPStatus.INTERNAL_SERVER_ERROR, _error(
+                "VOICE_INTERNAL", "语音链路内部异常: %r" % (e,), retryable=True)
+        self._send_json(status, resp)
+
+    def _handle_cam_upload(self, path, remote):
+        """POST /api/v1/cam/frame | /api/v1/cam/photo —— body = 原始 JPEG。"""
+        raw = self._read_raw(CAM_MAX_BODY)
+        if raw is None:
+            return
+
+        qs = parse_qs(urlparse(self.path).query)
+        def q(name, default=None):
+            v = qs.get(name)
+            return v[0] if v else default
+
+        device_id = q("device_id")
+        if not device_id:
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False, "error": "缺少 device_id"})
+            return
+        try:
+            seq = int(q("seq", "0") or 0)
+            w = int(q("w", "0") or 0)
+            h = int(q("h", "0") or 0)
+        except ValueError:
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False, "error": "seq/w/h 必须是整数"})
+            return
+
+        if not _jpeg_looks_valid(raw):
+            # 半截帧/非 JPEG：明确拒收，不存、不显示
+            print("[cam] 拒收非法 JPEG: device=%s len=%d" % (device_id, len(raw)))
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False, "error": "不是完整的 JPEG（缺 SOI/EOI）"})
+            return
+
+        if path.endswith("/frame"):
+            want_photo, is_new = cam_store_frame(device_id, raw, seq, w, h, remote)
+            # ★ 拍照指令就搭在这条响应里：设备收到 capture=true 会立刻切 UXGA 拍一张
+            self._send_json(HTTPStatus.OK,
+                            {"ok": True, "seq": seq, "bytes": len(raw),
+                             "capture": bool(want_photo), "new": bool(is_new)})
+        else:
+            rec = cam_save_photo(device_id, raw, w, h, seq, remote)
+            self._send_json(HTTPStatus.OK, {"ok": True, "photo": rec})
+
+    def _cam_capture_api(self, payload):
+        """网页点「拍照」——只登记请求，真正按快门在设备端。"""
+        device_id = (payload or {}).get("device_id")
+        if not device_id:
+            return HTTPStatus.BAD_REQUEST, _error("BAD_REQUEST", "缺少 device_id")
+        had_frame = cam_request_capture(device_id)
+        if not had_frame:
+            # 没有画面说明设备没在上传：不假装"已拍照"，如实告知
+            return HTTPStatus.CONFLICT, _error(
+                "NO_FRAME", "该设备当前没有画面（未上传过帧），无法下发拍照指令",
+                retryable=True)
+        return HTTPStatus.OK, {
+            "ok": True,
+            "device_id": _cam_norm_device(device_id),
+            "capture_ttl_s": CAM_CAPTURE_TTL_S,
+            "note": "拍照指令已登记，将在设备下一次帧上传的响应中下发（通常 <500ms）",
+        }
+
+    def _serve_cam_frame(self, device_id):
+        item = cam_latest_frame(device_id)
+        if item is None:
+            # 没有帧就是没有帧：不返回占位图，前端据此显示"还没有画面"
+            self._send_json(HTTPStatus.NOT_FOUND, {
+                "ok": False,
+                "error": "该设备还没有上传过画面",
+                "devices_with_frames": cam_all_devices(),
+            })
+            return
+        self._send_bytes(HTTPStatus.OK, item["jpeg"], "image/jpeg", {
+            "X-Frame-Seq": item["seq"],
+            "X-Frame-W": item["w"],
+            "X-Frame-H": item["h"],
+            "X-Frame-Bytes": item["bytes"],
+            "X-Frame-Received-At": item["received_at_utc"],
+            "X-Frame-No": item["frame_no"],
+        })
+
+    def _serve_cam_status(self, device_id):
+        item = cam_latest_frame(device_id)
+        with _db_lock:
+            conn = db_connect()
+            try:
+                if device_id:
+                    row = conn.execute(
+                        "SELECT COUNT(*) AS n FROM cam_photos WHERE device_id=?",
+                        (_cam_norm_device(device_id),)).fetchone()
+                else:
+                    row = conn.execute("SELECT COUNT(*) AS n FROM cam_photos").fetchone()
+                photo_count = row["n"] if row else 0
+            finally:
+                conn.close()
+        with _cam_lock:
+            capture_pending = any(
+                (time.monotonic() - t) <= CAM_CAPTURE_TTL_S
+                for t in _cam_capture.values())
+            # ★ 不带 device_id 时也要给出摄像头自报状态，否则网页在"全部设备"模式下
+            #   拿不到"摄像头探测失败"的原因，只能退化成一句含糊的"还没有画面"。
+            cameras = [dict(rec) for rec in _cam_state.values()]
+            cameras.sort(key=lambda r: r.get("reported_at_utc") or "", reverse=True)
+            if device_id:
+                camera_state = _cam_state.get(_cam_norm_device(device_id))
+            else:
+                camera_state = cameras[0] if cameras else None
+        if item is not None:
+            item.pop("jpeg", None)   # 状态接口不返回图像本体
+        self._send_json(HTTPStatus.OK, {
+            "ok": True,
+            "server_time_utc": utc_now_iso(),
+            "device_id": _cam_norm_device(device_id) if device_id else None,
+            "has_frame": item is not None,
+            "frame": item,
+            "camera": camera_state,
+            "cameras": cameras,
+            "devices_with_frames": cam_all_devices(),
+            "photo_count": photo_count,
+            "capture_pending": capture_pending,
+            "capture_ttl_s": CAM_CAPTURE_TTL_S,
+            "max_body": CAM_MAX_BODY,
+        })
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
@@ -1940,6 +3204,14 @@ class Handler(BaseHTTPRequestHandler):
             # 动作执行追踪：连点两次必须能看到两条记录与各自终局
             self._send_json(*list_collect_requests(q("device_id"), q("status"),
                                                    q("limit", "50")))
+        # ---- 第 3 周：查看者列表与详情（docs/06 §7.4）----
+        #   ★ 必须放在 collect_requests 的 startswith 之前不影响，
+        #     但一定要放在下面的通用分支之前，避免被别的前缀吞掉。
+        elif path == "/api/v1/help_events":
+            self._send_json(*list_help_events(q("device_id"), q("status"),
+                                              q("limit", "50")))
+        elif path.startswith("/api/v1/help_events/"):
+            self._send_json(*get_help_event(path.rsplit("/", 1)[1]))
         elif path.startswith("/api/v1/collect_requests/"):
             self._send_json(*get_collect_request(path.rsplit("/", 1)[1]))
         elif path.startswith("/api/v1/raw/"):
@@ -1949,12 +3221,118 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_json(HTTPStatus.BAD_REQUEST, {"ok": False, "error": "id 非法"})
                 return
             self._send_json(*query_raw(uid))
+        # ---- 第 4 周：摄像头 ----
+        elif path == "/api/v1/cam/frame":
+            self._serve_cam_frame(q("device_id"))
+        elif path == "/api/v1/cam/status":
+            self._serve_cam_status(q("device_id"))
+        elif path == "/api/v1/cam/photos":
+            self._send_json(*cam_list_photos(q("device_id"), q("limit", "20")))
+        elif path.startswith("/api/v1/cam/photo/"):
+            pid = path[len("/api/v1/cam/photo/"):]
+            if pid.endswith(".jpg"):
+                pid = pid[:-4]
+            row, full = cam_get_photo_path(pid)
+            if row is None or not os.path.isfile(full):
+                self._send_json(HTTPStatus.NOT_FOUND,
+                                {"ok": False, "error": "照片不存在: %s" % pid})
+                return
+            with open(full, "rb") as f:
+                data = f.read()
+            self._send_bytes(HTTPStatus.OK, data, "image/jpeg", {
+                "X-Photo-Id": row["photo_id"],
+                "X-Photo-Sha256": row["sha256"],
+                "X-Photo-Bytes": row["byte_len"],
+                "Content-Disposition": 'inline; filename="%s.jpg"' % row["photo_id"],
+            })
+        # ---- 第 4 周：语言助手的工具清单与解析器状态（不含任何密钥）----
+        elif path == "/api/v1/nl/tools":
+            self._send_json(*nl_assistant.tools_info())
+        # ---- 第 5 周：语音链路 ----
+        elif path == "/api/v1/voice/health":
+            # 引擎是否就绪、跑在哪个端口、什么引擎/模型（不含密钥）
+            self._send_json(*voice_pipeline.health())
+        elif path == "/api/v1/voice/turns":
+            self._send_json(*voice_pipeline.list_turns(q("device_id"), q("limit", "20")))
+        # ---- 第 6 周：会话 / 时序日志 ----
+        elif path == "/api/v1/voice/sessions":
+            self._send_json(*voice_session.list_sessions(q("limit", "20")))
+        elif path == "/api/v1/voice/timeline":
+            # 全局事件流（每条 turn 的每一次转折都按 request_id 可查）
+            self._send_json(HTTPStatus.OK, {
+                "ok": True,
+                "data": {"events": voice_session.timeline(
+                    session_id=q("session_id"), request_id=q("request_id"),
+                    limit=int(q("limit", "200") or 200))}})
+        elif path.startswith("/api/v1/voice/session/") and path.endswith("/timeline"):
+            sid = path[len("/api/v1/voice/session/"):-len("/timeline")]
+            self._send_json(HTTPStatus.OK, {
+                "ok": True, "data": {"session_id": sid,
+                                     "events": voice_session.timeline(session_id=sid)}})
+        elif path.startswith("/api/v1/voice/session/"):
+            self._send_json(*voice_session.get_session(path[len("/api/v1/voice/session/"):]))
+        elif path.startswith("/api/v1/voice/audio/"):
+            self._serve_voice_audio(path, "in")
+        elif path.startswith("/api/v1/voice/reply/"):
+            self._serve_voice_audio(path, "out")
+        elif path.startswith("/api/v1/voice/turn/"):
+            self._send_json(*voice_pipeline.get_turn(path.rsplit("/", 1)[1]))
         elif path == "/healthz":
             self._send_json(HTTPStatus.OK, {"ok": True, "server_time_utc": utc_now_iso()})
         else:
             self._serve_static(path)
 
     # ---- 静态文件（Web 前端） ----
+    def _serve_voice_audio(self, path, kind):
+        """回放某一轮语音的**原始录音**（kind=in）或**播报音频**（kind=out）。
+
+        ★ 只回放已经落盘的文件：文件不存在就如实 404，绝不现场重新合成一段，
+          否则"听到的"就不是那一轮真实产生的音频了。
+        ★ 第 6 周（C2）：播报音频还要过一道"交付资格"——被取消/被顶掉的那一轮
+          文件可能还在（留作证据），但这里必须 410。**隔离写在服务端**，
+          因为前端是可能被绕过的那一层。
+        """
+        prefix = "/api/v1/voice/audio/" if kind == "in" else "/api/v1/voice/reply/"
+        tid = path[len(prefix):]
+        if tid.endswith(".wav"):
+            tid = tid[:-4]
+        if kind == "out":
+            ok, code, why = voice_pipeline.reply_playable(tid)
+            if not ok:
+                # ★ 三种"不给"必须分开报，否则排障会指错方向：
+                #  404 = 压根没有这条记录
+                #  404 + NO_REPLY_AUDIO = 这一轮本来就没产出音频（失败/无声）
+                #  410 Gone = 产出过，但按当前语义**不允许**给（取消 / 被顶掉）
+                #   用 403 会让人以为是权限问题，用 404 会掩盖"它其实生成过"这个事实。
+                if code == "REPLY_QUARANTINED":
+                    self._send_json(HTTPStatus.GONE,
+                                    {"ok": False,
+                                     "error": {"code": code, "message": why,
+                                               "retryable": False,
+                                               "details": {"turn_id": tid,
+                                                           "hint": "要听这一轮的内容，请看记录里的"
+                                                                   "文字回答；音频不会再给。"}}})
+                else:
+                    self._send_json(HTTPStatus.NOT_FOUND,
+                                    {"ok": False,
+                                     "error": {"code": code, "message": why,
+                                               "retryable": False,
+                                               "details": {"turn_id": tid}}})
+                return
+        full = voice_pipeline.audio_path(tid, kind)
+        if not full:
+            self._send_json(HTTPStatus.NOT_FOUND,
+                            {"ok": False,
+                             "error": "音频不存在: %s（kind=%s）" % (tid, kind)})
+            return
+        with open(full, "rb") as f:
+            data = f.read()
+        self._send_bytes(HTTPStatus.OK, data, "audio/wav", {
+            "Cache-Control": "no-store",
+            "Content-Disposition": 'inline; filename="%s_%s.wav"' % (tid, kind),
+        })
+
+
     def _serve_static(self, path):
         if path in ("/", ""):
             path = "/index.html"
@@ -2012,8 +3390,27 @@ def main():
     print("             GET  /api/v1/collect_requests        动作执行追踪列表")
     print("             POST /api/v1/collect_requests/<id>/cancel")
     print("             POST /api/v1/device/pause            暂停/恢复周期上报")
+    print("  ---- 第 3 周：按键求助与物理反馈闭环 ----")
+    print("  设备侧   : POST /api/v1/help_events             按键求助上传（断网本地排队，恢复补传）")
+    print("             POST /api/v1/device/ack  ack_type=help_ack  设备确认已收到回应")
+    print("                       ★ 这是唯一写入 remote_acked_at_utc 的路径")
+    print("  查看者侧 : GET  /api/v1/help_events             查看者列表")
+    print("             GET  /api/v1/help_events/<id>        详情（打开即记 viewed）")
+    print("             POST /api/v1/help_events/<id>/response   「我看到了」（自动下发 help_ack）")
+    print("             POST /api/v1/help_events/<id>/cancel     取消（reason 必填，自动下发 clear_alert）")
+    print("  下行指令 : help_ack → 设备 LED 转「已送达」色；clear_alert → 停蜂鸣、灯回待机色")
+    print("  红线     : 无 remote_acked_at_utc 时，任何一方都不得显示「对方已收到」")
     print("  超时     : %d ms（COLLECT_TIMEOUT_MS，前端传 timeout_ms 一律忽略）"
           % COLLECT_TIMEOUT_MS)
+    print("  ---- 第 4 周：摄像头（板载 OV2640） ----")
+    print("  设备侧   : POST /api/v1/cam/frame   body=JPEG 原始字节（320x240，约 5fps）")
+    print("             POST /api/v1/cam/photo   body=JPEG 原始字节（1600x1200，按需）")
+    print("  网页侧   : GET  /api/v1/cam/frame?device_id=xxx   最新一帧（内存，不落库）")
+    print("             GET  /api/v1/cam/status?device_id=xxx  帧元数据/照片数/待拍照标记")
+    print("             POST /api/v1/cam/capture               点「拍照」（{device_id}）")
+    print("             GET  /api/v1/cam/photos                照片列表（落盘 + SHA256）")
+    print("             GET  /api/v1/cam/photo/<id>.jpg        下载原图")
+    print("  上限     : 单张 %d 字节；照片目录 %s" % (CAM_MAX_BODY, CAM_DIR))
     print("=" * 70)
     try:
         srv.serve_forever()

@@ -1,0 +1,44 @@
+Processing esp32s3eye (platform: espressif32; board: esp32-s3-devkitc-1; framework: espidf)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html
+PLATFORM: Espressif 32 (7.1.3) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+DEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-espidf @ 4.60100.0 (6.1.0) 
+ - tool-cmake @ 3.30.2 
+ - tool-esp-rom-elfs @ 0.0.1+20241011 
+ - tool-esptoolpy @ 2.41100.260830 (4.11.0) 
+ - tool-idf @ 1.0.1 
+ - tool-mconf @ 1.4060000.20190628 (406.0.0) 
+ - tool-ninja @ 1.9.0 
+ - tool-riscv32-esp-elf-gdb @ 11.2.0+20220823 
+ - tool-xtensa-esp-elf-gdb @ 11.2.0+20230208 
+ - toolchain-esp32ulp @ 1.23800.240113 (2.38.0) 
+ - toolchain-riscv32-esp @ 15.2.0+20251204 
+ - toolchain-xtensa-esp-elf @ 15.2.0+20251204
+Reading CMake configuration...
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 0 compatible libraries
+Scanning dependencies...
+No dependencies
+Building in release mode
+Compiling .pio\build\esp32s3eye\src\lcd_status.c.o
+src/lcd_status.c:35:11: note: '#pragma message: lcd_status: APP_LCD_ENABLE=1 -> LCD 代码已编入'
+   35 | #  pragma message("lcd_status: APP_LCD_ENABLE=1 -> LCD 代码已编入")
+      |           ^~~~~~~
+Linking .pio\build\esp32s3eye\firmware.elf
+Retrieving maximum program size .pio\build\esp32s3eye\firmware.elf
+Checking size .pio\build\esp32s3eye\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [==        ]  17.1% (used 55968 bytes from 327680 bytes)
+Flash: [==        ]  24.3% (used 1018449 bytes from 4194304 bytes)
+Building .pio\build\esp32s3eye\firmware.bin
+esptool.py v4.11.0
+Creating esp32s3 image...
+Merged 3 ELF sections
+Successfully created esp32s3 image.
+========================= [SUCCESS] Took 16.04 seconds =========================
+EXIT=0

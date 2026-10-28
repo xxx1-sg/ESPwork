@@ -57,8 +57,15 @@ tools/bin/*.exe
 .tmp/
 temp/
 tmp/
+.tmpbuild/
 *.tmp
 diag_*.txt
+
+# ---- 第 5 周：离线语音模型与语音数据（体积大 / 含本人录音）----
+#   .models/vosk-model-small-cn-0.22 约 44MB，按 docs/13 §2.3 可重新下载；
+#   backend/data/voice/ 下每次说话都会落一份 wav（含真实人声），不进版本库。
+.models/
+backend/data/voice/
 
 # ---- ★ 本地私密配置：真实 Wi-Fi 密码 / 设备令牌绝不能进仓库 ----
 #   app_config.h 里的值都是占位符；真实值写进下面这个文件，编译时启用
@@ -80,3 +87,15 @@ pat.txt
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ---- 第 5 周：语音证据里的音频文件（体积大 + 含真实人声）----
+#   json 记录（vt_*.json / compare_*.json）保留，wav 只作本地复核用。
+evidence/**/*.wav
+*.wav
+
+# ---- 运行期产物：摄像头照片与语音录音（按设备分目录，持续增长）----
+backend/data/photos/
+backend/data/voice/
+
+# ---- 本工程的 AI 协作记录（不属于交付物）----
+.workbuddy/

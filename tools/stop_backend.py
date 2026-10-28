@@ -71,8 +71,12 @@ def main():
         print("  没有 PID 文件（守护进程可能没在跑）")
 
     # 2) 再停真正监听 8000 的进程（兜底：手动起的、或守护残留的）
+    #   ★ Windows 中文环境下 netstat 输出是 GBK；用 text=True 会按 UTF-8 解码，
+    #     解码失败时 stdout 可能为 None（实测踩过：AttributeError: 'NoneType' object
+    #     has no attribute 'splitlines'，导致守护被停掉后监听进程没停）。这里显式解码。
     import subprocess
-    out = subprocess.run(["netstat", "-ano"], capture_output=True, text=True).stdout
+    out = subprocess.run(["netstat", "-ano"], capture_output=True).stdout or b""
+    out = out.decode("gbk", "ignore")   # ASCII 关键字（:8000 / LISTENING）在任何解码下都保留
     pids = set()
     for line in out.splitlines():
         if ":8000" in line and "LISTENING" in line:

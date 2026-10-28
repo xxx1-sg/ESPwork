@@ -1,0 +1,77 @@
+﻿==== 第 3 周当堂验证 ② 证据 ====
+时间: 2026-10-10T09:00:05.9782972+08:00
+后端: http://127.0.0.1:8000
+
+---- A. 前端渲染规则（node tools/test_web_help.js 全文）----
+==============================================================================
+前端「按键求助」显示规则实测（打桩 DOM + 真实 web/app.js）
+==============================================================================
+  ✔ window.__helpDebug 已暴露（供自检断言）
+
+[1] 事实 F1：仅本地反馈发生（无任何服务端回执）
+  ✔ F1 #helpItemStatus 含「佩戴者已按键（待回应）」  实际="佩戴者已按键（待回应）"
+  ✔ F1 #helpItemRemoteAck 区域为空（不含任何'已收到'文案）  实际=""
+  ✔ F1 禁止词一个都不出现  命中=[]
+  ✔ F1 渲染后整页全文无禁止词  命中=[]
+
+[2] 事实 F2：status=responded 但设备尚未 ack（最关键的一条）
+  ✔ F2 #helpItemStatus 含「我已回应，等待设备确认」  实际="我已回应，等待设备确认"
+  ✔ F2 状态文案**不含**「已收到」类字样  实际="我已回应，等待设备确认"
+  ✔ F2 #helpItemRemoteAck 只说'等待设备确认'，不说已收到  实际="已记录我的回应，正在等待设备确认（设备取走 help_ack 并回执后才算送达）。"
+  ✔ F2 渲染后整页全文无禁止词  命中=[]
+
+[3] 事实 F3：设备已 ack（remote_acked_at_utc 非空）才允许说已收到
+  ✔ F3 #helpItemStatus == 「佩戴者设备已收到回应」  实际="佩戴者设备已收到回应"
+  ✔ F3 #helpItemRemoteAck 含「佩戴者设备已收到回应」  实际="✓ 佩戴者设备已收到回应（设备回执 06:13:19.000）"
+  ✔ F3 不再出现「等待设备确认」  实际="✓ 佩戴者设备已收到回应（设备回执 06:13:19.000）"
+
+[4] 判据唯一性：F3 只认 remote_acked_at_utc，不认 status
+  ✔ 反例：responded + remote_acked 为空 → 不显示'已收到'  status="我已回应，等待设备确认" ack="已记录我的回应，正在等待设备确认（设备取走 help_ack 并回执后才算送达）。"
+  ✔ 反例：uploaded + remote_acked 非空 → 显示'已收到'（证明判据是 remote_acked 而非 status）  实际="✓ 佩戴者设备已收到回应（设备回执 09:00:05.170）"
+  ✔ 源码核对：helpRemoteAckText 的 F3 分支判据是 remote_acked_at_utc  实际判据="if (ev.remote_acked_at_utc)"
+  ✔ 源码核对：F3 分支出现在 responded 分支**之前**（顺序保证已收到必须先看回执）  实际位置：remote_acked@100 < responded@258
+
+[5] 取消逻辑：reason 必填（C3）与记录不删除（C3）
+  ✔ 已选中一条求助事件（取消/回应的前提）  selected=9c2d51ab-3f77-4b90-9f21-7c0a1b2c3d4e
+  ✔ C3 取消原因为空时 → 不发出 cancel 请求（前端先拦一道）  calls=[]
+  ✔ C3 填了原因 → POST /help_events/<id>/cancel  calls=["POST /api/v1/help_events/9c2d51ab-3f77-4b90-9f21-7c0a1b2c3d4e/cancel","GET /api/v1/help_events/9c2d51ab-3f77-4b90-9f21-7c0a1b2c3d4e","GET /api/v1/help_events?limit=50"]
+  ✔ C3 cancel 请求路径带 help_id
+
+[6] 「刷新求助列表」只读，不下发任何设备指令
+  ✔ 刷新求助列表期间没有任何 POST（零设备侧指令流量）  posts=[]
+  ✔ 刷新求助列表确实 GET 了 /api/v1/help_events
+  ✔ 刷新求助列表不触碰任何 collect_* 接口
+
+[7] 列表渲染：'远端回执'列同样只认 remote_acked_at_utc
+  ✔ 列表里没有任何'已收到'类文案（两条都还没设备回执）  命中=[]
+  ✔ 列表渲染出两行
+  ✔ 列表状态列使用契约文案「已上传」  未找到'已上传'
+  ✔ 列表状态列使用契约文案「查看者已回应」
+
+[8] 初始状态（页面刚打开、还没有任何求助事件）
+  ✔ 无事件时列表显示空态
+  ✔ 无事件时 #helpItemRemoteAck 为空
+  ✔ 初始整页无禁止词  命中=[]
+
+[9] 关键不变量：轮询不得把文案“自动升级”成已收到
+  ✔ 30 秒内文案保持「我已回应，等待设备确认」不自动升级
+
+==============================================================================
+全部用例通过 ✔
+==============================================================================
+
+---- B. 后端字段语义探针 ----
+  [1] 上传求助 -> HTTP 201 status=uploaded
+  [2] 回应 -> HTTP 200 status=responded remote_acked_at_utc=None
+      ✔ 回应响应里 remote_acked_at_utc 为 null（设备尚未确认）
+  [3] 详情接口 remote_acked_at_utc=None
+      ✔ 详情里仍为 null
+  [4] 列表接口 remote_acked_at_utc=None
+      ✔ 列表里仍为 null（三重一致：响应 / 详情 / 列表）
+  [5] 该事件待下发指令 = ['help_ack']
+      → 入队 ≠ 送达：指令躺在队列里没人取，就不算送达
+
+  help_id = 5277ab3e-378b-42d9-9130-5aa036a76eb1
+PROBE_RESULT=PASS
+
+结果: F1=True F2=True F3=True srcJudgement=True srcOrder=True hold30s=True backendSemantics=True
