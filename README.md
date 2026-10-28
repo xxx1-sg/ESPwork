@@ -1,210 +1,229 @@
-# ESP32-S3-EYE · 第 4 周交付：用自然语言查询与请求采集
+# ESP32-S3-EYE · 第 5 周交付：按键说话与语音播报
 
-一台真实的 ESP32-S3-EYE 在做三轴加速度采集，后端是**零第三方依赖**的 Python 服务，
-网页上多了一个「语言助手」：你可以对它说 **「查看上次数据」**，也可以说 **「重新采集一次」**——
-这两句话会走**两条完全不同的路径**，而且助手**只有在拿到设备回执和新观测时才敢说"采到了"**。
+按一下按钮说话，页面把这句话拆成**六个可观察的环节**——录音 → 静音检测 → 语音识别 →
+任务执行 → 语音合成 → 播放——**每一段的状态都由服务端落库**，出问题时能直接指出是哪一段，
+而不是只给你一句"失败了"。
+
+它复用第 4 周那个受限工具助手：你说「查看上次数据」，语音入口和打字入口调的是**同一个函数**，
+所以两种方式的结论必须一致——页面上有一张并排对照表，专门把这件事摆出来给你看。
 
 | 项目 | 说明 |
 |---|---|
-| 交付分支 | `feature/week4-nl-assistant` |
-| 运行环境 | Windows / Linux / macOS，Python 3.9+，**不需要 pip install** |
-| 本周新增 | 1 个后端模块（`backend/nl_assistant.py`）、1 个前端面板（`#nlPanel`）、3 套自检脚本 |
-| 自检结果 | 解析 20/20 · 接口 93/93 · 前端 38/38 |
-| 真机状态 | 已在真实板卡上跑通两次（2026-10-23 采集闭环、2026-10-28 只读查询） |
+| 交付分支 | `feature/week5-voice-assistant` |
+| 运行环境 | Windows 10/11（语音合成用系统 SAPI）；识别、任务、网页跨平台，Python 3.9+ |
+| 依赖 | 主后端 **零第三方依赖**；语音引擎只要 2 个包 + 1 个 44 MB 离线模型（`backend/requirements-voice.txt`） |
+| 本周新增 | 2 个后端模块（`voice_engine.py` / `voice_pipeline.py`）、1 个前端面板（`#voicePanel`）、1 张表（`voice_turns`）、3 套自检脚本 |
+| 自检结果 | 接口 **106/106** · 前端 **72/72** · 网页契约 **通过**（DOM 108 个齐全、0 处兜底假值） |
+| 真机状态 | 2026-10-28 在真实板卡 + 真实录音上跑通，单轮端到端 **1.25 秒** |
 
 ---
 
 ## 1. 本周要回答的问题
 
-> 「查看上次数据」和「重新采集一次」应怎样映射为不同任务，并复用前两周已验证的接口？
+> **从「说一句话」到「听到回答」，中间要经过哪些可观察的环节？**
 
-答案是：**模型只负责把话翻译成意图，所有事实必须来自受控工具。**
-
-| | 查看上次数据 | 重新采集一次 |
-|---|---|---|
-| 意图 | `query_latest` | `request_collect` |
-| 调用的工具 | `get_latest_record`（只读） | `request_collect`，再轮询 `get_collect_status` |
-| 会不会碰设备 | **不会**，设备侧零流量 | **会**，排一条 `collect_now` 下行指令 |
-| 回答里的时间 | 这条记录**原本**的采样时间 | 这次**新观测**的完成时间 |
-| 证据来源 | `sensor_records.id = …` | `observations.observation_id = …` |
-| 能不能说"完成" | 不涉及 | **只有** `completed` 且带 `record_id` 才允许 |
-
-这两条路径不是靠提示词"嘱咐"模型别搞混，而是**在代码里根本没有交叉的入口**：
-读操作没有写库能力，写操作必须经过节流、设备在白名单内、并等到真实回执。
-
----
-
-## 2. 数据怎么流
+答案是：把它拆成六段，**每段都留下证据**，并且明确"哪一段能把话说死、哪一段不能"。
 
 ```text
-        浏览器（同源页面，不引任何第三方 CDN）
-          │  工具栏「语言助手」：输入框 → 回答 / 来源与时间芯片 / 工具调用轨迹
-          │  POST /api/v1/nl/query  {q, device_id, wait_ms}
-          ▼
-  backend/nl_assistant.py     意图解析（授权语言服务，或本地规则兜底）
-          │  只允许调 7 个白名单工具；参数、设备范围先校验
-          ├──────────────── 只读分支 ────────────────┐
-          │  get_latest_record / get_records          │
-          │  get_device_status / list_devices         │
-          │  list_collect_requests                    │
-          │        ▼                                  │
-          │  sensor_records（历史数据，原样返回）      │
-          │                                           │
-          └──────────────── 有副作用分支 ─────────────┘
-                 request_collect
-                 ├── 写 collect_requests（一条请求一行，状态机推进）
-                 └── 排 pending_commands（collect_now）
-                            │ 设备 1Hz 轮询 /api/v1/device/commands/poll
-                            ▼
-                    ESP32-S3-EYE 立即采一帧
-                            │ POST /api/v1/ingest（带 request_id 回执）
-                            ▼
-                    observations  ← ★ 唯一能证明"这次采集完成"的地方
+① 录音   浏览器按键开始/结束 → 采集 → 重采样 16000Hz/16bit/单声道 → 带 RIFF 头
+   │     证据：字节数、时长、采样率、位深、声道、SHA256（后端实测，不是前端自报）
+② 静音   RMS / 峰值 / 过零率 + 阈值判定
+   │     证据：三个实测值与两个阈值；不达标 → 直接认定"没说有效的话"，不进识别
+③ 识别   vosk 离线中文小模型（本机 CPU，不联网）
+   │     证据：识别文本 + 引擎名 + 模型名 + 耗时
+④ 任务   复用第 4 周 nl_assistant.handle_query —— 同一个函数、同一套工具白名单
+   │     证据：意图 / claim / 远端状态 / 来源 id
+⑤ 合成   Windows SAPI 中文语音 → WAV
+   │     证据：语音名、耗时、音频时长与字节数；只念原文前 2 句，不改写
+⑥ 播放   浏览器 <audio> 播放，用户点「我听到了」才上报
+         证据：只记"播放器已开始播放"。**是否真的听到，服务端不推断**
 ```
 
-`/api/v1/nl/query` 的返回里，`answer` 是给人看的话，`evidence` 是给程序看的证据，
-`claim` 是**允许说到什么程度**的档位（`new_record` / `old_record` / `pending` / `no_evidence` / `none`）。
+这张图是本项目的核心设计：**①–⑤ 全部可被机器验证，⑥ 只能由现场判定**。
+所以页面上第 ⑥ 段永远显示「等待播放」，而不是假装打过勾。
 
 ---
 
-## 3. 界面
+## 2. 一次完整的语音交互
 
-![语言助手：只读查询](docs/img/nl_read.png)
+![六段状态：录音 → 静音检测 → 识别 → 任务 → 合成 → 播放](docs/img/voice_week5_stages.png)
 
-这张图是一次**真实**的只读查询（2026-10-28 09:19，设备 `esp32s3eye-1C704C`）。值得看的是下面四行：
+这张图是 2026-10-28 10:48:55 的**真实一轮**（`vt_6036090a6b07a3f4cbed`），值得看的是：
 
-- 回答里明写「**只读，未向设备下发任何指令**」；
-- 时间给的是**记录的采样时间**，并标注「距今 N 秒」；
-- 底部芯片：`来源 sensor_records.id=524992`、`状态 answered`、`数据新鲜度 较新`、
-  `设备指令 未下发（只读）`、`数据年龄 24 秒`；
-- 工具轨迹只有两条：`list_devices` → `get_latest_record`（300ms / 2ms），**没有第五条**。
+- 左边：录音按钮、音频来源（浏览器麦克风 / 授权 WAV 文件）、采样格式 `16 kHz · 16 bit · 单声道`；
+- 右边：六段状态，前五段「完成」、第六段「等待播放」——**没有一段是前端算出来的**；
+- 识别文本「查看上次数据」，底下小字给出引擎 `vosk / vosk-model-small-cn-0.22`、识别 673 ms、
+  音频 2055 ms、RMS 0.068292；
+- 任务执行：`意图 query_latest`、`claim old_record`、`来源 sensor_records.id=538272`，
+  回答里明写「**只读，未向设备下发任何指令**」；
+- 语音播报：「语音只念回答的前几句（原文前缀，未改写）；完整回答共 286 字，念出的是 62 字」
+  ——节选规则写在界面上，不藏着；
+- 本轮时标：`t0 → 首次反馈 819ms → 任务完成 1105ms → 播报就绪 1242ms → 合计 1246ms`，
+  交付资格 `playable=true`；
+- 运行位置：录音在本机浏览器、识别与合成在本机 `127.0.0.1:8013` 的独立引擎进程、
+  任务在同一进程内调 `nl_assistant.handle_query`。**每一轮都记，失败的那轮也记。**
 
-歧义时不会瞎猜：不指定设备会反问「你想操作哪台设备？当前接入了 2 台，我不能替你猜」，
-并把候选设备做成按钮，**点了才发请求**。
+---
+
+## 3. 同一句话，两条入口对照
+
+![两条入口对照：语音 vs 文字](docs/img/voice_week5_compare.png)
+
+上半部分是并排对照：`解析方式 / 意图 / claim / 状态 / 来源 / 回答`。
+这张图里有 **4 项一致、2 项标红**，而且页面自己写清了原因：
+
+> 两条入口有差异（2 项不同）。看上面标红的行，通常是因为两轮之间设备状态变了
+> （例如这期间来了新数据），不是解析不一致。
+
+这正是想要的行为：设备在以 10 Hz 持续上传，语音那一轮（10:48:55）读到的是当时的"最新一条"
+（`id=538272`），对照时文字入口读到的是 3 分钟后的"最新一条"（`id=540722`）——
+**来源 id 不同是数据在动，不是两套解析**。意图、claim、状态三项完全一致，说明
+"语音只是换了一种输入方式，任务语义没有被改变"。
+
+如果想让两轮读到同一条记录，页面和探针都给了办法：先暂停设备周期上报，再依次跑两条入口。
 
 ---
 
 ## 4. 三步跑起来
 
 ```bash
-git clone -b feature/week4-nl-assistant https://github.com/xxx1-sg/ESPwork.git
+git clone -b feature/week5-voice-assistant https://github.com/xxx1-sg/ESPwork.git
 cd ESPwork
-python backend/server.py        # 浏览器打开 http://127.0.0.1:8000/
+python backend/server.py          # 浏览器打开 http://127.0.0.1:8000/
 ```
 
-不需要 `pip install`：后端只用标准库（`http.server` + `sqlite3`），前端是原生 JS。
-数据库 `backend/data/sensor.db` 首次启动会自动建表；页面在没数据时显示「等待设备首次上传」，不会编数。
+主后端不需要 `pip install`（只用标准库）。**此时页面、曲线、语言助手、这个语音面板全都能开**，
+只是语音面板第 ③⑤ 段会如实显示「识别引擎未就绪」——不会装作能用。
 
-**可选**：接自己的语言服务（OpenAI 兼容接口）。密钥只从服务端环境变量读，永远不出现在响应里：
+想要真的说话和播报，另开一个窗口：
 
 ```bash
-export NL_LLM_BASE_URL=https://your-endpoint/v1
-export NL_LLM_API_KEY=***            # 只在服务端，日志与响应都不回显
-export NL_LLM_MODEL=your-model
+# ① 装依赖（只有两个包）
+pip install -r backend/requirements-voice.txt
+
+# ② 下载离线中文模型（约 44 MB，一次性，之后完全离线）
+#    https://alphacephei.com/vosk/models/vosk-model-small-cn-0.22.zip
+#    解压到  .models/vosk-model-small-cn-0.22   ← 目录名不要改
+
+# ③ 起语音引擎（默认只监听 127.0.0.1:8013，不对外暴露）
+python backend/voice_engine.py
 ```
 
-不配也能用：会自动降级到本地规则解析（`parser: rule_fallback`），
-**结论与配了模型时一致**，差别只在措辞的自然度。
+Windows 上可以用脚本一条命令完成 ③（它会帮你设环境变量、检查模型、起完自检）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\start_voice_engine.ps1
+```
+
+> **为什么引擎要单独一个进程**：主后端坚持零第三方依赖，而真实语音必然要引入运行时。
+> 拆开之后还有个更重要的好处——**引擎挂了、超时了、合成失败了，打字入口一行代码都不受影响**。
+> 这条是自检里专门钉死的（红线 V3），不是口头承诺。
 
 ---
 
 ## 5. 15 分钟验收路径
 
-服务起来后，逐条复制即可（PowerShell 用 `curl.exe`）：
+不想手搓 WAV 文件的话，用探针一条命令跑完整链路（它会先用系统语音合成一句话当输入，
+再走真实的识别 → 任务 → 合成，全程真实，只是省掉了麦克风）：
 
 ```bash
-# ① 只读：读最近一条，零设备流量
-curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query \
-  -H "Content-Type: application/json" \
-  -d '{"q":"查看上次数据","device_id":"esp32s3eye-1C704C"}'
-# 期望：intent=query_latest · claim=old_record · device_command_sent=false
+# ① 一轮完整链路：合成"查看上次数据"当输入 → 识别 → 查询 → 播报
+python tools/voice_probe.py --say "查看上次数据" --device esp32s3eye-1C704C
+# 期望：final_state=done · 六段前五段完成 · 意图 query_latest · claim old_record
 
-# ② 采集：请求设备真的采一帧（需要板子在线）
-curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query \
-  -H "Content-Type: application/json" \
-  -d '{"q":"重新采集一次","device_id":"esp32s3eye-1C704C","wait_ms":15000}'
-# 期望：拿到回执 → status=completed · claim=new_record · evidence.record_id 非空
-#       没拿到   → status=pending/timeout · claim=pending/no_evidence · 回答明说"不能确认"
+# ② 静音：验证"没说有效的话"这条分支
+python tools/voice_probe.py --silence
+# 期望：final_state=no_speech · 识别文本为空 · 后四段 skipped · 错误里给实测 RMS 与阈值
 
-# ③ 追问上一次采集结果（不会重新下发）
-curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query \
-  -H "Content-Type: application/json" \
-  -d '{"q":"刚才那次采集完成了吗","device_id":"esp32s3eye-1C704C"}'
-# 期望：intent=collect_status · 工具轨迹 list_collect_requests → get_collect_status
+# ③ 五句标准句（含越界与无关句）
+python tools/voice_probe.py --suite --device esp32s3eye-1C704C
 
-# ④ 歧义 / 越界 / 危险动作
-curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query -H "Content-Type: application/json" -d '{"q":"查看上次数据"}'
-#   → status=clarify + 2 个候选设备，不下发任何请求
-curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query -H "Content-Type: application/json" -d '{"q":"查看 esp32s3eye-HACK 的数据"}'
-#   → 403 DEVICE_OUT_OF_SCOPE
-curl -s -X POST http://127.0.0.1:8000/api/v1/nl/query -H "Content-Type: application/json" -d '{"q":"把数据库清空"}'
-#   → intent=unknown，明说"没有删除/修改/重启能力"，不写库、不下发
+# ④ 两入口对照
+python tools/voice_probe.py --compare "查看上次数据" --device esp32s3eye-1C704C
 ```
 
-三套自检（不依赖上面的手工步骤，可进 CI）：
+想直接用 HTTP 验（自带自己的录音时）：
 
 ```bash
-python tools/nl_replay.py       # 20 条结构化样例，只测解析，不连库不碰设备
-python tools/selftest_nl.py     # 93 项断言，独立端口 + 临时数据库
-node   tools/test_web_nl.js     # 38 项，打桩 DOM 跑真实 app.js
+# 上传一段 WAV（16000 Hz / 16 bit / 单声道 / PCM），立刻返回这一轮的完整状态
+curl -s -X POST "http://127.0.0.1:8000/api/v1/voice/turn?audio_source=uploaded_file&capture_location=tools" \
+  -H "Content-Type: audio/wav" --data-binary @你的录音.wav
+
+# 引擎状态（会如实报用的是哪个 ASR/TTS、模型在不在、有没有音频输出设备）
+curl -s http://127.0.0.1:8000/api/v1/voice/health
+
+# 最近几轮
+curl -s "http://127.0.0.1:8000/api/v1/voice/turns?limit=5"
+```
+
+三套自检（可进 CI，不需要麦克风，也不需要板子）：
+
+```bash
+python tools/selftest_voice.py    # 106 项：接口层，独立端口 + 临时库，覆盖全部失败分支
+node   tools/test_web_voice.js    # 72 项：打桩 DOM 跑真实 app.js，含源码级红线核对
+python tools/check_web_contract.py --api http://127.0.0.1:8000   # 网页↔接口契约
 ```
 
 ---
 
-## 6. 五道校验与三条红线
+## 6. 六条红线
 
-客户最容易问的是"它会不会乱来"。这里的答案是**能力上就不允许**：
+客户最关心的是"会不会糊弄人"。这里的答案是：**能糊弄的地方都堵死了，堵不住的明写出来**。
 
-| 校验 | 做法 |
-|---|---|
-| 权限最小化 | 7 个工具白名单，**只有 1 个**（`request_collect`）有副作用；没有删除、修改、重置、重启类工具 |
-| 设备范围 | 设备不在 `devices` 表 → `403 DEVICE_OUT_OF_SCOPE`；连"句子里点了名"的陌生设备也拦 |
-| 参数校验 | 时间窗、条数、`wait_ms` 全部夹到合法区间，非法值直接拒绝 |
-| 写操作限流 | 同一设备 5 秒内只允许一次请求；已有在途请求时**复用**，不重复下指令 |
-| 歧义处理 | 多设备未指明 → `clarify` + 候选列表，不猜、不执行 |
+| 红线 | 怎么保证 | 谁在盯 |
+|---|---|---|
+| **V1 没识别就没有文本** | 识别失败时 `transcript` 为 `null`，前端**清空** DOM 文本并隐藏结果区（不是拿 CSS 遮住）。绝不拿上一句顶替、绝不关键字猜一个 | 前端自检做源码级核对 |
+| **V2 两个入口同源** | 语音与打字调用同一个 `nl_assistant.handle_query`，意图/claim/回答必须一致，页面上并排给你看 | 接口自检 B 段 |
+| **V3 语音坏了不影响文字** | 引擎独立进程；引擎停掉 / 超时 / 合成失败三组用例下，打字入口全部正常 | 接口自检 F/G/H 组 |
+| **V4 播放 ≠ 听到** | 页面只说「播放器已开始播放」，服务端只记 `played` 时间戳，**从不推断"用户听到了"** | 源码级禁词核对 |
+| **V5 来源与位置必记** | 每轮都记音频来源（浏览器麦克风 / 授权录音 / 设备）与六段各自的运行位置，失败的那轮也记 | 库里字段 + 页面「运行位置与音频来源」区 |
+| **V6 格式必校验并回报实测值** | 采样率/位深/声道不符 → 400，报文里给的是**实际测到的参数**，不是一句"格式错误" | 接口自检 D 段 8 个用例 |
 
-三条红线（都有自检用例钉住，不是口号）：
-
-1. **没有 `observations.record_id` 就不许说"已采到"。** 完成措辞只对 `claim=new_record` 放开，
-   另有一道 `_guard_answer` 兜底：万一模板拼错，出口处再拦一次。
-2. **只读路径不许产生设备流量。** `device_command_sent` 必须为 `false`，前端也会标「未下发（只读）」。
-3. **不生成坐标。** 数据包里没有位置字段，问到位置就如实说"证据不足"，不猜、不编。
+失败状态一共七类，每类都有专门的提示语，**只有 `done` 才可能说"完成"**：
+`done` / `no_speech` / `asr_failed` / `asr_timeout` / `asr_unavailable` / `task_failed` / `tts_failed`。
 
 ---
 
 ## 7. 真机实测记录
 
-**2026-10-23 09:54，`esp32s3eye-1C704C` 在线，完整采集闭环：**
+**2026-10-28 10:48:55，`esp32s3eye-1C704C` 在线，一轮完整链路：**
 
 ```text
-采集前 latest        : record_id=426678  seq=16600
-「重新采集一次」      → status=completed  claim=new_record
-新观测              : record_id=426699  |a|=1.3011 g   端到端约 1.9s
-证据链              : observations.observation_id=15
-                      + collect_requests.request_id=08b49375…
+录音       2.06 秒 · 16000 Hz/16 bit/1 声道 · 65810 字节 · sha256=fed0fc2c9d2c…
+静音检测    RMS=0.0683（阈值 0.0060）· 峰值=0.6812（阈值 0.0200）→ 有语音能量
+识别       673 ms · vosk / vosk-model-small-cn-0.22 → 「查看上次数据」
+任务       286 ms · intent=query_latest · claim=old_record · 来源 sensor_records.id=538272
+合成       93 ms · Microsoft Huihui Desktop (zh-CN) → 12.8 秒 WAV（563414 字节）
+播放       等待浏览器播放（服务端不推断）
+端到端     1246 ms
 ```
 
-**2026-10-28 09:19，只读路径（就是上面那张截图）：**
+**五句标准句**（同一台设备）全部 `done`，意图分别为
+`query_latest` / `request_collect`（`claim=new_record`，真拿到新观测）/
+`device_status` / `location`（`claim=no_evidence`，明说没有位置能力）/ `unknown`（不硬猜成指令）。
 
-```text
-「查看上次数据」      → intent=query_latest  claim=old_record
-返回               : sensor_records.id=524992，采样时间 09:19:04，|a|=1.7491 g
-设备流量            : device_command_sent=false（零请求）
-```
+**静音 60 KB**：`final_state=no_speech`，识别文本为空，后四段 skipped，
+错误信息里给的是实测 `RMS 0.0000 / 阈值 0.0060`。
 
 ---
 
 ## 8. 已知限制（如实说明）
 
-1. **真实语言服务尚未在本机接通**：本机没有授权端点，当前跑的是规则解析兜底。
-   接入代码与提示词已就绪，拿到校内服务后按 [docs/12 §11.2](docs/12_第4周_自然语言查询与请求采集.md) 四步补验即可。
-2. **没有多轮上下文**：每句话独立解析，设备上下文由页面当前选择提供，"它 / 那个"这类指代无法解析。
-3. **位置类问题不支持**：数据模型里没有位置字段，助手会说明不足，**不会生成坐标**。
-4. **现场演示提示**：若板子同时开着相机/语音任务，下行指令轮询可能被拖慢到 30s 以上，
-   此时「重新采集一次」会在 8s 后如实返回 `pending`（页面写"不能确认"）。
-   这不是撒谎，是红线生效——可以接着问「刚才那次采集完成了吗」看状态推进。
-5. 仓库里还包含第 5–6 周的语音链路（相机、按键说话、澄清/停止），**不在本分支的验收范围**，
-   为保证服务能正常启动而保留。
+1. **语音合成目前只在 Windows 可用**：用的是系统自带的 SAPI 中文语音（默认 Huihui）。
+   识别（vosk）和其余链路跨平台；引擎里留了 `VOICE_TTS_BACKEND` 与外部服务接口，
+   换 Linux 需要接一个 TTS 后端，代码位置在 `backend/voice_engine.py`。
+2. **合成失败会降级，但不会骗人**：如果机器上音频输出设备被独占或不可用，
+   引擎会退到 `tone` 合成音，并在这一轮的记录里写 `tts.engine=tone`、`speaks=false`，
+   页面也照实显示。**不会把合成音标成"真人播报"。**
+3. **播报只念前 2 句**（≤160 字），因为完整回答平均 300+ 字、全文念出来 64 秒。
+   规则是"只截断、不改写"，末尾会加一句"（完整回答见屏幕。）"，界面上一并写明。
+4. **本周不用板子的麦克风**：音频采集在浏览器（或上传的授权录音文件）。
+   板载麦克风的音频能力尚未验证，按课程要求不把它作为本周前提；
+   数据模型里已经留了 `audio_source=device_mic` 这个取值，接入时不改协议。
+5. **中文识别会有个别错字**：小模型对短句的实测是"六句五句逐字正确"，
+   但意图识别不受影响（「开发版在哪里」照样被正确判成 `location` 并如实说"没有位置能力"）。
+6. 仓库里还包含第 6 周的内容（澄清与停止，`docs/14`、`backend/voice_session.py`），
+   **不在本分支的验收范围**，为保证服务能正常启动而保留。
 
 ---
 
@@ -212,22 +231,26 @@ node   tools/test_web_nl.js     # 38 项，打桩 DOM 跑真实 app.js
 
 | 目录 / 文件 | 是什么 |
 |---|---|
+| `backend/voice_engine.py` | **本周新增**：独立语音引擎（vosk 识别 + SAPI 合成），默认 `127.0.0.1:8013` |
+| `backend/voice_pipeline.py` | **本周新增**：六段编排（格式校验 → VAD → 识别 → 任务 → 合成 → 落库），纯标准库 |
+| `backend/nl_assistant.py` | 第 4 周的受限工具助手，语音入口复用的就是它 |
 | `backend/server.py` | 零依赖 HTTP 服务：采集、相机、求助、语言助手、语音全部接口 |
-| `backend/nl_assistant.py` | **本周新增**：意图解析 + 7 个受限工具 + claim 分档 + 兜底闸 |
-| `web/` | 原生 JS 页面：实时曲线、采集面板、按键求助、相机预览、语言助手 |
-| `firmware/src/` | 板端固件（ESP-IDF）：IMU 采样、上传、指令轮询、LCD、相机、按键反馈 |
-| `tools/` | 自检与验收脚本（20 / 93 / 38 三套是本周的） |
-| `docs/12_第4周_自然语言查询与请求采集.md` | **本周交付文档**：设计、五道校验、测试矩阵、真机记录、迁移选题 |
-| `docs/11_第4周_摄像头接入与拍照.md` | 同周硬件线：板载 OV2640 接入与拍照 |
-| `docs/00_完整工程手册.md` | 工程的完整技术手册（原 README，含 1–6 周全部细节） |
-| `evidence/` | 实测证据：串口日志、照片、验证报告 |
+| `web/` | 原生 JS 页面：实时曲线、采集面板、按键求助、相机、语言助手、语音面板 |
+| `tools/selftest_voice.py` | 接口层自检 106 项（A–K 组，覆盖全部失败分支） |
+| `tools/test_web_voice.js` | 前端自检 72 项（打桩 DOM 跑真实 `app.js`） |
+| `tools/voice_probe.py` | 端到端探针：单句 / 套件 / 静音 / 两入口对照 / 用自己的 WAV |
+| `tools/shoot_voice.py` | 生成上面两张截图的脚本（CDP 驱动 Edge，不用手工截屏） |
+| `docs/13_第5周_按键说话与语音播报.md` | **本周交付文档**：设计、六红线、七类终态、踩坑记录、迁移选题 |
+| `docs/00_完整工程手册.md` | 工程的完整技术手册（1–6 周细节） |
+| `evidence/voice_week5/` | 每一轮的实测记录（`<turn_id>.json`：六段状态、音频指纹 SHA256、耗时、运行位置） |
 
 ---
 
 ## 10. 关于这个分支
 
-- 分支：`feature/week4-nl-assistant`，从 `feature/week2-remote-collection` 继续，主分支 `main` 保持第 1 周基线；
-  按周分支便于逐周评审，最后再合并。
-- 本周提交包含第 3 周（按键求助 / LCD 反馈）与第 4 周（摄像头 + 语言助手）的能力，
-  因为语言助手的"设备在线吗 / 求助状态"回答依赖第 3 周已有的接口。
-- 想只看代码差异：`git diff main --stat`；想复跑全部自检：见第 5 节。
+- 分支：`feature/week5-voice-assistant`，从 `feature/week4-nl-assistant` 继续；
+  主分支 `main` 保持第 1 周基线，按周分支便于逐周评审，最后再合并。
+- 本周的关键取舍：**宁可少说，也不多说**。识别不确定就承认不确定，任务没回执就说不知道，
+  合成不了就标 `tone`，只有现场听到才算"听到"。
+- 想只看代码差异：`git diff feature/week4-nl-assistant --stat`；
+  想复跑全部自检：见第 5 节。

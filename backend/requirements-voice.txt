@@ -1,0 +1,14 @@
+# 语音引擎（backend/voice_engine.py）的第三方依赖
+# ---------------------------------------------------------------------------
+# 只有这两个包。主后端 backend/server.py 是零第三方依赖的，不需要装任何东西。
+#
+#   pip install -r backend/requirements-voice.txt
+#
+# 离线中文识别模型还要单独下载一次（约 44 MB，不在 pip 里）：
+#   https://alphacephei.com/vosk/models/vosk-model-small-cn-0.22.zip
+#   解压到  <工程>/.models/vosk-model-small-cn-0.22
+#   详见 docs/13 §2.3
+# ---------------------------------------------------------------------------
+
+comtypes>=1.2.0   ; sys_platform == "win32"   # Windows SAPI 语音合成；非 Windows 不用装
+vosk>=0.3.45                                  # 离线中文语音识别（跨平台）
