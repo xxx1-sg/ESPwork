@@ -1,184 +1,150 @@
-﻿第 6 周复跑证据 · 生成 2026-10-28 09:10:54 · 机器 DESKTOP-35EKCR6 · Python 3.14.7
+﻿第 6 周接口层自检（selftest_voice6.py）
+生成时间: 2026-10-29 13:47:09
 ------------------------------------------------------------------------------
-D:\ESP\.venv\Scripts\python.exe : [2026-10-28T01:10:54.800Z] 127.0.0.1 - "GET /healthz HTTP/1.1" 200 -
+D:\ESP\.venv\Scripts\python.exe : [voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存
+在音频设备，所以无法合成。），降级到 tone 合成音。
 At line:6 char:1
 + D:\ESP\.venv\Scripts\python.exe tools\selftest_voice6.py 2>&1 | Out-F ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: ([2026-10-28T01:...HTTP/1.1" 200 -:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: ([voice] SAPI 合成...），降级到 tone 合成音。:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
-[2026-10-28T01:10:54.831Z] 127.0.0.1 - "POST /api/v1/voice/session HTTP/1.1" 200 -
-[2026-10-28T01:10:54.839Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:10:54.841Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_does_not_exist HTTP/1.1" 404 -
-[2026-10-28T01:10:54.842Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/state HTTP/1.1" 400 -
-[2026-10-28T01:10:54.849Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/state HTTP/1.1" 200 -
-[2026-10-28T01:10:54.858Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/state HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
         这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:10:55.143Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+        同类警告本次只提示一次（每轮的事实仍逐条记在记录的 tts 段里）。
+[2026-10-29T05:47:10.734Z] 127.0.0.1 - "GET /healthz HTTP/1.1" 200 -
+[2026-10-29T05:47:10.754Z] 127.0.0.1 - "POST /api/v1/voice/session HTTP/1.1" 200 -
+[2026-10-29T05:47:10.784Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:10.786Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_does_not_exist HTTP/1.1" 404 -
+[2026-10-29T05:47:10.787Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/state HTTP/1.1" 400 -
+[2026-10-29T05:47:10.809Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/state HTTP/1.1" 200 -
+[2026-10-29T05:47:10.819Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/state HTTP/1.1" 200 -
+[2026-10-29T05:47:11.022Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-normal-01&device_id=esp32
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-normal-01&device_id=esp32
 s3eye-TESTA&inject_asr_text=%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E5%90%97 HTTP/1.1" 200 -
-[2026-10-28T01:10:55.151Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_21899fc92772f3800333.wav HTTP/1.1" 200 -
-[2026-10-28T01:10:55.173Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:10:55.206Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:10:55.212Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:10:55.221Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/cancel HTTP/1.1" 200 -
-[2026-10-28T01:10:58.343Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:11.027Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_8acfbaea4c7330486e4e.wav HTTP/1.1" 200 -
+[2026-10-29T05:47:11.028Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:11.065Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:11.167Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:11.169Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:11.187Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/cancel HTTP/1.1" 200 -
+[2026-10-29T05:47:14.161Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-cancel-asr-02&device_id=e
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-cancel-asr-02&device_id=e
 sp32s3eye-TESTA&inject_delay_ms=3000&inject_asr_text=%E9%87%8D%E6%96%B0%E9%87%87%E9%9B%86%E4%B8%80%E6%AC%A1 HTTP/1.1" 2
 00 -
-[2026-10-28T01:10:58.366Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:00.000Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/cancel HTTP/1.1" 200 -
-[2026-10-28T01:11:02.756Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:14.163Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:15.795Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/cancel HTTP/1.1" 200 -
+[2026-10-29T05:47:18.529Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-cancel-task-03&device_id=
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-cancel-task-03&device_id=
 esp32s3eye-TESTA&inject_task_ms=3000&inject_asr_text=%E9%87%8D%E6%96%B0%E9%87%87%E9%9B%86%E4%B8%80%E6%AC%A1 HTTP/1.1" 2
 00 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:03.359Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:19.116Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-new-05&device_id=esp32s3e
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-new-05&device_id=esp32s3e
 ye-TESTA&inject_asr_text=%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E5%90%97 HTTP/1.1" 200 -
-[2026-10-28T01:11:05.352Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:21.132Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-old-04&device_id=esp32s3e
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-old-04&device_id=esp32s3e
 ye-TESTA&inject_delay_ms=2500&inject_asr_text=%E6%9F%A5%E7%9C%8B%E4%B8%8A%E6%AC%A1%E6%95%B0%E6%8D%AE HTTP/1.1" 200 -
-[2026-10-28T01:11:05.354Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_92c9be0ca7d19e025118.wav HTTP/1.1" 404 -
-[2026-10-28T01:11:05.381Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_32b9806c0e0c51cccec3.wav HTTP/1.1" 200 -
-[2026-10-28T01:11:05.383Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:11:05.384Z] 127.0.0.1 - "GET /api/v1/voice/turns?limit=50 HTTP/1.1" 200 -
-[2026-10-28T01:11:05.416Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_21899fc92772f3800333/stop HTTP/1.1" 200 -
-[2026-10-28T01:11:05.423Z] 127.0.0.1 - "GET /api/v1/voice/turn/vt_21899fc92772f3800333 HTTP/1.1" 200 -
-[2026-10-28T01:11:05.441Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:11:05.443Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_89b0acd03cec218fcdfb/stop HTTP/1.1" 409 -
-[2026-10-28T01:11:05.449Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/reset HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:05.624Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:21.134Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_8b2dd319bdca092dbdaf.wav HTTP/1.1" 404 -
+[2026-10-29T05:47:21.138Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_29dfeaf3cc7e12d4d16b.wav HTTP/1.1" 200 -
+[2026-10-29T05:47:21.157Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:21.159Z] 127.0.0.1 - "GET /api/v1/voice/turns?limit=50 HTTP/1.1" 200 -
+[2026-10-29T05:47:21.170Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_8acfbaea4c7330486e4e/stop HTTP/1.1" 200 -
+[2026-10-29T05:47:21.174Z] 127.0.0.1 - "GET /api/v1/voice/turn/vt_8acfbaea4c7330486e4e HTTP/1.1" 200 -
+[2026-10-29T05:47:21.191Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:21.193Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_54bdcea8ba71d35f6397/stop HTTP/1.1" 409 -
+[2026-10-29T05:47:21.200Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/reset HTTP/1.1" 200 -
+[2026-10-29T05:47:21.346Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-clarify1-06&device_id=esp
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-clarify1-06&device_id=esp
 32s3eye-TESTA&inject_asr_text=%E9%82%A3%E4%B8%AA HTTP/1.1" 200 -
-[2026-10-28T01:11:05.649Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:11:05.651Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:07.093Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:21.366Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:21.367Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:22.798Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-clarify2-07&device_id=esp
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-clarify2-07&device_id=esp
 32s3eye-TESTA&inject_asr_text=%E7%AC%AC%E4%BA%8C%E4%B8%AA HTTP/1.1" 200 -
-[2026-10-28T01:11:07.103Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/reset HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:07.263Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:22.807Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/reset HTTP/1.1" 200 -
+[2026-10-29T05:47:23.016Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-clarify3-08&device_id=esp
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-clarify3-08&device_id=esp
 32s3eye-TESTA&inject_asr_text=%E9%82%A3%E4%B8%AA HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:07.435Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:23.251Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-clarify4-09&device_id=esp
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-clarify4-09&device_id=esp
 32s3eye-TESTA&inject_asr_text=%E6%88%91%E6%83%B3%E7%9C%8B%E7%9C%8B%E6%95%B0%E6%8D%AE HTTP/1.1" 200 -
-[2026-10-28T01:11:07.446Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/reset HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:07.599Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:23.259Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/reset HTTP/1.1" 200 -
+[2026-10-29T05:47:23.466Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-dev1-10&inject_asr_text=%
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-dev1-10&inject_asr_text=%
 E6%9F%A5%E7%9C%8B%E4%B8%8A%E6%AC%A1%E6%95%B0%E6%8D%AE HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:07.779Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:23.684Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-dev2-11&inject_asr_text=%
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-dev2-11&inject_asr_text=%
 E7%AC%AC%E4%B8%80%E5%8F%B0 HTTP/1.1" 200 -
-[2026-10-28T01:11:07.788Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/reset HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:07.999Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:23.692Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/reset HTTP/1.1" 200 -
+[2026-10-29T05:47:23.866Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-loop1-12&device_id=esp32s
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-loop1-12&device_id=esp32s
 3eye-TESTA&inject_asr_text=%E9%82%A3%E4%B8%AA HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:08.166Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:24.050Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-loop2-13&device_id=esp32s
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-loop2-13&device_id=esp32s
 3eye-TESTA&inject_asr_text=%E5%93%A6 HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:08.352Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:24.283Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-loop3-14&device_id=esp32s
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-loop3-14&device_id=esp32s
 3eye-TESTA&inject_asr_text=%E5%95%8A HTTP/1.1" 200 -
-[2026-10-28T01:11:08.356Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070 HTTP/1.1" 200 -
-[2026-10-28T01:11:08.363Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_1a8b966f72ab9070/reset HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:08.505Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:24.288Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3 HTTP/1.1" 200 -
+[2026-10-29T05:47:24.317Z] 127.0.0.1 - "POST /api/v1/voice/session/vs_cb325c4a3191d1d3/reset HTTP/1.1" 200 -
+[2026-10-29T05:47:24.498Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-txt0-15&device_id=esp32s3
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-txt0-15&device_id=esp32s3
 eye-TESTA&inject_asr_text=%E9%82%A3%E4%B8%AA HTTP/1.1" 200 -
-[2026-10-28T01:11:14.708Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 200 -
-[2026-10-28T01:11:14.713Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_89b0acd03cec218fcdfb.wav HTTP/1.1" 404 -
-[2026-10-28T01:11:14.731Z] 127.0.0.1 - "GET /api/v1/voice/audio/vt_89b0acd03cec218fcdfb.wav HTTP/1.1" 200 -
-[2026-10-28T01:11:14.743Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_89b0acd03cec218fcdfb/played HTTP/1.1" 409 -
-[2026-10-28T01:11:14.745Z] 127.0.0.1 - "GET /api/v1/voice/turn/vt_89b0acd03cec218fcdfb HTTP/1.1" 200 -
-[2026-10-28T01:11:14.752Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_21899fc92772f3800333.wav HTTP/1.1" 410 -
-[2026-10-28T01:11:14.753Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_21899fc92772f3800333/played HTTP/1.1" 409 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:14.766Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:30.722Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 200 -
+[2026-10-29T05:47:30.739Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_54bdcea8ba71d35f6397.wav HTTP/1.1" 404 -
+[2026-10-29T05:47:30.754Z] 127.0.0.1 - "GET /api/v1/voice/audio/vt_54bdcea8ba71d35f6397.wav HTTP/1.1" 200 -
+[2026-10-29T05:47:30.756Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_54bdcea8ba71d35f6397/played HTTP/1.1" 409 -
+[2026-10-29T05:47:30.767Z] 127.0.0.1 - "GET /api/v1/voice/turn/vt_54bdcea8ba71d35f6397 HTTP/1.1" 200 -
+[2026-10-29T05:47:30.773Z] 127.0.0.1 - "GET /api/v1/voice/reply/vt_8acfbaea4c7330486e4e.wav HTTP/1.1" 410 -
+[2026-10-29T05:47:30.786Z] 127.0.0.1 - "POST /api/v1/voice/turn/vt_8acfbaea4c7330486e4e/played HTTP/1.1" 409 -
+[2026-10-29T05:47:30.817Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-inj-off-17&device_id=esp3
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-inj-off-17&device_id=esp3
 2s3eye-TESTA&inject_delay_ms=100&inject_asr_text=%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E5%90%97 HTTP/1.1" 400 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:14.805Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:30.851Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-inj-bad-18&device_id=esp3
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-inj-bad-18&device_id=esp3
 2s3eye-TESTA&inject_delay_ms=abc&inject_asr_text=%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E5%90%97 HTTP/1.1" 400 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:14.990Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:31.045Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
-E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_1a8b966f72ab9070&request_id=rq6-inj-ok-19&device_id=esp32
+E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&session_id=vs_cb325c4a3191d1d3&request_id=rq6-inj-ok-19&device_id=esp32
 s3eye-TESTA&inject_asr_text=%E8%AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E5%90%97 HTTP/1.1" 200 -
-[2026-10-28T01:11:14.991Z] 127.0.0.1 - "GET /api/v1/voice/turn/vt_c12b821ff607b427e45d HTTP/1.1" 200 -
-[2026-10-28T01:11:14.993Z] 127.0.0.1 - "GET /api/v1/voice/timeline?request_id=rq6-cancel-asr-02 HTTP/1.1" 200 -
-[2026-10-28T01:11:15.008Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_1a8b966f72ab9070/timeline HTTP/1.1" 200 -
-[2026-10-28T01:11:15.009Z] 127.0.0.1 - "GET /api/v1/voice/timeline?limit=5 HTTP/1.1" 200 -
-[voice] SAPI 合成不可用（系统没有可用的音频输出设备（SpVoice.GetAudioOutputs() 返回 0）。SAPI 即使只想把语音写进文件也要求存在音频设备，所以无法合成。），降级到 tone 合成音。
-        这一轮记录里的 tts.engine 会是 'tone'，不是语音。
-[2026-10-28T01:11:15.151Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
+[2026-10-29T05:47:31.069Z] 127.0.0.1 - "GET /api/v1/voice/turn/vt_daad96a10ced90674368 HTTP/1.1" 200 -
+[2026-10-29T05:47:31.070Z] 127.0.0.1 - "GET /api/v1/voice/timeline?request_id=rq6-cancel-asr-02 HTTP/1.1" 200 -
+[2026-10-29T05:47:31.071Z] 127.0.0.1 - "GET /api/v1/voice/session/vs_cb325c4a3191d1d3/timeline HTTP/1.1" 200 -
+[2026-10-29T05:47:31.072Z] 127.0.0.1 - "GET /api/v1/voice/timeline?limit=5 HTTP/1.1" 200 -
+[2026-10-29T05:47:31.234Z] 127.0.0.1 - "POST /api/v1/voice/turn?audio_source=uploaded_file&capture_location=tts-loopbac
 k%3AWindows-11%20%E6%9C%AC%E6%9C%BA%20PC%EF%BC%88%E6%8E%88%E6%9D%83%E5%BD%95%E9%9F%B3%C2%B7%E5%A4%87%E7%94%A8%E8%B7%AF%
 E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&request_id=rq6-legacy-20&device_id=esp32s3eye-TESTA&inject_asr_text=%E8
 %AE%BE%E5%A4%87%E5%9C%A8%E7%BA%BF%E5%90%97 HTTP/1.1" 200 -
-[2026-10-28T01:11:15.157Z] 127.0.0.1 - "POST /api/v1/nl/query HTTP/1.1" 200 -
-[2026-10-28T01:11:15.202Z] 127.0.0.1 - "GET /api/v1/voice/health HTTP/1.1" 200 -
-[2026-10-28T01:11:15.204Z] 127.0.0.1 - "GET /api/v1/voice/sessions HTTP/1.1" 200 -
-[2026-10-28T01:11:15.444Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 200 -
+[2026-10-29T05:47:31.240Z] 127.0.0.1 - "POST /api/v1/nl/query HTTP/1.1" 200 -
+[2026-10-29T05:47:31.275Z] 127.0.0.1 - "GET /api/v1/voice/health HTTP/1.1" 200 -
+[2026-10-29T05:47:31.276Z] 127.0.0.1 - "GET /api/v1/voice/sessions HTTP/1.1" 200 -
+[2026-10-29T05:47:31.532Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 200 -
 [voice] 预入库失败（重试 3 次后放弃，本轮不执行任何动作）：attempt to write a readonly database
-[2026-10-28T01:11:15.702Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 503 -
+[2026-10-29T05:47:31.790Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 503 -
 [voice] 阶段增量写入失败（已重试一次，跳过）：attempt to write a readonly database | ['vad_passed']
-[2026-10-28T01:11:15.895Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 200 -
+[2026-10-29T05:47:32.017Z] 127.0.0.1 - "POST /api/v1/voice/text HTTP/1.1" 200 -
 
 ------------------------------------------------------------------------------
 0. 启动
 ------------------------------------------------------------------------------
   OK   语音引擎就绪 | vosk / model_present=True
-  [!] 本机 SAPI 不可用（audio_outputs=0）：改为「注入识别文本」模式。
-      原因：系统没有可用的音频输出设备，SAPI 无法合成；已降级到 tone 合成音（不是语音）
-      ★ 注入轮在记录里标 asr.engine=injected，与真实识别可区分。
+  [!] 识别探针没有返回文本：改为「注入识别文本」模式。
 [db] 已为 sensor_records 补充字段 request_id TEXT
 [db] 已为 sensor_records 补充字段 report_mode TEXT
 [db] 数据库就绪: D:\ESP\.tmp\selftest_voice6.db
@@ -190,7 +156,7 @@ E5%BE%84%EF%BC%89&wait_ms=1200&client_ack_ms=15&request_id=rq6-legacy-20&device_
 ------------------------------------------------------------------------------
 A. 会话生命周期（半双工状态机）
 ------------------------------------------------------------------------------
-  OK   建会话 → 200 | (200, 'vs_1a8b966f72ab9070')
+  OK   建会话 → 200 | (200, 'vs_cb325c4a3191d1d3')
   OK   初始 state=idle | idle
   OK   状态机自述 half_duplex=True
   OK   澄清轮数上限已声明 | 2
@@ -210,19 +176,19 @@ A. 会话生命周期（半双工状态机）
 B. 时序测量：输入结束 → 首次反馈 → 任务完成 → 播报就绪
 ------------------------------------------------------------------------------
   OK   正常链路 final_state=done | done
-  OK   t0 有值（服务端收到音频的时刻） | 2026-10-28T01:10:54.973Z
-  OK   first_feedback_ms 有值 | 33
-  OK   task_done_ms 有值 | 39
-  OK   tts_ready_ms 有值 | 86
-  OK   ★ 时序单调：首次反馈 ≤ 任务完成 ≤ 播报就绪 | {'t0_utc': '2026-10-28T01:10:54.973Z', 't0_note': 't0 = 服务端收到完整音频的时刻（= 输入结束的可证代理量）', 'first_feedback_ms': 33, 'task_done_ms': 39, 'tts_ready_ms': 86, 'client_ack_ms': 15, 'total_ms': 91, 'note': 'first_feedback = 识别出文本（用户第一次看到/听到实质内容）；client_ack 是前端本地提示，属本地事实'}
-  OK   total_ms ≥ tts_ready_ms | 91
+  OK   t0 有值（服务端收到音频的时刻） | 2026-10-29T05:47:10.831Z
+  OK   first_feedback_ms 有值 | 36
+  OK   task_done_ms 有值 | 42
+  OK   tts_ready_ms 有值 | 149
+  OK   ★ 时序单调：首次反馈 ≤ 任务完成 ≤ 播报就绪 | {'t0_utc': '2026-10-29T05:47:10.831Z', 't0_note': 't0 = 服务端收到完整音频的时刻（= 输入结束的可证代理量）', 'first_feedback_ms': 36, 'task_done_ms': 42, 'tts_ready_ms': 149, 'client_ack_ms': 15, 'total_ms': 155, 'note': 'first_feedback = 识别出文本（用户第一次看到/听到实质内容）；client_ack 是前端本地提示，属本地事实'}
+  OK   total_ms ≥ tts_ready_ms | 155
   OK   client_ack_ms 原样记录了前端上报值 | 15
-  OK   总耗时与服务端实测量级一致（墙上时钟 ±1500ms） | (285, 91)
+  OK   总耗时与服务端实测量级一致（墙上时钟 ±1500ms） | (203, 155)
   OK   timing 里写明了 t0 的定义
   OK   turn_seq=1（会话内第一轮） | 1
   OK   request_id 原样回传（便于关联日志） | rq6-normal-01
   OK   delivery=deliverable / 可播放 | {'state': 'deliverable', 'playable': True, 'why': None}
-  OK   可播放的一轮 reply.wav → 200 | (200, 256044)
+  OK   可播放的一轮 reply.wav → 200 | (200, 485074)
   OK   完成后会话进入 speaking
 
 ------------------------------------------------------------------------------
@@ -231,14 +197,14 @@ C. 取消 · 识别期间 —— 任务段一行都不许执行
   OK   在途时会话进入 thinking
   OK   会话 active_request_id 指向这一条 | rq6-cancel-asr-02
   OK   取消 → 200 | 200
-  OK   取消登记在途（was_active=True） | {'request_id': 'rq6-cancel-asr-02', 'turn_id': 'vt_89b0acd03cec218fcdfb', 'reason': 'user_stop', 'at_utc': '2026-10-28T01:10:55.216Z', 'session_id': 'vs_1a8b966f72ab9070', 'state': 'idle', 'was_active': True, 'note': '已登记取消。在途的那一步跑完后会发现它已被取消：不会再执行后续动作，也不会产出可播放的播报。'}
+  OK   取消登记在途（was_active=True） | {'request_id': 'rq6-cancel-asr-02', 'turn_id': 'vt_54bdcea8ba71d35f6397', 'reason': 'user_stop', 'at_utc': '2026-10-29T05:47:11.180Z', 'session_id': 'vs_cb325c4a3191d1d3', 'state': 'idle', 'was_active': True, 'note': '已登记取消。在途的那一步跑完后会发现它已被取消：不会再执行后续动作，也不会产出可播放的播报。'}
   OK   取消后请求仍然 200 返回（不切断连接） | (200, None)
   OK   ★ final_state=cancelled | cancelled
   OK   ★ 任务段 status=skipped（没有执行） | {'status': 'skipped', 'intent': None, 'claim': None, 'remote_status': None, 'source': None, 'answer': None, 'error': None, 'response': None}
   OK   ★ task.intent 为空（连意图都没落）
-  OK   ★ action_taken=False | {'requested_at_utc': '2026-10-28T01:10:55.216Z', 'seen_at_utc': '2026-10-28T01:10:58.231Z', 'reason': 'user_stop', 'stage': 'after_asr', 'action_taken': False, 'note': '取消发生在任务之前：任务段一行都没有执行'}
+  OK   ★ action_taken=False | {'requested_at_utc': '2026-10-29T05:47:11.180Z', 'seen_at_utc': '2026-10-29T05:47:14.108Z', 'reason': 'user_stop', 'stage': 'after_asr', 'action_taken': False, 'note': '取消发生在任务之前：任务段一行都没有执行'}
   OK   cancel_stage 记录在任务之前 | after_asr
-  OK   cancel.requested_at 与 seen_at 都留痕 | {'requested_at_utc': '2026-10-28T01:10:55.216Z', 'seen_at_utc': '2026-10-28T01:10:58.231Z', 'reason': 'user_stop', 'stage': 'after_asr', 'action_taken': False, 'note': '取消发生在任务之前：任务段一行都没有执行'}
+  OK   cancel.requested_at 与 seen_at 都留痕 | {'requested_at_utc': '2026-10-29T05:47:11.180Z', 'seen_at_utc': '2026-10-29T05:47:14.108Z', 'reason': 'user_stop', 'stage': 'after_asr', 'action_taken': False, 'note': '取消发生在任务之前：任务段一行都没有执行'}
   OK   ★ 取消后 collect_requests 表一条都没新增（没有下发采集指令） | (0, 0)
   OK   识别文本仍在（识别真发生过，如实保留） | 重新采集一次
   OK   ★ delivery=quarantined_cancelled | {'state': 'quarantined_cancelled', 'playable': False, 'why': '这一轮没有产出播报音频（final_state=cancelled）。'}
@@ -252,7 +218,7 @@ D. 取消 · 任务之后 —— 动作已发生，收不回来
 ------------------------------------------------------------------------------
   OK   任务后取消 → 200 | 200
   OK   ★ final_state=cancelled | cancelled
-  OK   ★ action_taken=True（任务真的跑过） | {'requested_at_utc': '2026-10-28T01:10:59.992Z', 'seen_at_utc': '2026-10-28T01:11:02.705Z', 'reason': 'user_stop', 'stage': 'after_task', 'action_taken': True, 'note': '取消发生在任务之后：动作已发生，收不回来（记录 action_taken=1）'}
+  OK   ★ action_taken=True（任务真的跑过） | {'requested_at_utc': '2026-10-29T05:47:15.788Z', 'seen_at_utc': '2026-10-29T05:47:18.487Z', 'reason': 'user_stop', 'stage': 'after_task', 'action_taken': True, 'note': '取消发生在任务之后：动作已发生，收不回来（记录 action_taken=1）'}
   OK   cancel_stage=after_task | after_task
   OK   ★ collect_requests 真的多了一条（如实承认副作用） | (0, 1)
   OK   ★ 取消只拦住播报：playable=False
@@ -272,7 +238,7 @@ E. 新任务顶掉旧任务 —— 旧结果不许覆盖新结果
   OK   ★ 旧结果拿不到音频（被拦在识别之后，本来就没产出音频 → 404） | (404, 'NO_REPLY_AUDIO')
   OK   ★ 新结果 reply.wav → 200（没被旧的带坏）
   OK   ★ 会话没有被旧任务改写：state=speaking | speaking
-  OK   ★ 会话 last_turn_id 指向新任务 | ('vt_32b9806c0e0c51cccec3', 'vt_32b9806c0e0c51cccec3')
+  OK   ★ 会话 last_turn_id 指向新任务 | ('vt_29dfeaf3cc7e12d4d16b', 'vt_29dfeaf3cc7e12d4d16b')
   OK   会话没有在途残留
   OK   列表里两条都在（都能查证，不只是丢了） | 5
   OK   列表里旧的那条 playable=false
@@ -283,9 +249,9 @@ F. 停止播报 —— 任务保留，只关声音
 ------------------------------------------------------------------------------
   OK   停止播报 → 200 | 200
   OK   ★ final_state 仍是 done（任务没被否定） | done
-  OK   记录了 stopping 时间与已播毫秒 | {'turn_id': 'vt_21899fc92772f3800333', 'tts_stopped_at_utc': '2026-10-28T01:11:05.409Z', 'played_ms': 900, 'reason': 'user_stop', 'final_state': 'done', 'note': '播报已停止；任务与文字回答都保留。已播出的那一段收不回来，所以这里只记录「停止于第几毫秒」，不声称任何东西。'}
+  OK   记录了 stopping 时间与已播毫秒 | {'turn_id': 'vt_8acfbaea4c7330486e4e', 'tts_stopped_at_utc': '2026-10-29T05:47:21.160Z', 'played_ms': 900, 'reason': 'user_stop', 'final_state': 'done', 'note': '播报已停止；任务与文字回答都保留。已播出的那一段收不回来，所以这里只记录「停止于第几毫秒」，不声称任何东西。'}
   OK   说明里不声称「用户听到了」 | 播报已停止；任务与文字回答都保留。已播出的那一段收不回来，所以这里只记录「停止于第几毫秒」，不声称任何东西。
-  OK   详情里能读到 stop 记录 | {'stopped_at_utc': '2026-10-28T01:11:05.409Z', 'played_ms': 900, 'reason': 'user_stop'}
+  OK   详情里能读到 stop 记录 | {'stopped_at_utc': '2026-10-29T05:47:21.160Z', 'played_ms': 900, 'reason': 'user_stop'}
   OK   停止播报后会话回 idle
   OK   对没有音频的轮次停止播报 → 409 | 409
   OK   409 说的是「没有播报音频」，不是「隔离」 | NO_REPLY_AUDIO
@@ -306,21 +272,21 @@ G. 澄清 · 有限多轮
   OK   ★ 序号消解：正常执行（不再是 clarifying） | done
   OK   ★ clarify_how=intent_ordinal | intent_ordinal
   OK   ★ 消解成「重新采集一次」 | 重新采集一次
-  OK   ★ clarify.from_turn_id 指回上一轮 | ('vt_28332f96e1e946e7faff', 'vt_28332f96e1e946e7faff')
+  OK   ★ clarify.from_turn_id 指回上一轮 | ('vt_7e890b156118888425d0', 'vt_7e890b156118888425d0')
   OK   消解后任务段真的跑了 record（有 intent） | request_collect
   OK   再次进入 clarifying | clarifying
   OK   ★ 关键词消解：clarify_how=intent_keyword | intent_keyword
   OK   ★ 消解成「查看上次数据」 | 查看上次数据
-  OK   消解后 intent=query_latest | {'status': 'done', 'intent': 'query_latest', 'claim': 'no_data', 'remote_status': 'no_data', 'source': 'sensor_records（空）', 'answer': '设备 esp32s3eye-TESTA 目前还没有任何已存记录（后端没有编造一条给你）。\n如果你要现在的数据，请说「重新采集一次」。', 'error': None, 'response': {'trace_id': 'nl-16dd782fe333', 'query': '查看上次数据', 'intent': 'query_latest', 'intent_label': '读取已有记录（最新一条）', 'params': {'device_id': 'esp32s3eye-TESTA', 'time_range_s': None, 'limit': None, 'wait_ms': None}, 'parser': 'rule', 'confidence': 0.9, 'notes': ['命中「查看」类措辞：只读已有记录'], 'tool_calls': [{'name': 'list_devices', 'args': {}, 'ok': True, 'ms': 3, 'digest': None}, {'name': 'get_latest_record', 'args': {'device_id': 'esp32s3eye-TESTA'}, 'ok': False, 'ms': 0, 'digest': None}], 'limits': {'location_supported': False, 'max_wait_ms': 20000, 'device_scope_size': 2}, 'status': 'no_data', 'claim': 'no_data', 'answer': '设备 esp32s3eye-TESTA 目前还没有任何已存记录（后端没有编造一条给你）。\n如果你要现在的数据，请说「重新采集一次」。', 'error_code': 'TOOL_ERROR', 'evidence': {'source': 'sensor_records（空）', 'device_id': 'esp32s3eye-TESTA', 'observed_at_utc': None, 'age_ms': None, 'freshness': 'unknown', 'device_command_sent': False}, 'guard': []}}
+  OK   消解后 intent=query_latest | {'status': 'done', 'intent': 'query_latest', 'claim': 'no_data', 'remote_status': 'no_data', 'source': 'sensor_records（空）', 'answer': '设备 esp32s3eye-TESTA 目前还没有任何已存记录（后端没有编造一条给你）。\n如果你要现在的数据，请说「重新采集一次」。', 'error': None, 'response': {'trace_id': 'nl-785e0307d6b6', 'query': '查看上次数据', 'intent': 'query_latest', 'intent_label': '读取已有记录（最新一条）', 'params': {'device_id': 'esp32s3eye-TESTA', 'time_range_s': None, 'limit': None, 'wait_ms': None}, 'parser': 'rule', 'confidence': 0.9, 'notes': ['命中「查看」类措辞：只读已有记录'], 'tool_calls': [{'name': 'list_devices', 'args': {}, 'ok': True, 'ms': 5, 'digest': None}, {'name': 'get_latest_record', 'args': {'device_id': 'esp32s3eye-TESTA'}, 'ok': False, 'ms': 0, 'digest': None}], 'limits': {'location_supported': False, 'max_wait_ms': 20000, 'device_scope_size': 2}, 'status': 'no_data', 'claim': 'no_data', 'answer': '设备 esp32s3eye-TESTA 目前还没有任何已存记录（后端没有编造一条给你）。\n如果你要现在的数据，请说「重新采集一次」。', 'error_code': 'TOOL_ERROR', 'evidence': {'source': 'sensor_records（空）', 'device_id': 'esp32s3eye-TESTA', 'observed_at_utc': None, 'age_ms': None, 'freshness': 'unknown', 'device_command_sent': False}, 'guard': []}}
   OK   ★ 两台设备未点名 → 澄清 kind=device | ('clarifying', 'device')
-  OK   澄清里列出了候选设备 | [{'device_id': 'esp32s3eye-TESTA', 'last_seen_utc': '2026-10-28T01:10:54.379Z', 'last_status': 'online', 'pending_commands': 1, 'records': 0}, {'device_id': 'esp32s3eye-TESTB', 'last_seen_utc': '2026-10-28T01:10:54.379Z', 'last_status': 'online', 'pending_commands': 0, 'records': 0}]
+  OK   澄清里列出了候选设备 | [{'device_id': 'esp32s3eye-TESTA', 'last_seen_utc': '2026-10-29T05:47:10.326Z', 'last_status': 'online', 'pending_commands': 1, 'records': 0}, {'device_id': 'esp32s3eye-TESTB', 'last_seen_utc': '2026-10-29T05:47:10.326Z', 'last_status': 'online', 'pending_commands': 0, 'records': 0}]
   OK   ★ 设备序号消解：clarify_how=device_ordinal | device_ordinal
   OK   ★ 消解后任务落在「候选第一位」那台设备上（不猜、按上一轮给的顺序） | ('esp32s3eye-TESTA', 'esp32s3eye-TESTA')
   OK   ★ 返回里标明设备来自澄清消解 | clarify_resolved
   OK   消解后拿到真实答案 | 设备 esp32s3eye-TESTA 目前还没有任何已存记
   OK   上限测试 · 第 1 轮 clarifying | clarifying
   OK   上限测试 · 第 2 轮仍在澄清（轮次=2） | ('clarifying', 2)
-  OK   第 2 轮反问标注 repeated | {'round': 2, 'max_rounds': 2, 'kind': 'intent', 'question': '你是想「查看已有记录」，还是「请求设备重新采集一次」？', 'options': ['查看上次数据', '重新采集一次', '设备在线吗'], 'candidates': [], 'base_query': '那个', 'device_id': 'esp32s3eye-TESTA', 'source_turn_id': 'vt_777d9e536cb92ace3261', 'exhausted': False, 'why': '系统没能唯一确定你的意思，所以先问一句再动手（不猜）', 'repeated': True}
+  OK   第 2 轮反问标注 repeated | {'round': 2, 'max_rounds': 2, 'kind': 'intent', 'question': '你是想「查看已有记录」，还是「请求设备重新采集一次」？', 'options': ['查看上次数据', '重新采集一次', '设备在线吗'], 'candidates': [], 'base_query': '那个', 'device_id': 'esp32s3eye-TESTA', 'source_turn_id': 'vt_85de594d5dc4c1a34148', 'exhausted': False, 'why': '系统没能唯一确定你的意思，所以先问一句再动手（不猜）', 'repeated': True}
   OK   ★ 到上限 → clarify_exhausted（不再追问） | clarify_exhausted
   OK   ★ 到上限给出明确退路（不是死循环） | 已经问了 2 轮还没说清，先停下。你可以直接说「查看上次数据」/「重新采集一次」/「设备在线吗」，或者改用文字入口打字 —— 打字的歧义更少。
   OK   到上限后会话回 idle（可重新开始）
@@ -346,7 +312,7 @@ H. 隔离的绕过测试（直接访问接口，不经过前端）
   OK   详情里没有出现 heard / 已听到 字样
   OK   ★ 有音频但被隔离 → 410 Gone（文件在，但不给） | 410
   OK   410 用 REPLY_QUARANTINED 明确是「隔离」而不是「没生成」 | REPLY_QUARANTINED
-  OK   410 指明了该怎么办（去看文字回答） | {'turn_id': 'vt_21899fc92772f3800333', 'hint': '要听这一轮的内容，请看记录里的文字回答；音频不会再给。'}
+  OK   410 指明了该怎么办（去看文字回答） | {'turn_id': 'vt_8acfbaea4c7330486e4e', 'hint': '要听这一轮的内容，请看记录里的文字回答；音频不会再给。'}
   OK   ★ 被隔离的轮次不许上报「已播放」 → 409 | 409
   OK   409 的码是 PLAYBACK_QUARANTINED | PLAYBACK_QUARANTINED
 

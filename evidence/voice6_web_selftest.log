@@ -20,8 +20,8 @@
   ✔ ②静音检测格=进行中  is-run
   ✔ 终局文案=已提交等待识别  已提交，等待识别…
   ✔ ★ 请求带了 session_id  vs_0123456789abcdef
-  ✔ ★ 请求带了 request_id  rq_loyw3v28_1_1z002
-  ✔ ★ request_id 与页面在途的是同一个  rq_loyw3v28_1_1z002
+  ✔ ★ 请求带了 request_id  rq_loyw3v28_1_7ly4m
+  ✔ ★ request_id 与页面在途的是同一个  rq_loyw3v28_1_7ly4m
   ✔ ★ client_ack_ms 是真实测出来的（>0）  1
   ✔ audio_source 如实带 browser_mic  browser_mic
   ✔ 没有注入参数时请求里不带 inject_*  {"audio_source":"browser_mic","capture_location":"browser:Chrome/Windows+·+本机+PC
@@ -40,9 +40,9 @@
   ✔ 缺失的时间显示「—」而不是 0 或猜出来的数
 
 [4] 在途时点停止 → 打到 /cancel，且不许宣称「已取消」
-  ✔ 在途 request_id 已记下  rq_loyw3v28_2_mp20y
+  ✔ 在途 request_id 已记下  rq_loyw3v28_2_8e2o5
   ✔ ★ 点停止后调用了 /session/<sid>/cancel
-  ✔ ★ 取消请求带的是**这一轮**的 request_id  rq_loyw3v28_2_mp20y
+  ✔ ★ 取消请求带的是**这一轮**的 request_id  rq_loyw3v28_2_8e2o5
   ✔ 取消原因 = user_stop
   ✔ ★ 文案只说「已登记/等待发现」，不许说「已取消」  i已登记取消。在途的那一步跑完后会发现它已被取消：不会再执行后续动作，也不会产出可播放的播报。 如果它已经在跑任务段，取消只能拦住后面的阶段 —— 已经发生的动作收不回来。 正在等
   ✔ ★ 说明里点出「已经发生的动作收不回来」  回来。 正在等待在途那一步发现自己被取消，结果到了会被标成 cancelled 并隔离（不可播放）。
@@ -62,7 +62,7 @@
 [5] 旧的比新的晚回来 → 整轮丢弃，旧文本一个字都不许进 DOM
   ✔ 两条请求都在途（这就是半双工要处理的情形）  2
   ✔ 新的结果被渲染了  设备在线吗
-  ✔ ★ 迟到结果被丢弃：提示里说了「已被丢弃」  i上一轮的结果（request_id …zk_3_0s2au，终局 done）已被丢弃：它比新的那一轮晚到，按半双工规则不再播报、也不覆盖当前结果。这是设计行为，不是失败。
+  ✔ ★ 迟到结果被丢弃：提示里说了「已被丢弃」  i上一轮的结果（request_id …zk_3_1sexm，终局 done）已被丢弃：它比新的那一轮晚到，按半双工规则不再播报、也不覆盖当前结果。这是设计行为，不是失败。
   ✔ ★ 页面仍然是新那一轮的文本  设备在线吗
   ✔ ★ 旧那一轮的文本没有出现在任何地方  设备 esp32s3eye-1C704C 在线，最后上报 2026-10-23 
   ✔ 丢弃不算失败：提示样式是 info 而不是 bad  voice-notice is-info
@@ -89,7 +89,7 @@
   ✔ 输入框可用（也可以打字）
   ✔ ★ 点选候选项 → POST /api/v1/voice/text
   ✔ ★ 补充轮带 text=被点的那个选项  查看上次数据
-  ✔ ★ 补充轮同样带 session_id / request_id / client_ack_ms  {"text":"查看上次数据","session_id":"vs_0123456789abcdef","request_id":"rq_loyw3vzk_5_qb3y0","device_id":n
+  ✔ ★ 补充轮同样带 session_id / request_id / client_ack_ms  {"text":"查看上次数据","session_id":"vs_0123456789abcdef","request_id":"rq_loyw3vzk_5_0bgsv","device_id":n
   ✔ ★ 补充轮声明 capture_location 是键盘（不伪装成麦克风）  keyboard:浏览器输入框 · 本机 PC（页面所在的这台机器）
   ✔ ★ 补充轮跑完后卡片切成「已消解」，不再是那道问题  已消解 | 按你的补充执行：查看上次数据
   ✔ ★ 补充轮的 ①②③ 三格标成「跳过」而不是留空  is-skip | is-skip | is-skip
