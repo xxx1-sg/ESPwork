@@ -99,3 +99,6 @@ backend/data/voice/
 
 # ---- 本工程的 AI 协作记录（不属于交付物）----
 .workbuddy/
+
+# ---- 零散截图（截图工具的中间产物，没有任何文档引用）----
+docs/img/where_click.png

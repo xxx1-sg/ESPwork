@@ -1,0 +1,292 @@
+{
+  "meta": {
+    "mode": "tts_loopback",
+    "tts_engine": "sapi",
+    "tts_voice": "Microsoft Huihui Desktop - Chinese (Simplified)",
+    "tts_sample_rate": 22050,
+    "tts_audio_ms": 2055,
+    "text": "查看上次数据"
+  },
+  "turn": {
+    "turn_id": "vt_7d7b81b02acea213d61c",
+    "request_id": "rq_18568e4ac46e91af",
+    "session": {
+      "session_id": null,
+      "turn_seq": null,
+      "half_duplex": true,
+      "superseded_request_id": null,
+      "superseded_by": null,
+      "note": "无会话：本次是无状态单次调用，没有短期上下文"
+    },
+    "final_state": "done",
+    "audio_source": "uploaded_file",
+    "audio_source_label": "上传的授权录音文件",
+    "device_id": "esp32s3eye-1C704C",
+    "device_id_source": "request",
+    "audio": {
+      "bytes": 65810,
+      "sha256": "fed0fc2c9d2c7f846e657289d3c59ed9b2d720900713869e5421f35ffa3f0385",
+      "sample_rate": 16000,
+      "bits": 16,
+      "channels": 1,
+      "duration_ms": 2055,
+      "rms": 0.068292,
+      "peak": 0.681244,
+      "zcr": 0.155095,
+      "vad_passed": true
+    },
+    "stages": [
+      {
+        "key": "recorded",
+        "label": "录音",
+        "status": "ok",
+        "detail": "上传的授权录音文件 · 2.06 秒 · 16000 Hz/16 bit/1 声道 · 65810 字节 · sha256=fed0fc2c9d2c…",
+        "audio_source": "uploaded_file",
+        "bytes": 65810,
+        "sha256": "fed0fc2c9d2c7f846e657289d3c59ed9b2d720900713869e5421f35ffa3f0385",
+        "sample_rate": 16000,
+        "bits": 16,
+        "channels": 1,
+        "duration_ms": 2055,
+        "received_at_utc": "2026-10-28T02:50:59.100Z",
+        "t0_note": "时序基准 t0 = 服务端收到完整音频的时刻"
+      },
+      {
+        "key": "vad",
+        "label": "静音检测",
+        "status": "ok",
+        "detail": "RMS=0.0683（阈值 0.0060）· 峰值=0.6812（阈值 0.0200）· 过零率=0.1551 → 有语音能量",
+        "ms": 0,
+        "rms": 0.068292,
+        "peak": 0.681244,
+        "zcr": 0.155095,
+        "rms_min": 0.006,
+        "peak_min": 0.02,
+        "passed": true
+      },
+      {
+        "key": "asr",
+        "label": "语音识别",
+        "status": "ok",
+        "detail": "引擎 vosk / vosk-model-small-cn-0.22 · 0.76 秒 → “查看上次数据”",
+        "ms": 762,
+        "engine": "vosk",
+        "model": "vosk-model-small-cn-0.22",
+        "raw_text": "查看 上次 数据",
+        "text": "查看上次数据",
+        "injected": false
+      },
+      {
+        "key": "task",
+        "label": "任务执行",
+        "status": "ok",
+        "detail": "意图=query_latest · claim=old_record · 状态=answered · 来源=sensor_records.id=539502",
+        "ms": 276,
+        "intent": "query_latest",
+        "claim": "old_record",
+        "remote_status": "answered",
+        "source": "sensor_records.id=539502",
+        "action_taken": true,
+        "clarify_how": null,
+        "clarify_resolved": null
+      },
+      {
+        "key": "tts",
+        "label": "语音合成",
+        "status": "ok",
+        "detail": "引擎 tone / 语音  · 产出 8.0 秒 WAV（256044 字节）· 播报为原文前 2 句节选（完整回答 286 字）",
+        "ms": 35,
+        "engine": "tone",
+        "voice": "",
+        "audio_ms": 8000,
+        "bytes": 256044,
+        "sha256": "0cdb2645467eb45b3369cb3d8ca5d45047e3bb46270d71af6512b832e04f4264",
+        "truncated": true,
+        "full_chars": 286
+      },
+      {
+        "key": "playback",
+        "label": "播放",
+        "status": "pending",
+        "detail": "等待浏览器播放器开始播放（服务端不推断“已听到”）",
+        "ms": 0
+      }
+    ],
+    "transcript": "查看上次数据",
+    "asr": {
+      "status": "ok",
+      "engine": "vosk",
+      "model": "vosk-model-small-cn-0.22",
+      "ms": 762,
+      "error": null,
+      "injected": false
+    },
+    "task": {
+      "status": "ok",
+      "intent": "query_latest",
+      "claim": "old_record",
+      "remote_status": "answered",
+      "source": "sensor_records.id=539502",
+      "answer": "「查看上次数据」→ 读取已有记录（只读，未向设备下发任何指令）。\n设备：esp32s3eye-1C704C\n采样时间：2026-10-28T10:50:57.914+0800（设备时钟 local）/ 服务器接收：2026-10-28 10:50:59（不到 1 秒前）\n合矢量 |a| = 1.8131 g；三轴 g = (-0.6921, -0.0579, 1.6748)\n来源：sensor_records.id=539502（received_at_utc=2026-10-28T02:50:59.846Z）\n状态：这是数据库中已经存在的一条记录，不是本次新采的。",
+      "error": null,
+      "response": {
+        "trace_id": "nl-dd4dd9dc84a4",
+        "query": "查看上次数据",
+        "intent": "query_latest",
+        "intent_label": "读取已有记录（最新一条）",
+        "params": {
+          "device_id": "esp32s3eye-1C704C",
+          "time_range_s": null,
+          "limit": null,
+          "wait_ms": null
+        },
+        "parser": "rule",
+        "confidence": 0.9,
+        "notes": [
+          "命中「查看」类措辞：只读已有记录"
+        ],
+        "tool_calls": [
+          {
+            "name": "list_devices",
+            "args": {},
+            "ok": true,
+            "ms": 275,
+            "digest": null
+          },
+          {
+            "name": "get_latest_record",
+            "args": {
+              "device_id": "esp32s3eye-1C704C"
+            },
+            "ok": true,
+            "ms": 0,
+            "digest": null
+          }
+        ],
+        "limits": {
+          "location_supported": false,
+          "max_wait_ms": 20000,
+          "device_scope_size": 2
+        },
+        "status": "answered",
+        "claim": "old_record",
+        "answer": "「查看上次数据」→ 读取已有记录（只读，未向设备下发任何指令）。\n设备：esp32s3eye-1C704C\n采样时间：2026-10-28T10:50:57.914+0800（设备时钟 local）/ 服务器接收：2026-10-28 10:50:59（不到 1 秒前）\n合矢量 |a| = 1.8131 g；三轴 g = (-0.6921, -0.0579, 1.6748)\n来源：sensor_records.id=539502（received_at_utc=2026-10-28T02:50:59.846Z）\n状态：这是数据库中已经存在的一条记录，不是本次新采的。",
+        "evidence": {
+          "source": "sensor_records.id=539502",
+          "device_id": "esp32s3eye-1C704C",
+          "record_id": 539502,
+          "observed_at_utc": "2026-10-28T02:50:59.846Z",
+          "received_at_utc": "2026-10-28T02:50:59.846Z",
+          "age_ms": 434,
+          "freshness": "live",
+          "device_command_sent": false,
+          "collect_request_id": null,
+          "collect_status": null
+        },
+        "guard": []
+      }
+    },
+    "tts": {
+      "status": "ok",
+      "engine": "tone",
+      "voice": "",
+      "ms": 35,
+      "reply_text": "「查看上次数据」→ 读取已有记录（只读，未向设备下发任何指令）。设备：esp32s3eye-1C704C（完整回答见屏幕。）",
+      "bytes": 256044,
+      "sha256": "0cdb2645467eb45b3369cb3d8ca5d45047e3bb46270d71af6512b832e04f4264",
+      "error": null,
+      "truncated": true,
+      "full_chars": 286,
+      "note": "语音只念回答的前几句（原文前缀，未改写），完整内容见文字回答"
+    },
+    "delivery": {
+      "state": "deliverable",
+      "playable": true,
+      "why": null
+    },
+    "reply_audio_url": "/api/v1/voice/reply/vt_7d7b81b02acea213d61c.wav",
+    "reply_audio_quarantined": false,
+    "audio_url": "/api/v1/voice/audio/vt_7d7b81b02acea213d61c.wav",
+    "cancel": {
+      "requested_at_utc": null,
+      "seen_at_utc": null,
+      "reason": null,
+      "stage": null,
+      "action_taken": true,
+      "note": null
+    },
+    "clarify": {
+      "asked": null,
+      "round": null,
+      "from_turn_id": null,
+      "resolved_with": null,
+      "how": null,
+      "max_rounds": 2,
+      "pending": false
+    },
+    "timing": {
+      "t0_utc": "2026-10-28T02:50:59.100Z",
+      "t0_note": "t0 = 服务端收到完整音频的时刻（= 输入结束的可证代理量）",
+      "first_feedback_ms": 903,
+      "task_done_ms": 1180,
+      "tts_ready_ms": 1253,
+      "client_ack_ms": null,
+      "total_ms": 1260,
+      "note": "first_feedback = 识别出文本（用户第一次看到/听到实质内容）；client_ack 是前端本地提示，属本地事实"
+    },
+    "inject": null,
+    "playback": {
+      "started_at_utc": null,
+      "reported_by": null,
+      "note": "播放是浏览器侧事实；服务端只记录上报，不推断“已听到”"
+    },
+    "stop": {
+      "stopped_at_utc": null,
+      "played_ms": null,
+      "reason": null
+    },
+    "run_location": {
+      "capture": "tts-loopback:Windows-11 本机 PC（授权录音·备用路径）",
+      "asr": "http://127.0.0.1:8013 · vosk/vosk-model-small-cn-0.22（离线）",
+      "task": "server.py · nl_assistant.handle_query（第 4 周同一函数，进程内调用）",
+      "tts": "http://127.0.0.1:8013 · tone/—",
+      "playback": "browser <audio> · 本机 PC",
+      "session": "无会话（无状态单次调用：无短期上下文、无法取消）",
+      "cancel": "voice_session.request_cancel ← POST /api/v1/voice/session/<id>/cancel"
+    },
+    "error": null,
+    "elapsed_ms": 1260,
+    "created_at_utc": "2026-10-28T02:50:59.100Z",
+    "engine_health": {
+      "ok": true,
+      "host": "127.0.0.1",
+      "port": 8013,
+      "python": "3.14.7",
+      "os": "Windows-11-10.0.26100-SP0",
+      "asr": {
+        "backend": "vosk",
+        "model_dir": "D:\\ESP\\.models\\vosk-model-small-cn-0.22",
+        "model_present": true,
+        "timeout_s": 25.0,
+        "loaded": true,
+        "load_ms": 178
+      },
+      "tts": {
+        "backend": "sapi",
+        "voice_hint": "Huihui",
+        "timeout_s": 20.0,
+        "fallback_to_tone": true,
+        "audio_outputs": 0,
+        "speaks": false,
+        "degraded_to": "tone",
+        "note": "系统没有可用的音频输出设备，SAPI 无法合成；已降级到 tone 合成音（不是语音）"
+      },
+      "limits": {
+        "max_audio_bytes": 8388608,
+        "max_tts_chars": 600
+      }
+    }
+  },
+  "audio_in_bytes": 65810,
+  "audio_out_bytes": 256044
+}
