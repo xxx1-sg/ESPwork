@@ -313,6 +313,69 @@
   <div id="camGallery" class="cam-gallery">
     <div class="cam-empty" id="camGalleryEmpty">还没有照片。点上方「拍照」让开发板抓一张。</div>
   </div>
+
+  <!-- ══════════ 第 7 周：按需环境快照（一次请求 = 一次采集事实）══════════
+       这一块的纪律和上面的实时预览完全不同：
+         · 预览是"一直开着"的流，永远只有"此刻"；
+         · 快照是"一次请求"，必须回答"这一次到底拍到了没有、拍到的是哪一刻"。
+       所以它有独立的状态条、独立的三段时间、独立的历史，并且**失败时不给图**。 -->
+  <div class="snap-block" id="snapBox">
+    <div class="snap-head">
+      <span class="snap-title">按需环境快照</span>
+      <span id="snapState" class="snap-chip s-idle">未请求</span>
+      <span class="snap-spacer"></span>
+      <button id="snapAsk" class="mini mini-primary" type="button"
+              title="让设备在收到请求之后重新取一帧（不是预览流里已有的那一帧）">
+        查看环境（按需一张）
+      </button>
+      <button id="snapCancel" class="mini hidden" type="button">取消这次采集</button>
+      <button id="snapPrune" class="mini" type="button" title="按保留策略清理过期图像文件；记录永不删除">
+        清理
+      </button>
+    </div>
+
+    <div class="snap-body">
+      <div class="snap-shot">
+        <img id="snapImg" class="snap-img hidden" alt="本次按需采集到的画面" />
+        <div id="snapPlaceholder" class="snap-ph">
+          <div class="snap-ph-title" id="snapPhTitle">还没有请求</div>
+          <div class="snap-ph-sub" id="snapPhSub">
+            点「查看环境」让设备在请求之后重新取一张。失败或超时会明确写"本次没有画面"，
+            不会把上一次的图当作这一次的结果。
+          </div>
+        </div>
+      </div>
+
+      <div class="snap-info">
+        <div id="snapExplain" class="snap-explain">—</div>
+        <dl class="snap-times">
+          <div><dt>请求时刻</dt><dd id="snapT0">—</dd></div>
+          <div><dt>快门时刻</dt><dd id="snapT1">—</dd></div>
+          <div><dt>到达后端</dt><dd id="snapT2">—</dd></div>
+          <div><dt>端到端</dt><dd id="snapLat">—</dd></div>
+        </dl>
+        <div id="snapQuality" class="snap-q">画面质量：—</div>
+        <div class="snap-replay">
+          <button id="snapReplay" class="mini" type="button"
+                  title="用一张已授权的真实历史图像做练习，明确标为回放">
+            回放一张历史图像
+          </button>
+          <span class="snap-hint">
+            回放会在记录里写 <code>is_replay=true</code>、<code>counts_as_live=false</code>，
+            不计入「最近一次成功采集」。
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="snap-hist-head">
+      <span>请求记录<span class="h2-note">live = 真机按需采集；模拟 = 协议演练；回放 = 历史图像</span></span>
+      <span id="snapHistCount" class="chip">0 条</span>
+    </div>
+    <div id="snapHistory" class="snap-hist">
+      <div class="cam-empty">还没有请求记录。</div>
+    </div>
+  </div>
 </section>
 
 <!-- ══════════════════ 第 4 周：受限工具语言助手 ══════════════════ -->

@@ -1455,6 +1455,347 @@
   }
 
   // ==========================================================================
+  // ⑦ 按需环境快照（第 7 周：一次请求 = 一次采集事实）
+  //
+  // 和上面的实时预览是两件事，纪律也不同：
+  //   · 预览回答"此刻画面是什么"，它一直在流，没有"成功/失败"这回事；
+  //   · 快照回答"我刚刚请求的那一次，到底拍到了没有、拍到的是哪一刻"。
+  //
+  // 三条前端红线（每一条都对应一次真实会踩的坑）：
+  //   S-F1 **只在本次请求真的有图时才给 <img> 设地址**。切到新请求的第一件事
+  //        就是摘掉旧图 —— 否则用户会看到"上一次的画面 + 这一次的成功徽标"，
+  //        这正是本周要防的那个错误，而且它长得特别像成功。
+  //   S-F2 失败/超时/取消时，结果区**不显示任何图**，只说"本次没有画面"。
+  //        历史区仍然能翻到以前的图，但那要经过用户主动点击，且带着自己的时间。
+  //   S-F3 所有时刻与结论都用服务端给的字段渲染，前端不自己算、不自己编。
+  //        （`explain` / `quality_note` 都是后端算好的，前端只负责摆出来。）
+  // ==========================================================================
+  const SNAP = {
+    create:  "/api/v1/cam/snapshot",
+    base:    "/api/v1/cam/snapshot/",
+    list:    "/api/v1/cam/snapshots",
+    summary: "/api/v1/cam/snapshot/summary",
+    replay:  "/api/v1/cam/snapshot/replay",
+    prune:   "/api/v1/cam/snapshot/prune",
+  };
+  const SNAP_FINAL = ["ok", "occluded", "failed", "timeout", "cancelled", "replayed"];
+  const SNAP_LABEL = {
+    pending:   "已登记 · 等下发",
+    requested: "已下发 · 等取图",
+    capturing: "设备取图中",
+    ok:        "采集成功",
+    occluded:  "画面不可用",
+    failed:    "采集失败",
+    timeout:   "采集超时",
+    cancelled: "已取消",
+    replayed:  "回放",
+  };
+  const SNAP_CHIP = {
+    pending: "s-wait", requested: "s-wait", capturing: "s-busy",
+    ok: "s-ok", occluded: "s-warn", failed: "s-bad", timeout: "s-bad",
+    cancelled: "s-idle", replayed: "s-replay",
+  };
+
+  const snap = {
+    id: null,        // 当前正在跟踪的 snapshot_id
+    rec: null,       // 最近一次渲染的记录
+    imgSid: null,    // ★ 现在显示的图属于哪一次请求（null = 没有图）
+    busy: false,
+    rows: [],
+  };
+
+  function snapEl(id) { return $(id); }
+
+  function snapSetChip(state, text) {
+    const el = snapEl("snapState");
+    if (!el) return;
+    el.textContent = text || SNAP_LABEL[state] || state || "未请求";
+    el.className = "snap-chip " + (SNAP_CHIP[state] || "s-idle");
+  }
+
+  /** S-F1/S-F2：把结果区的图彻底摘掉（并说清为什么没有图）。 */
+  function snapClearImage(title, sub) {
+    snap.imgSid = null;
+    const img = snapEl("snapImg");
+    const ph = snapEl("snapPlaceholder");
+    if (img) {
+      img.removeAttribute("src");
+      img.classList.add("hidden");
+    }
+    if (ph) ph.classList.remove("hidden");
+    if (title) {
+      const t = snapEl("snapPhTitle"), s = snapEl("snapPhSub");
+      if (t) t.textContent = title;
+      if (s) s.textContent = sub || "";
+    }
+  }
+
+  function snapShowImage(rec) {
+    const img = snapEl("snapImg");
+    const ph = snapEl("snapPlaceholder");
+    if (!img) return;
+    // 带 sid 做 cache-buster：同一个浏览器里绝不会拿上一次的缓存当这一次。
+    // ★ 用 setAttribute 而不是 img.src=，是为了让"有没有地址"这件事在 DOM 属性上
+    //   可核对（自检直接读属性），也避免某些浏览器对 src="" 额外发起一次页面请求。
+    img.setAttribute("src", `${rec.image_url}?sid=${encodeURIComponent(rec.snapshot_id)}`);
+    img.classList.remove("hidden");
+    if (ph) ph.classList.add("hidden");
+    snap.imgSid = rec.snapshot_id;
+  }
+
+  // ★ 只显示时分秒时，10 天前的"回放原图时刻"会看起来像"今天 15:04"，
+  //   而到达时刻是 14:56 —— 读起来像快门发生在未来。所以**只要不是今天就带上日期**。
+  const snapT = (iso) => {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return String(iso);
+    const now = new Date();
+    const sameDay = d.getFullYear() === now.getFullYear()
+      && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
+    if (sameDay) return hhmmss3(d);
+    const p2 = (n) => String(n).padStart(2, "0");
+    return `${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${hhmmss3(d)}`;
+  };
+
+  function snapRender(rec) {
+    if (!rec) return;
+    snap.rec = rec;
+    const st = rec.state || "unknown";
+    snapSetChip(st, SNAP_LABEL[st] || st);
+
+    const t0 = snapEl("snapT0"), t1 = snapEl("snapT1"), t2 = snapEl("snapT2"), lat = snapEl("snapLat");
+    if (t0) t0.textContent = snapT(rec.requested_at_utc);
+    if (t1) {
+      t1.textContent = rec.captured_at_utc
+        ? snapT(rec.captured_at_utc) + (rec.captured_is_est ? "（估计）" : "")
+        : "—";
+    }
+    if (t2) t2.textContent = snapT(rec.received_at_utc);
+    if (lat) {
+      lat.textContent = (rec.latency_total_ms === null || rec.latency_total_ms === undefined)
+        ? "—" : `${rec.latency_total_ms} ms`;
+    }
+
+    const ex = snapEl("snapExplain");
+    if (ex) ex.textContent = rec.explain || "—";
+
+    const q = snapEl("snapQuality");
+    if (q) {
+      if (rec.quality_verdict) {
+        const tag = rec.quality_verdict === "usable" ? "可用"
+                  : rec.quality_verdict === "occluded" ? "不可用（疑似遮挡）" : "无法测量";
+        q.textContent = `画面质量：${tag} — ${rec.quality_note || ""}`;
+      } else {
+        q.textContent = "画面质量：—（这一次没有图像，不做质量判断）";
+      }
+    }
+
+    // ---- ★ S-F1：图只属于"有图"的那几种状态 ----
+    const hasImg = rec.has_image && (st === "ok" || st === "occluded" || st === "replayed");
+    if (hasImg) {
+      snapShowImage(rec);
+    } else if (st === "pending" || st === "requested" || st === "capturing") {
+      snapClearImage("正在采集…", rec.explain || "请求已登记，等设备取图。");
+    } else if (st === "failed" || st === "timeout" || st === "cancelled") {
+      snapClearImage("本次没有画面", rec.explain || "这一次没有拿到图像。");
+    } else {
+      snapClearImage();
+    }
+
+    // 取消按钮只在"还在等"的时候出现
+    const cb = snapEl("snapCancel");
+    if (cb) {
+      if (st === "pending" || st === "requested" || st === "capturing") cb.classList.remove("hidden");
+      else cb.classList.add("hidden");
+    }
+  }
+
+  function snapErrorText(status, body) {
+    const e = body && body.error;
+    if (typeof e === "string") return e;
+    if (e && (e.message || e.code)) return e.message || e.code;
+    return `后端返回 HTTP ${status}`;
+  }
+
+  /** 轮询一次请求直到收尾；返回最后一条记录。 */
+  async function snapWaitFinal(sid, deadlineMs) {
+    const t0 = Date.now();
+    let last = null;
+    while (Date.now() - t0 < deadlineMs) {
+      const { body } = await getJSON(SNAP.base + encodeURIComponent(sid));
+      const rec = body && body.snapshot;
+      if (rec) {
+        last = rec;
+        snapRender(rec);
+        if (SNAP_FINAL.indexOf(rec.state) >= 0) return rec;
+      }
+      await new Promise((res) => setTimeout(res, 400));
+    }
+    return last;
+  }
+
+  async function snapAsk() {
+    if (snap.busy) return;
+    const dev = camDeviceId();
+    const btn = snapEl("snapAsk");
+    if (!dev) {
+      snapClearImage("还没有可用设备", "设备要先上传过画面，才能按需取图。");
+      snapSetChip(null, "无设备");
+      addLog("warn", "按需快照：当前没有可用的摄像头设备");
+      return;
+    }
+
+    snap.busy = true;
+    if (btn) btn.disabled = true;
+    // ★ S-F1：新请求一开始就把上一次的图摘掉，中途绝不让旧图挂在新状态旁边
+    snapClearImage("正在采集…", "已发出请求，等设备取图并上传。");
+    snapSetChip("pending", "已登记 · 等下发");
+    snap.id = null;
+    addLog("info", `请求设备 ${dev} 按需取一张环境画面（QVGA）`);
+
+    try {
+      const { status, body } = await postJSON(SNAP.create, {
+        device_id: dev, mode: "qvga", trigger: "user_request",
+      });
+      const rec0 = body && body.snapshot;
+
+      if (status === 202 && rec0) {
+        snap.id = rec0.snapshot_id;
+        snapRender(rec0);
+      } else if (rec0) {
+        // 409：要么在途去重，要么设备根本没在上传画面 —— 两种都带回了明确记录
+        snap.id = rec0.snapshot_id;
+        snapRender(rec0);
+        addLog("warn", `按需快照未开始：${snapErrorText(status, body)}`);
+        return;
+      } else {
+        throw new Error(snapErrorText(status, body));
+      }
+
+      const rec = await snapWaitFinal(snap.id, 45000);
+      if (!rec) throw new Error("45 秒内没有拿到这次请求的状态（后端可能重启了）");
+      if (rec.state === "ok") {
+        addLog("ok", `采集成功：画面在 ${snapT(rec.captured_at_utc)} 拍下，`
+          + `端到端 ${rec.latency_total_ms} ms（画面质量 ${rec.quality_verdict}）`);
+      } else if (rec.state === "occluded") {
+        addLog("warn", `采到了，但画面不可用：${rec.quality_note || ""}`);
+      } else {
+        addLog("warn", `本次没有画面（${rec.state}）：${rec.error_message || rec.explain || ""}`);
+      }
+      await snapHistory();
+    } catch (e) {
+      const msg = (e && e.message) ? e.message : String(e);
+      snapClearImage("请求失败", msg);
+      snapSetChip("failed", "请求失败");
+      addLog("warn", `按需快照失败：${msg}`);
+    } finally {
+      snap.busy = false;
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  async function snapCancel() {
+    if (!snap.id) return;
+    try {
+      const { status, body } = await postJSON(
+        `${SNAP.base}${encodeURIComponent(snap.id)}/cancel`, { reason: "user_cancel" });
+      if (body && body.snapshot) snapRender(body.snapshot);
+      addLog(status < 400 ? "info" : "warn",
+        status < 400 ? "已登记取消：之后若收到画面会记为「迟到图像」，不算本次结果"
+                     : `取消失败：${snapErrorText(status, body)}`);
+      await snapHistory();
+    } catch (e) {
+      addLog("warn", `取消失败：${(e && e.message) || e}`);
+    }
+  }
+
+  async function snapReplay() {
+    const dev = camDeviceId();
+    if (!dev) { addLog("warn", "回放需要先有一台设备的历史照片"); return; }
+    try {
+      const { status, body } = await postJSON(SNAP.replay, {
+        device_id: dev, reason: "课堂回放练习",
+      });
+      if (status >= 400 || !body || !body.snapshot) {
+        throw new Error(snapErrorText(status, body));
+      }
+      snap.id = body.snapshot.snapshot_id;
+      snapRender(body.snapshot);
+      addLog("info", "已回放一张历史图像（不是本次采集，不计入成功次数）");
+      await snapHistory();
+    } catch (e) {
+      addLog("warn", `回放失败：${(e && e.message) || e}`);
+    }
+  }
+
+  async function snapPrune() {
+    try {
+      const { status, body } = await postJSON(SNAP.prune, { dry_run: false });
+      if (status >= 400 || !body || body.ok !== true) throw new Error(snapErrorText(status, body));
+      addLog("info", `清理完成：扫描 ${body.scanned} 条，清理 ${body.pruned} 条图像的磁盘文件，`
+        + `释放 ${(body.bytes_freed / 1024).toFixed(1)} KB（记录一条都没删）`);
+      await snapHistory();
+    } catch (e) {
+      addLog("warn", `清理失败：${(e && e.message) || e}`);
+    }
+  }
+
+  async function snapHistory() {
+    const dev = camDeviceId();
+    const url = SNAP.list + `?limit=10` + (dev ? `&device_id=${encodeURIComponent(dev)}` : "");
+    const box = snapEl("snapHistory");
+    const cnt = snapEl("snapHistCount");
+    try {
+      const { body } = await getJSON(url);
+      const list = (body && Array.isArray(body.snapshots)) ? body.snapshots : [];
+      snap.rows = list;
+      if (cnt) cnt.textContent = `${list.length} 条`;
+      if (!box) return;
+      if (!list.length) {
+        box.innerHTML = '<div class="cam-empty">还没有请求记录。</div>';
+        return;
+      }
+      box.innerHTML = list.map((r) => {
+        const st = r.state || "unknown";
+        const kind = r.is_replay ? "回放" : (r.simulated ? "模拟" : "真机");
+        const note = r.explain || "";
+        const link = r.has_image
+          ? `<a class="snap-open" href="${esc(r.image_url)}" target="_blank" rel="noopener">打开原图</a>`
+          : '<span class="snap-open dim">无图像</span>';
+        return `<div class="snap-row ${SNAP_CHIP[st] || ""}">`
+          + `<span class="snap-badge">${esc(SNAP_LABEL[st] || st)}</span>`
+          + `<span class="snap-row-t">${esc(snapT(r.requested_at_utc))}</span>`
+          + `<span class="snap-row-kind ${r.is_replay ? "is-replay" : (r.simulated ? "is-sim" : "is-live")}">${esc(kind)}</span>`
+          + `<span class="snap-row-note" title="${esc(note)}">${esc(note)}</span>`
+          + link
+          + `<button class="mini snap-view" type="button" data-sid="${esc(r.snapshot_id)}"`
+          + ` onclick="window.__snapDebug.show(this.getAttribute('data-sid'))">查看</button>`
+          + `</div>`;
+      }).join("");
+    } catch (e) {
+      if (cnt) cnt.textContent = "—";
+    }
+  }
+
+  /** 从历史里挑一条回看：只渲染记录本身，不伪造它是"现在"的画面。 */
+  async function snapShow(sid) {
+    try {
+      const { status, body } = await getJSON(SNAP.base + encodeURIComponent(sid));
+      if (status >= 400 || !body || !body.snapshot) throw new Error(snapErrorText(status, body));
+      snap.id = body.snapshot.snapshot_id;
+      snapRender(body.snapshot);
+    } catch (e) {
+      addLog("warn", `打开快照失败：${(e && e.message) || e}`);
+    }
+  }
+
+  window.__snapDebug = {
+    ask: snapAsk, cancel: snapCancel, replay: snapReplay, prune: snapPrune,
+    history: snapHistory, show: snapShow, render: snapRender,
+    state: () => ({ id: snap.id, imgSid: snap.imgSid, rec: snap.rec, rows: snap.rows }),
+  };
+
+  // ==========================================================================
   // 交互：快捷工具栏 / 抽屉
   // ==========================================================================
   function setPanel(id, open) {
@@ -1527,6 +1868,7 @@
       const open = togglePanel("cameraPanel", $("btnCamera"));
       if (open) {
         camStartPolling();
+        snapHistory();          // 第 7 周：顺手把"上一次请求的结果"摆出来（带自己的时间）
         $("toolHint").textContent = "相机预览：画面来自板载 OV2640，每一帧都是真实拍摄";
         addLog("info", "打开相机预览（开始从后端拉取板载摄像头画面）");
       } else {
@@ -1553,6 +1895,11 @@
     $("camShot").addEventListener("click", () => { camShoot(); });
     $("camRefresh").addEventListener("click", () => { camRefreshPhotos(); });
 
+    // ④ 第 7 周：按需环境快照
+    $("snapAsk").addEventListener("click", () => { snapAsk(); });
+    $("snapCancel").addEventListener("click", () => { snapCancel(); });
+    $("snapReplay").addEventListener("click", () => { snapReplay(); });
+    $("snapPrune").addEventListener("click", () => { snapPrune(); });
     // ④ 日志记录
     $("btnLog").addEventListener("click", () => {
       const open = togglePanel("logPanel", $("btnLog"));

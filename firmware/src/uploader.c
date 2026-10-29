@@ -170,6 +170,21 @@ esp_err_t uploader_wifi_connect(void)
     ESP_ERROR_CHECK(apply_cred(0));                 // 先用主用网络
     ESP_ERROR_CHECK(esp_wifi_start());
 
+    // ★ 关掉 Wi-Fi 省电（modem sleep）。
+    //   默认是 WIFI_PS_MIN_MODEM：设备会把射频睡到下一个 DTIM 才醒，空闲之后再发
+    //   一个 TCP 请求要等到下一个唤醒窗口 —— 实测在这台机器/这个 AP 上是
+    //   **每次 8~13 秒的空档**（第 7 周 D2：预览帧序列出现 06:40:58 → 06:41:10 的
+    //   11 秒断流，"后端下发快照请求 → 设备收到"因此被拖到 13 秒）。
+    //   本机是 USB 供电的固定设备，不需要为省电牺牲响应性；
+    //   关掉之后每次请求都是立刻发，代价是平均电流略高。
+    esp_err_t psr = esp_wifi_set_ps(WIFI_PS_NONE);
+    if (psr == ESP_OK) {
+        ESP_LOGI(TAG, "Wi-Fi 省电已关闭（WIFI_PS_NONE）：下行指令不再等 DTIM 唤醒窗口");
+    } else {
+        ESP_LOGW(TAG, "关闭 Wi-Fi 省电失败: %s（不影响上传，但下行指令可能变慢）",
+                 esp_err_to_name(psr));
+    }
+
     // 降低射频峰值电流：供电偏弱的 USB 口在 Wi-Fi 启动瞬间容易 brownout 复位，
     // 调小最大发射功率是最有效的软件侧缓解手段（详见 app_config.h 的说明）。
     int8_t    tx_qdbm = APP_WIFI_MAX_TX_POWER_QDBM;

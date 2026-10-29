@@ -96,6 +96,8 @@ evidence/**/*.wav
 # ---- 运行期产物：摄像头照片与语音录音（按设备分目录，持续增长）----
 backend/data/photos/
 backend/data/voice/
+# 第 7 周：按需快照落盘的图像（每张 3KB~100KB，按保留策略清理，不进版本库）
+backend/data/snapshots/
 
 # ---- 本工程的 AI 协作记录（不属于交付物）----
 .workbuddy/

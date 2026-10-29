@@ -1,0 +1,68 @@
+================================================================================================
+第 7 周 · 按需环境快照 端到端探针
+后端: http://127.0.0.1:8000
+================================================================================================
+  OK   S0.1 后端在线 | 200
+  OK   S0.2 摄像头状态接口可用 | 200
+  保留参数: 超时 35s / 每设备最少保留 10 张 / 保留 7 天
+
+真机: esp32s3eye-1C704C（已有预览帧流）
+
+【S1】正常一轮（mode=qvga，请求之后重新取一帧）
+  OK   S1.1 请求被接受 202 | (202, "{'ok': True, 'server_time_utc': '2026-10-29T06:58:36.686Z', 'snapshot': {'snapshot_id': 'snp_20261029T065836-d58506', 'd")
+  OK   S1.2 拿到 snapshot_id | snp_20261029T065836-d58506
+      state=occluded  quality=occluded  captured=2026-10-29T06:58:38.068Z  received=2026-10-29T06:58:38.156Z
+      端到端 1470 ms（其中快门前后 1382 ms）  simulated=False  counts_as_live=True
+  OK   S1.3 终局是 ok 或 occluded（两者都是真的拍到了；occluded 只是画面不可用） | occluded
+  OK   S1.4 有快门时刻，且标出了是否为估计值
+  OK   S1.5 请求时刻 ≤ 快门时刻 ≤ 到达时刻 | ('2026-10-29T06:58:36.686Z', '2026-10-29T06:58:38.068Z', '2026-10-29T06:58:38.156Z')
+  OK   S1.6 有质量度量（可复算） | occluded
+  OK   S1.7 取图 200 且是 JPEG | (200, b'\xff\xd8\xff\xe0')
+  OK   S1.8 响应头带 snapshot id | snp_20261029T065836-d58506
+  OK   S1.9 counts_as_live 与 simulated 互斥（模拟不算真机） | (False, True)
+
+【S2】把旧帧当本次结果交回来 → 必须拒收
+  OK   S2.1 第二个请求被接受 202 | 202
+      （真机：不等待，立刻用旧序号交回）
+  OK   S2.2 旧序号 → 400 | (400, "{'ok': False, 'server_time_utc': '2026-10-29T06:58:38.413Z', 'error': {'code': 'SNAPSHOT_STALE_IMAGE', 'message': '送回来的帧")
+  OK   S2.3 错误码 SNAPSHOT_STALE_IMAGE | {'code': 'SNAPSHOT_STALE_IMAGE', 'message': '送回来的帧序号(349)不比基准(349)新 —— 这不是请求之后重新取到的画面，不能算作这次采集的结果', 'retryable': False, 'requested_seq': 349, 'got_seq': 349}
+  OK   S2.4 状态没有被改写 | requested
+
+【S3】真机没法让它不响应 → 请求发出后立刻取消 → 之后到的图只记迟到
+  OK   S3.1 请求被接受 202 | 202
+  OK   S3.2 到达终局 cancelled | cancelled
+  OK   S3.3 错误码是 USER_CANCELLED | USER_CANCELLED
+  OK   S3.4 ★ 取图 409（不回退到上一次成功的图） | 409
+  OK   S3.5 返回体里没有 JPEG 字节 | b'{"ok'
+  OK   S3.6 迟到图像被收下但标 late | (200, "{'ok': True, 'accepted': False, 'late': True, 'server_time_utc': '2026-10-29T06:58:38.504Z', 'messag")
+  OK   S3.7 ★ 终局仍然是 cancelled（迟到不改结论） | cancelled
+  OK   S3.8 迟到图像单独留档 | esp32s3eye-1C704C/snp_20261029T065838-135bd7-late.jpg
+  OK   S3.9 counts_as_live 仍是 False
+
+【S4】镜头被遮挡 → occluded（有质量证据，不算看到环境）
+      （真机：无法用代码遮住镜头；本段只验「度量链路」，含遮挡自洽性）
+  OK   S4.1 请求被接受 202 | 202
+      state=occluded  mean_luma=20.38  std=4.68  note=画面又暗又平（平均亮度 20.4 < 28.0，标准差 4.7 < 10.0），典型表现是镜头被遮挡或在昏暗环境中对着镜头盖
+  OK   S4.2 终局是 ok 或 occluded（两者都必须来自真实度量） | occluded
+  OK   S4.3 ★ 结论与亮度度量自洽（暗+平 ⇔ occluded） | ('occluded', 20.38, 4.68)
+  OK   S4.4 记录里有可复算的亮度指标 | 20.38
+  OK   S4.5 遮挡的图仍然可取（证据不藏） | 200
+
+【S5】回放历史图像 → 标为 replayed，不算本次采集
+  OK   S5.1 回放 200 | 200
+  OK   S5.2 状态=replayed | replayed
+  OK   S5.3 ★ counts_as_live=False
+  OK   S5.4 ★ 快门时刻=原照片采集时刻（不是现在） | ('2026-10-19T07:04:03.113Z', '2026-10-19T07:04:03.113Z')
+  OK   S5.5 ★ 回放不改变「最近一次成功采集」 | ('snp_20261029T063728-d5b615', 'snp_20261029T063728-d5b615')
+  OK   S5.6 replayed 计数 +1 | 14
+
+【S6】汇总口径：真机 / 模拟 / 回放 分开
+  OK   S6.1 真机轮增加了 live 计数（本轮真拍到的记在真机口径里） | (25, 9, 32)
+      live_ok=25 live_occluded=9 simulated=11 replayed=14 by_state={'ok': 31, 'timeout': 12, 'occluded': 14, 'replayed': 14, 'cancelled': 18}
+  OK   S6.2 ★ 真机轮的 counts_as_live 为真（模拟才会是 False） | (False, True)
+  OK   S6.3 last_live_ok 若不是空，状态必须是 ok | ok
+  OK   S6.4 汇总带保留参数 | {'timeout_s': 35.0, 'keep_min': 10, 'retention_days': 7}
+
+================================================================================================
+探针全部通过：39 项断言
+================================================================================================

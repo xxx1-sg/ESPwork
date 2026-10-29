@@ -78,6 +78,15 @@ except ImportError:
     sys.path.insert(0, BASE_DIR)
     import voice_session
 
+# ---- 第 7 周：画面质量度量（从 JPEG 字节里量亮度/平坦度，纯标准库）----
+#   ★ 只回答"暗不暗、平不平"，不回答"图里是什么"。用于把"镜头被挡住"从
+#     "采集成功"里区分出来，且结论必须能被复算。
+try:
+    import img_quality
+except ImportError:
+    sys.path.insert(0, BASE_DIR)
+    import img_quality
+
 DB_PATH = os.environ.get("SENSOR_DB", os.path.join(BASE_DIR, "data", "sensor.db"))
 
 # 第 5 周：录音与播报音频的落盘目录（与照片目录并列，便于一起备份/取证）
@@ -104,6 +113,23 @@ CAM_MAX_BODY = int(os.environ.get("SENSOR_CAM_MAX_BODY", str(2 * 1024 * 1024)))
 CAM_DIR = os.environ.get("SENSOR_CAM_DIR", os.path.join(BASE_DIR, "data", "photos"))
 # 网页点「拍照」后，多久之内到达的下一帧会被附上 capture 指令（超时则丢弃，不让指令"悬空")
 CAM_CAPTURE_TTL_S = float(os.environ.get("SENSOR_CAM_CAPTURE_TTL_S", "10"))
+
+# ---- 第 7 周：按需环境快照（一次请求 = 一次采集事实）----
+# ★ 这几项都是"语义参数"，不是性能参数，改它们会直接改变本周的结论：
+#   超时：设备侧要重建相机拍 UXGA 需 8.7s（第 4 周实测），QVGA 约 0.3s；
+#         35s 是"设备在线但一直没回"的容忍上限，超过即 timeout（终局，不再等）。
+#   ★ 为什么从 25s 改成 35s：按真机 10 连测的实测分布，**下发**到设备这一步
+#     最慢 17.3s（Wi-Fi 抖动时设备隔十几秒才发下一帧，请求只能搭那一趟便车），
+#     上传 body 最慢 7.9s —— 25s 窗口会把"链路慢"错判成"设备超时"（实测 2/10 假超时）。
+#     超时值不是越小越严格：太小只会把环境问题写成设备问题。
+SNAPSHOT_TIMEOUT_S = float(os.environ.get("SENSOR_SNAPSHOT_TIMEOUT_S", "35"))
+# 最少保留：每台设备至少有这么多张"带图像"的快照不会被清理删掉（不论多老）
+SNAPSHOT_KEEP_MIN = int(os.environ.get("SENSOR_SNAPSHOT_KEEP_MIN", "10"))
+# 保留期：超过这个天数的图像文件才会被清理（**只删文件，记录永不删**）
+SNAPSHOT_RETENTION_DAYS = int(os.environ.get("SENSOR_SNAPSHOT_RETENTION_DAYS", "7"))
+# 快照图像落盘目录（与 cam_photos 分开：它们的生命周期与语义都不同）
+SNAPSHOT_DIR = os.environ.get("SENSOR_SNAPSHOT_DIR",
+                              os.path.join(BASE_DIR, "data", "snapshots"))
 
 # ---- 第 5 周：语音 ----
 # 录音是**二进制 WAV**：16kHz/16bit/mono 约 32KB/秒，40 秒的一句话约 1.28MB。
@@ -377,6 +403,71 @@ CREATE TABLE IF NOT EXISTS cam_photos (
 CREATE INDEX IF NOT EXISTS idx_cam_photos_dev ON cam_photos(device_id, created_at_utc DESC);
 """
 
+# ===========================================================================
+# 第 7 周新增表：按需环境快照
+#
+# ★ 为什么不能直接用 cam_photos（第 4 周的"拍照"）：
+#   拍照只记录"收到过一张照片"，它回答不了本周的问题 ——
+#   「用户请求查看环境时，系统如何说明采集是否成功、采到的是哪一时刻的画面？」
+#   要回答它，一行记录必须同时挂着：谁请求的、请求在哪一刻、设备什么时候按的快门、
+#   画面什么时候到后端、这一张到底属于哪一次请求（而不是上一次的图）。
+#   所以快照是**一次请求的账本**，照片只是一个产物。
+#
+# ★ counts_as_live 是本周最硬的字段：只有"真机、按这次请求、新取的、确实到了"
+#   才为 1。回放（replay）与协议模拟（simulated）一律为 0 —— 它们可以是很好的演示，
+#   但不是"这次真的拍到了"。
+# ===========================================================================
+_DDL_SNAPSHOT = """
+CREATE TABLE IF NOT EXISTS cam_snapshots (
+    snapshot_id       TEXT PRIMARY KEY,
+    device_id         TEXT NOT NULL,
+    state             TEXT NOT NULL,           -- pending/requested/capturing/ok/occluded/failed/timeout/cancelled/replayed
+    trigger_kind      TEXT NOT NULL,           -- user_request / teaching_event / replay
+    source            TEXT NOT NULL,           -- live / replay
+    is_replay         INTEGER NOT NULL DEFAULT 0,
+    simulated         INTEGER NOT NULL DEFAULT 0,
+    counts_as_live    INTEGER NOT NULL DEFAULT 0,
+    mode              TEXT,                    -- qvga / uxga
+    requested_by      TEXT,
+    reason            TEXT,
+    requested_at_utc  TEXT NOT NULL,
+    requested_seq     INTEGER,                 -- ★ 请求时刻设备帧序号：上传必须严格大于它
+    baseline_seq      INTEGER,                 -- ★ 更严的基线：下发那一帧的序号（取两者较大）
+    requested_frame_no INTEGER,                -- 请求时刻后端内存帧号（仅诊断）
+    delivered_at_utc  TEXT,                    -- 请求随帧响应下发到设备的时刻
+    begin_at_utc      TEXT,                    -- 设备自报"已开始取图"的时刻
+    captured_at_utc   TEXT,                    -- 快门时刻（估计值，见 captured_is_est）
+    captured_is_est   INTEGER NOT NULL DEFAULT 0,
+    received_at_utc   TEXT,                    -- 后端收齐字节的时刻（精确）
+    width             INTEGER,
+    height            INTEGER,
+    byte_len          INTEGER,
+    sha256            TEXT,
+    filename          TEXT,                    -- 相对 SNAPSHOT_DIR
+    device_uptime_ms  INTEGER,                 -- 设备自报开机毫秒（不做时钟对齐）
+    upload_ms         INTEGER,                 -- 设备自测"取帧→开始发请求"耗时
+    rx_ms             INTEGER,                 -- 服务端量到的"开始收 body→收完"耗时
+    quality_json      TEXT,
+    quality_verdict   TEXT,                    -- usable / occluded / unknown
+    quality_note      TEXT,
+    latency_capture_ms INTEGER,                -- 请求 → 快门（估计）
+    latency_total_ms  INTEGER,                 -- 请求 → 收齐字节（精确）
+    error_code        TEXT,
+    error_message     TEXT,
+    late_at_utc       TEXT,                    -- 迟到图像：超时/取消之后才到的那张
+    late_sha256       TEXT,
+    late_byte_len     INTEGER,
+    late_filename     TEXT,
+    stale_rejects     INTEGER NOT NULL DEFAULT 0,
+    replay_of_photo_id TEXT,
+    image_pruned      INTEGER NOT NULL DEFAULT 0,
+    version           INTEGER NOT NULL DEFAULT 0,
+    note              TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_snap_dev ON cam_snapshots(device_id, requested_at_utc DESC);
+CREATE INDEX IF NOT EXISTS idx_snap_state ON cam_snapshots(state);
+"""
+
 # 旧库升级用的补列（老库没有这些列；ALTER TABLE 是幂等的，缺了才加）
 MIGRATIONS = [
     ("sensor_records", "sample_idx", "INTEGER"),
@@ -438,6 +529,19 @@ def db_init():
         conn.close()
     # 照片目录：提前建好，避免第一次拍照时才因权限/路径问题失败
     os.makedirs(CAM_DIR, exist_ok=True)
+    # 第 7 周：按需快照表（独立 DDL，索引已包含在里面）
+    conn = db_connect()
+    try:
+        conn.executescript(_DDL_SNAPSHOT)
+        # 第 7 周补列：早期库里的 cam_snapshots 没有 rx_ms（表是刚建的，先查再加）
+        cols = {r["name"] for r in conn.execute("PRAGMA table_info(cam_snapshots)")}
+        if "rx_ms" not in cols:
+            conn.execute("ALTER TABLE cam_snapshots ADD COLUMN rx_ms INTEGER")
+            print("[db] 已为 cam_snapshots 补充字段 rx_ms INTEGER")
+        conn.commit()
+    finally:
+        conn.close()
+    os.makedirs(SNAPSHOT_DIR, exist_ok=True)
     # 第 5 周：语音记录表 + 录音目录（独立建表脚本，不掺进上面的大 SCHEMA）
     conn = db_connect()
     try:
@@ -447,6 +551,9 @@ def db_init():
     os.makedirs(VOICE_DIR, exist_ok=True)
     print("[db] 数据库就绪:", DB_PATH)
     print("[cam] 照片目录:", CAM_DIR)
+    print("[snap] 快照目录:", SNAPSHOT_DIR,
+          "（超时 %.0fs / 每设备最少保留 %d 张 / 保留 %d 天）"
+          % (SNAPSHOT_TIMEOUT_S, SNAPSHOT_KEEP_MIN, SNAPSHOT_RETENTION_DAYS))
     print("[voice] 语音记录目录:", VOICE_DIR)
     print("[voice] 语音引擎地址:", voice_pipeline.VOICE_ENGINE_URL)
 
@@ -2560,7 +2667,7 @@ def _jpeg_looks_valid(data):
 
 
 def cam_store_frame(device_id, jpeg, seq, w, h, remote):
-    """保存最新预览帧；返回 (是否要求设备拍照, 该帧是否比上一帧新)。"""
+    """保存最新预览帧；返回 (是否要求设备拍照, 该帧是否比上一帧新, 待下发的快照请求)。"""
     global _cam_frame_counter
     dev = _cam_norm_device(device_id)
     now = utc_now_iso()
@@ -2580,13 +2687,20 @@ def cam_store_frame(device_id, jpeg, seq, w, h, remote):
             "frame_no": _cam_frame_counter,
         }
         want_photo = _cam_capture.pop(dev, None)
+        # ★ 第 7 周：快照请求也搭在这一条响应里（与拍照同一个道理：设备在 NAT 后面，
+        #   只有这一条 5Hz 的下行"便车"可用）。不同之处是它带 id 与 mode，
+        #   设备取完图必须带着这个 id 回来，服务端才认。
+        snap = snapshot_take_pending(dev)
+    if snap is not None:
+        # 标记"请求确实下发到了设备"——这是服务端可观测的事实，不是推断。
+        snapshot_mark_delivered(snap["id"], seq)
     if want_photo is None:
-        return False, is_new
+        return False, is_new, snap
     # 超时的拍照请求直接丢弃：不在几秒后"补拍"一张让人误解时间点的照片
     if (time.monotonic() - want_photo) > CAM_CAPTURE_TTL_S:
         print("[cam] 设备 %s 的拍照请求已超时(%.1fs)，丢弃" % (dev, CAM_CAPTURE_TTL_S))
-        return False, is_new
-    return True, is_new
+        return False, is_new, snap
+    return True, is_new, snap
 
 
 def cam_latest_frame(device_id):
@@ -2741,6 +2855,827 @@ def cam_get_photo_path(photo_id):
 
 
 # ===========================================================================
+# 第 7 周：按需环境快照
+#
+# 本周要回答的一句话是：
+#   「用户请求查看环境时，系统如何说明采集是否成功，采到的是哪一时刻的画面？」
+#
+# 于是"查看环境"被做成一件事，而不是一个按钮 + 一张图：
+#   ① 一次请求生成一个 snapshot_id，**图像必须带着这个 id 回来**才被认账；
+#   ② 状态机把"有没有拍到"拆成可核对的中间态，失败是**明确的终态**，不是空图；
+#   ③ 三个时刻分开记：请求时刻（服务端精确）/ 快门时刻（设备侧，估计值）/
+#      到达时刻（服务端精确）。界面说"哪一刻的画面"时引用的是快门时刻；
+#   ④ counts_as_live 只对"真机 + 本次请求 + 新取的帧"为 1：
+#      回放（真实历史图像）与协议模拟一律为 0 —— 演示可以很像，但不能充数。
+#
+# ★ 三条红线（与第 4 周的"不造假"一脉相承，但更严）：
+#   R1 陈旧帧不算本次采集：上传的设备帧序号必须**严格大于**请求时刻的序号。
+#      丢这一点，"上次成功图像被标成本次成功"就会悄悄发生。
+#   R2 超时/取消之后到达的图像**不许改写终局**，只能另存为「迟到图像」并标注。
+#   R3 取不到本次图像时，接口**不回退**到上一张成功的图 —— 宁可 409 说清楚。
+# ===========================================================================
+_SNAP_STATES = ("pending", "requested", "capturing", "ok", "occluded",
+                "failed", "timeout", "cancelled", "replayed")
+_SNAP_OPEN = ("pending", "requested", "capturing")          # 还在等设备
+_SNAP_HAVE_IMAGE = ("ok", "occluded", "replayed")           # 有图像可看
+_SNAP_TRIGGERS = ("user_request", "teaching_event", "replay")
+_SNAP_MODES = ("qvga", "uxga")
+
+_snap_lock = threading.Lock()
+# device_id -> {"id": snapshot_id, "mode": "qvga"/"uxga"}（等着随下一帧的响应下发到设备）
+_snap_pending = {}
+
+
+def _snap_parse_iso(s):
+    if not s:
+        return None
+    try:
+        return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _snap_new_id():
+    return "snp_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S") + \
+           "-" + uuid.uuid4().hex[:6]
+
+
+def _snap_safe_id(sid):
+    import re
+    return bool(re.fullmatch(r"snp_[0-9A-Za-z\-]{6,64}", sid or ""))
+
+
+def _snap_save_file(dev, sid, jpeg, suffix=""):
+    """把图像写进 SNAPSHOT_DIR/<dev>/<sid><suffix>.jpg；先写 .part 再原子改名。"""
+    folder = os.path.join(SNAPSHOT_DIR, dev)
+    os.makedirs(folder, exist_ok=True)
+    name = sid + suffix + ".jpg"
+    abs_path = os.path.join(folder, name)
+    tmp = abs_path + ".part"
+    with open(tmp, "wb") as f:
+        f.write(jpeg)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, abs_path)
+    return "%s/%s" % (dev, name), abs_path
+
+
+def _snap_row(row):
+    """DB 行 → dict（含派生字段与一句人能读懂的说明）。"""
+    if row is None:
+        return None
+    d = dict(row)
+    d["is_replay"] = bool(d.get("is_replay"))
+    d["simulated"] = bool(d.get("simulated"))
+    d["counts_as_live"] = bool(d.get("counts_as_live"))
+    d["captured_is_est"] = bool(d.get("captured_is_est"))
+    d["image_pruned"] = bool(d.get("image_pruned"))
+    q = None
+    if d.get("quality_json"):
+        try:
+            q = json.loads(d["quality_json"])
+        except (ValueError, TypeError):
+            q = None
+    d["quality"] = q
+    d.pop("quality_json", None)
+    d["has_image"] = bool(d.get("filename")) and not d["image_pruned"]
+    d["image_url"] = ("/api/v1/cam/snapshot/%s/image" % d["snapshot_id"]
+                      if d["has_image"] else None)
+    d["late_image_url"] = ("/api/v1/cam/snapshot/%s/image?late=1" % d["snapshot_id"]
+                           if d.get("late_filename") else None)
+    d["explain"] = _snap_explain(d)
+    return d
+
+
+def _snap_explain(d):
+    """一句话说清"这一次到底有没有拍到"。★ 保证前端不用自己编文案。"""
+    s = d.get("state")
+    t = lambda x: (x or "").replace("T", " ").replace("Z", "Z")   # noqa: E731
+    if s == "pending":
+        return ("已登记这次请求，正在等设备上传下一帧——请求会随那一帧的响应下发"
+                "（设备在线时通常 <500ms）。此刻还没有任何画面属于这次请求。")
+    if s == "requested":
+        return ("请求已在 %s 下发给设备，等它取图并上传。此刻还没有任何画面属于这次请求。"
+                % t(d.get("delivered_at_utc")))
+    if s == "capturing":
+        return "设备已在 %s 开始取图（它自报的），图像还没到后端。" % t(d.get("begin_at_utc"))
+    if s == "ok":
+        est = "（估计值）" if d.get("captured_is_est") else ""
+        return ("采集成功：画面在 %s%s 拍下，%s 到达后端，端到端 %s ms。"
+                % (t(d.get("captured_at_utc")), est, t(d.get("received_at_utc")),
+                   d.get("latency_total_ms")))
+    if s == "occluded":
+        note = (d.get("quality_note") or "画面不可用").rstrip("。")
+        return ("画面采到了，但质量判定为不可用：%s。"
+                "这不算一次成功的环境查看 —— 请确认镜头没有被遮挡、对着的是要看的场景。" % note)
+    if s == "failed":
+        return "采集失败：%s（本次没有画面）。" % (d.get("error_message") or d.get("error_code") or "未知原因")
+    if s == "timeout":
+        return ("采集超时：%.0f 秒内设备没有送回图像，本次没有画面。"
+                "系统不会把上一次成功的画面当作这次的结果。"
+                % SNAPSHOT_TIMEOUT_S)
+    if s == "cancelled":
+        return ("这次请求在 %s 已取消，本次没有画面。设备之后若送回了图像，会另存为"
+                "「迟到图像」并标注，不算这次的结果。" % t(d.get("requested_at_utc")))
+    if s == "replayed":
+        return ("回放：这是 %s 采集的历史图像，不是本次采集。它不计入"
+                "「最近一次成功采集」。"
+                % t(d.get("captured_at_utc") or d.get("requested_at_utc")))
+    return "状态未知：%s" % s
+
+
+def snapshot_get(sid):
+    if not _snap_safe_id(sid):
+        return None
+    with _db_lock:
+        conn = db_connect()
+        try:
+            row = conn.execute("SELECT * FROM cam_snapshots WHERE snapshot_id=?",
+                               (sid,)).fetchone()
+        finally:
+            conn.close()
+    return _snap_row(row)
+
+
+def _snap_update(sid, **fields):
+    """按字段增量更新一行（同时 version+1）。空 dict 直接返回。"""
+    if not fields:
+        return
+    cols = ", ".join("%s=?" % k for k in fields)
+    vals = list(fields.values()) + [sid]
+    with _db_lock:
+        conn = db_connect()
+        try:
+            conn.execute("UPDATE cam_snapshots SET %s, version=version+1 "
+                         "WHERE snapshot_id=?" % cols, vals)
+            conn.commit()
+        finally:
+            conn.close()
+
+
+def snapshot_create(payload, remote=""):
+    """用户/教学请求一次按需采集。返回 (HTTP status, body)。"""
+    if not isinstance(payload, dict):
+        return HTTPStatus.BAD_REQUEST, _error("BAD_REQUEST", "报文必须是 JSON 对象")
+    device_id = payload.get("device_id")
+    if not device_id:
+        return HTTPStatus.BAD_REQUEST, _error("BAD_REQUEST", "缺少 device_id")
+    dev = _cam_norm_device(device_id)
+
+    mode = (payload.get("mode") or "qvga").lower()
+    if mode not in _SNAP_MODES:
+        return HTTPStatus.BAD_REQUEST, _error(
+            "SNAPSHOT_BAD_MODE", "mode 只能是 qvga 或 uxga（收到 %r）" % mode)
+    trigger = payload.get("trigger") or "user_request"
+    if trigger not in _SNAP_TRIGGERS:
+        return HTTPStatus.BAD_REQUEST, _error(
+            "SNAPSHOT_BAD_TRIGGER", "trigger 只能是 user_request / teaching_event")
+
+    # 在途去重：同一台设备同一时刻只允许一次在途采集。
+    #   ★ 不是性能考虑，是语义考虑：两次并发会让"哪张图属于哪次请求"变得不可判定。
+    with _snap_lock:
+        with _db_lock:
+            conn = db_connect()
+            try:
+                row = conn.execute(
+                    "SELECT * FROM cam_snapshots WHERE device_id=? AND state IN "
+                    "('pending','requested','capturing') "
+                    "ORDER BY requested_at_utc DESC LIMIT 1", (dev,)).fetchone()
+            finally:
+                conn.close()
+        if row is not None:
+            cur = _snap_row(row)
+            resp = _error("SNAPSHOT_BUSY",
+                          "该设备还有一次采集在路上（%s，状态 %s），不能并发再发一次"
+                          % (cur["snapshot_id"], cur["state"]), retryable=True)
+            resp["snapshot"] = cur
+            return HTTPStatus.CONFLICT, resp
+
+    frame = cam_latest_frame(dev)         # 不加 _snap_lock，避免与 cam 锁嵌套
+    now = datetime.now(timezone.utc)
+    now_iso = utc_now_iso()
+    sid = _snap_new_id()
+    has_stream = frame is not None
+    state = "pending" if has_stream else "failed"
+
+    rec = {
+        "snapshot_id": sid,
+        "device_id": dev,
+        "state": state,
+        "trigger_kind": trigger,
+        "source": "live",
+        "is_replay": 0, "simulated": 0, "counts_as_live": 0,
+        "mode": mode,
+        "requested_by": (payload.get("requested_by") or remote or "")[:120],
+        "reason": (payload.get("reason") or "")[:500],
+        "requested_at_utc": now_iso,
+        "requested_seq": frame["seq"] if frame else None,
+        "requested_frame_no": frame["frame_no"] if frame else None,
+        "error_code": None if has_stream else "NO_FRAME_STREAM",
+        "error_message": None if has_stream else
+        "该设备当前没有在上传画面（从未收到过预览帧），请求无法下发给它",
+        "version": 0,
+    }
+    with _db_lock:
+        conn = db_connect()
+        try:
+            cols = ", ".join(rec.keys())
+            qs = ", ".join("?" for _ in rec)
+            conn.execute("INSERT INTO cam_snapshots (%s) VALUES (%s)" % (cols, qs),
+                         list(rec.values()))
+            conn.commit()
+        finally:
+            conn.close()
+
+    if not has_stream:
+        # ★ 失败也要有记录：本周要求"采集失败保持明确状态"，空手回 409 是不够的，
+        #   历史里必须看得到"某人在某刻请求过，并且失败原因是设备没在上传画面"。
+        out = snapshot_get(sid)
+        resp = _error("NO_FRAME_STREAM",
+                      "该设备当前没有在上传画面，这次请求不可能被送到设备上；"
+                      "已记下一条失败记录（%s）。" % sid, retryable=True)
+        resp["snapshot"] = out
+        return HTTPStatus.CONFLICT, resp
+
+    with _snap_lock:
+        _snap_pending[dev] = {"id": sid, "mode": mode}
+    print("[snap] 请求 %s: device=%s mode=%s trigger=%s（等设备下一帧的响应下发）"
+          % (sid, dev, mode, trigger))
+    return HTTPStatus.ACCEPTED, {
+        "ok": True,
+        "server_time_utc": now_iso,
+        "snapshot": snapshot_get(sid),
+        "note": "请求已登记。真正的快门在设备端，请求会随下一次帧上传的响应下发；"
+                "图像带着 snapshot_id 回来才算这一次的（见 state 字段）。",
+    }
+
+
+def snapshot_take_pending(dev):
+    """该设备当前要下发的快照请求（由 /cam/frame 的响应带下去）。
+
+    ★ 不 pop —— 只要设备还没确认（状态仍是 pending/requested），**每一帧都带同一个 id**。
+      第 7 周 D3：设备在 NAT 后面，下行只有这一趟便车。如果"挂上一次就摘掉"，
+      那一帧的响应万一丢了（真机实测会 ESP_ERR_HTTP_CONNECT / -1），请求就凭空消失，
+      前端只能显示"采集超时"，而设备其实一直好好的 —— 把链路抖动说成了设备问题。
+      at-least-once 投递 + 设备按 id 去重，比"恰好一次"可信得多。
+    ★ 状态一旦离开 pending/requested（设备 begin / 上传 / 失败 / 超时 / 取消），
+      这里就把队列条目清掉，不会无限重发。
+    """
+    with _snap_lock:
+        cur = _snap_pending.get(dev)
+    if not cur:
+        return None
+    sid = cur.get("id")
+    rec = snapshot_get(sid)
+    if rec is None or rec["state"] not in ("pending", "requested"):
+        with _snap_lock:
+            cur2 = _snap_pending.get(dev)
+            if cur2 and cur2.get("id") == sid:
+                _snap_pending.pop(dev, None)
+        return None
+    return {"id": sid, "mode": rec.get("mode") or cur.get("mode")}
+
+
+def snapshot_mark_delivered(sid, delivered_seq=None):
+    """请求确实随帧响应发给了设备 —— 这是服务端可观测的事实，不是推断。
+
+    ★ 顺手把 baseline_seq 抬到"下发那一帧"的序号：
+      设备如果偷懒把**刚上传的那一帧**原样当成本次结果交回来，
+      它的 seq 等于 baseline_seq，会被陈旧判据拦住。
+      只有在下发之后**再取一帧**，seq 才会严格更大。
+    """
+    rec = snapshot_get(sid)
+    if not rec or rec["state"] != "pending":
+        return rec
+    base = max(int(rec.get("requested_seq") or 0), int(delivered_seq or 0))
+    _snap_update(sid, state="requested", delivered_at_utc=utc_now_iso(),
+                 baseline_seq=base or None)
+    return snapshot_get(sid)
+
+
+def snapshot_require_open(sid, action):
+    """公共前置：取记录并确认它还处于可被推进的状态。"""
+    rec = snapshot_get(sid)
+    if rec is None:
+        return None, (HTTPStatus.NOT_FOUND, _error(
+            "SNAPSHOT_NOT_FOUND", "没有这个快照请求: %s" % sid, retryable=False))
+    if rec["state"] not in _SNAP_OPEN:
+        return rec, None
+    return rec, None
+
+
+def snapshot_begin(sid, payload):
+    """设备自报"我已经开始取图了"（best-effort，失败不影响主链路）。"""
+    rec, err = snapshot_require_open(sid, "begin")
+    if err:
+        return err
+    if rec["state"] in _SNAP_OPEN:
+        _snap_update(sid, state="capturing", begin_at_utc=utc_now_iso())
+        rec = snapshot_get(sid)
+    return HTTPStatus.OK, {"ok": True, "snapshot_id": sid, "state": rec["state"]}
+
+
+def snapshot_fail(sid, payload):
+    """设备明确回报失败（取帧失败、相机重建失败……）。"""
+    if not _snap_safe_id(sid):
+        return HTTPStatus.NOT_FOUND, _error("SNAPSHOT_NOT_FOUND", "没有这个快照请求")
+    rec = snapshot_get(sid)
+    if rec is None:
+        return HTTPStatus.NOT_FOUND, _error(
+            "SNAPSHOT_NOT_FOUND", "没有这个快照请求: %s" % sid)
+    if rec["state"] not in _SNAP_OPEN:
+        resp = _error("SNAPSHOT_ALREADY_FINAL",
+                      "这次请求已经收尾（%s），设备回报的失败不再改写终局" % rec["state"])
+        resp["snapshot"] = rec
+        return HTTPStatus.CONFLICT, resp
+    code = ((payload or {}).get("error_code") or "CAPTURE_FAILED")[:64]
+    msg = ((payload or {}).get("error_message") or "设备取图失败（未说明原因）")[:400]
+    _snap_update(sid, state="failed", error_code=code, error_message=msg,
+                 received_at_utc=utc_now_iso(),
+                 latency_total_ms=int((datetime.now(timezone.utc)
+                                       - (_snap_parse_iso(rec["requested_at_utc"])
+                                          or datetime.now(timezone.utc))).total_seconds() * 1000))
+    print("[snap] %s 设备回报失败: %s / %s" % (sid, code, msg))
+    return HTTPStatus.OK, {"ok": True, "snapshot": snapshot_get(sid)}
+
+
+def snapshot_accept_image(sid, jpeg, meta, remote=""):
+    """设备把这一次的图像送回来（body = 原始 JPEG）。
+
+    ★ 这是本周所有红线集中落地的位置：
+      · 序号不比请求时刻新 → 拒绝（陈旧帧不得算本次采集）
+      · 已经收尾（超时/取消） → 只存为「迟到图像」，终局一个字段都不改
+      · 已经成功过 → 409，后到的图不许覆盖已确认的那一张
+    """
+    if not _snap_safe_id(sid):
+        return HTTPStatus.NOT_FOUND, _error("SNAPSHOT_NOT_FOUND", "没有这个快照请求")
+    recv_dt = datetime.now(timezone.utc)
+    recv_iso = utc_now_iso()
+    rec = snapshot_get(sid)
+    if rec is None:
+        return HTTPStatus.NOT_FOUND, _error(
+            "SNAPSHOT_NOT_FOUND", "没有这个快照请求: %s（图像必须带有效的 snapshot_id）" % sid)
+
+    tail = {"snapshot_id": sid, "state": rec["state"]}
+
+    if rec["state"] not in _SNAP_OPEN:
+        if rec["state"] in ("timeout", "cancelled"):
+            # ★ R2：终局不改。图像照样存下来（证据不能丢），但明确标为迟到。
+            rel, _ = _snap_save_file(rec["device_id"], sid, jpeg, suffix="-late")
+            _snap_update(sid, late_at_utc=recv_iso,
+                         late_sha256=hashlib.sha256(jpeg).hexdigest(),
+                         late_byte_len=len(jpeg), late_filename=rel)
+            print("[snap] %s 收到迟到图像(%d 字节)：终局仍是 %s，不算本次结果"
+                  % (sid, len(jpeg), rec["state"]))
+            out = snapshot_get(sid)
+            return HTTPStatus.OK, {
+                "ok": True, "accepted": False, "late": True,
+                "server_time_utc": recv_iso,
+                "message": "这次请求已经是 %s 终局；这张图另存为「迟到图像」，"
+                           "不会改写结论，也不计入成功采集。" % rec["state"],
+                "snapshot": out,
+            }
+        resp = _error("SNAPSHOT_ALREADY_FINAL",
+                      "这次请求已经收尾（%s），后到的图像不能覆盖已确认的那一张" % rec["state"])
+        resp["snapshot"] = rec
+        return HTTPStatus.CONFLICT, resp
+
+    # ---- R1：陈旧帧拦截 ----
+    # ★ 基线取"请求登记时"与"下发那一帧"里更晚的那个：
+    #   前者挡住"重发请求之前的旧图"，后者挡住"把下发那一帧本身当结果交回来"。
+    seq = meta.get("seq")
+    base = rec.get("baseline_seq")
+    if base is None:
+        base = rec.get("requested_seq")
+    if base is not None and seq is not None and seq <= base:
+        with _db_lock:
+            conn = db_connect()
+            try:
+                conn.execute("UPDATE cam_snapshots SET stale_rejects=stale_rejects+1, "
+                             "version=version+1 WHERE snapshot_id=?", (sid,))
+                conn.commit()
+            finally:
+                conn.close()
+        print("[snap] %s 拒收陈旧帧：上传 seq=%s，基线 seq=%s" % (sid, seq, base))
+        resp = _error("SNAPSHOT_STALE_IMAGE",
+                      "送回来的帧序号(%s)不比基准(%s)新 —— 这不是请求之后重新取到的画面，"
+                      "不能算作这次采集的结果" % (seq, base), retryable=False,
+                      requested_seq=base, got_seq=seq)
+        resp["snapshot"] = snapshot_get(sid)
+        return HTTPStatus.BAD_REQUEST, resp
+
+    # ---- 质量度量（从字节里量，不猜）----
+    q = img_quality.analyze_jpeg(jpeg)
+    verdict, why = img_quality.looks_occluded(q)
+    state = "occluded" if verdict == "occluded" else "ok"
+    if verdict == "usable":
+        why = "画面可用：" + why
+
+    simulated = 1 if str(meta.get("sim") or "").lower() in ("1", "true", "yes") else 0
+    counts = 0 if simulated else 1
+
+    rel, _ = _snap_save_file(rec["device_id"], sid, jpeg)
+    digest = hashlib.sha256(jpeg).hexdigest()
+
+    req_dt = _snap_parse_iso(rec["requested_at_utc"]) or recv_dt
+    upload_ms = meta.get("upload_ms") or 0
+    try:
+        upload_ms = max(0, min(int(upload_ms), 600000))
+    except (TypeError, ValueError):
+        upload_ms = 0
+    rx_ms = meta.get("rx_ms") or 0
+    try:
+        rx_ms = max(0, min(int(rx_ms), 600000))
+    except (TypeError, ValueError):
+        rx_ms = 0
+    # ★ 快门时刻 = 到达时刻 − 设备自测的"取帧→开始发请求"(upload_ms) − 服务端量到的
+    #   "开始收 body→收完"(rx_ms)。两段都必须减：
+    #   只减 upload_ms 会得到 0ms 级别的差，等于宣称"快门就在到达那一刻"——
+    #   那是把估计当精确（真机第一次跑就露出这个马脚：cap == total == 11513ms）。
+    # ★ 因此 captured_is_est 恒为 1：设备没有与服务器对齐的时钟，这终究是推算值，
+    #   误差上界是"连接建立 + 首字节前的那点排队"，量级几十毫秒（QVGA）。
+    back_ms = upload_ms + rx_ms
+    captured_dt = recv_dt - timedelta(milliseconds=back_ms) if back_ms else recv_dt
+    is_est = 1
+    if captured_dt < req_dt:
+        # 设备自报的耗时把快门推到了请求之前：物理上不可能，说明这个估计不可信，
+        # ★ 不要"修"成一个好看的数字，直接退回"以到达时刻为准"并如实标注。
+        captured_dt = req_dt
+        is_est = 0
+
+    total_ms = int((recv_dt - req_dt).total_seconds() * 1000)
+    cap_ms = int((captured_dt - req_dt).total_seconds() * 1000)
+
+    _snap_update(
+        sid,
+        state=state,
+        captured_at_utc=captured_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+        captured_is_est=is_est,
+        received_at_utc=recv_iso,
+        width=meta.get("w"), height=meta.get("h"),
+        byte_len=len(jpeg), sha256=digest, filename=rel,
+        device_uptime_ms=meta.get("uptime_ms"),
+        upload_ms=upload_ms,
+        rx_ms=rx_ms,
+        quality_json=json.dumps(q, ensure_ascii=False),
+        quality_verdict=verdict,
+        quality_note=why,
+        latency_total_ms=total_ms,
+        latency_capture_ms=cap_ms,
+        simulated=simulated,
+        counts_as_live=counts,
+        error_code=None, error_message=None,
+    )
+    print("[snap] %s 采集完成: %s %sx%s %d 字节 quality=%s mean=%.1f std=%.1f "
+          "cap=%sms total=%sms live=%d sim=%d"
+          % (sid, state, meta.get("w"), meta.get("h"), len(jpeg),
+             verdict, (q.get("mean_luma") or 0), (q.get("luma_std") or 0),
+             cap_ms, total_ms, counts, simulated))
+    out = snapshot_get(sid)
+    return HTTPStatus.OK, {"ok": True, "accepted": True, "server_time_utc": recv_iso,
+                           "snapshot": out}
+
+
+def snapshot_cancel(sid, reason="user_cancel", by=""):
+    if not _snap_safe_id(sid):
+        return HTTPStatus.NOT_FOUND, _error("SNAPSHOT_NOT_FOUND", "没有这个快照请求")
+    rec = snapshot_get(sid)
+    if rec is None:
+        return HTTPStatus.NOT_FOUND, _error(
+            "SNAPSHOT_NOT_FOUND", "没有这个快照请求: %s" % sid)
+    if rec["state"] not in _SNAP_OPEN:
+        resp = _error("SNAPSHOT_ALREADY_FINAL",
+                      "这次请求已经是 %s 终局，不能再取消" % rec["state"])
+        resp["snapshot"] = rec
+        return HTTPStatus.CONFLICT, resp
+    with _snap_lock:
+        for k, v in list(_snap_pending.items()):
+            if (v or {}).get("id") == sid:
+                _snap_pending.pop(k, None)
+    _snap_update(sid, state="cancelled",
+                 error_code="USER_CANCELLED",
+                 error_message="用户取消（%s）" % (reason or "user_cancel")[:120],
+                 note=(rec.get("note") or "") + " | 取消人: %s" % (by or "unknown")[:120])
+    return HTTPStatus.OK, {"ok": True, "snapshot": snapshot_get(sid)}
+
+
+def snapshot_replay(payload, remote=""):
+    """回放：用**已授权的真实历史图像**做练习，明确标为回放。
+
+    ★ 这是本周的备用路径，两条纪律不能松：
+      ① captured_at_utc 必须是**那张历史图像原本的采集时刻**，不能写成"现在"，
+         否则界面上会变成"刚拍的一张"——那就是伪造。
+      ② counts_as_live 恒为 0，且不计入"最近一次成功采集"。
+    """
+    payload = payload or {}
+    device_id = payload.get("device_id")
+    if not device_id:
+        return HTTPStatus.BAD_REQUEST, _error("BAD_REQUEST", "缺少 device_id")
+    dev = _cam_norm_device(device_id)
+
+    photo_id = payload.get("photo_id")
+    with _db_lock:
+        conn = db_connect()
+        try:
+            if photo_id:
+                row = conn.execute("SELECT * FROM cam_photos WHERE photo_id=?",
+                                   (photo_id,)).fetchone()
+            else:
+                row = conn.execute(
+                    "SELECT * FROM cam_photos WHERE device_id=? "
+                    "ORDER BY created_at_utc DESC, rowid DESC LIMIT 1",
+                    (dev,)).fetchone()
+        finally:
+            conn.close()
+    if row is None:
+        return HTTPStatus.NOT_FOUND, _error(
+            "PHOTO_NOT_FOUND",
+            "没有可回放的历史照片（%s）。先让设备拍一张，或指定 photo_id。"
+            % ("photo_id=%s" % photo_id if photo_id else "device=%s" % dev))
+
+    base = os.path.abspath(CAM_DIR)
+    full = os.path.abspath(os.path.join(base, row["filename"]))
+    if not full.startswith(base + os.sep) or not os.path.isfile(full):
+        return HTTPStatus.NOT_FOUND, _error("PHOTO_MISSING", "照片记录存在但文件不在磁盘上")
+    with open(full, "rb") as f:
+        jpeg = f.read()
+
+    q = img_quality.analyze_jpeg(jpeg)
+    verdict, why = img_quality.looks_occluded(q)
+    sid = _snap_new_id()
+    rel, _ = _snap_save_file(dev, sid, jpeg)
+    now_iso = utc_now_iso()
+    note = ("回放：这不是一次新的采集。图像来自 %s，采集于 %s（%dx%d，%d 字节），"
+            "仅用于练习与演示。" % (row["photo_id"], row["created_at_utc"],
+                                    row["width"] or 0, row["height"] or 0, row["byte_len"]))
+    rec = {
+        "snapshot_id": sid, "device_id": dev, "state": "replayed",
+        "trigger_kind": "replay", "source": "replay",
+        "is_replay": 1, "simulated": 0, "counts_as_live": 0,
+        "mode": "replay",
+        "requested_by": (payload.get("requested_by") or remote or "")[:120],
+        "reason": (payload.get("reason") or "回放练习")[:500],
+        "requested_at_utc": now_iso,
+        "requested_seq": None, "requested_frame_no": None,
+        # ★ 原始采集时刻，不是"现在"
+        "captured_at_utc": row["created_at_utc"],
+        "captured_is_est": 0,
+        "received_at_utc": now_iso,
+        "width": row["width"], "height": row["height"],
+        "byte_len": len(jpeg), "sha256": hashlib.sha256(jpeg).hexdigest(),
+        "filename": rel,
+        "quality_json": json.dumps(q, ensure_ascii=False),
+        "quality_verdict": verdict,
+        "quality_note": why,
+        "replay_of_photo_id": row["photo_id"],
+        "note": note,
+    }
+    with _db_lock:
+        conn = db_connect()
+        try:
+            conn.execute("INSERT INTO cam_snapshots (%s) VALUES (%s)"
+                         % (", ".join(rec.keys()), ", ".join("?" for _ in rec)),
+                         list(rec.values()))
+            conn.commit()
+        finally:
+            conn.close()
+    print("[snap] 回放 %s ← 照片 %s（%s）" % (sid, row["photo_id"], row["created_at_utc"]))
+    return HTTPStatus.OK, {"ok": True, "snapshot": snapshot_get(sid)}
+
+
+def snapshot_list(device_id=None, limit=20, state=None):
+    try:
+        limit = max(1, min(int(limit), 200))
+    except (TypeError, ValueError):
+        limit = 20
+    sql = "SELECT * FROM cam_snapshots WHERE 1=1"
+    args = []
+    if device_id:
+        sql += " AND device_id=?"
+        args.append(_cam_norm_device(device_id))
+    if state:
+        sql += " AND state=?"
+        args.append(state)
+    sql += " ORDER BY requested_at_utc DESC, rowid DESC LIMIT ?"
+    args.append(limit)
+    with _db_lock:
+        conn = db_connect()
+        try:
+            rows = conn.execute(sql, args).fetchall()
+        finally:
+            conn.close()
+    items = [_snap_row(r) for r in rows]
+    return HTTPStatus.OK, {"ok": True, "count": len(items), "snapshots": items}
+
+
+def snapshot_summary(device_id=None):
+    """汇总。★ live_ok / live_occluded / simulated / replayed 必须分开，不许合成一个"成功数"。
+
+    为什么非要分开：
+      · `live_ok`        = 真机、按这次请求、新取的帧、画面可用 —— 这才是"看到环境了"；
+      · `live_occluded`  = 真机也真的拍到了，但画面不可用（疑似遮挡），不算看到环境；
+      · `simulated`      = 协议模拟器（无硬件时的演练），可以跑通链路，但不是这台机器拍的；
+      · `replayed`       = 回放历史图像（练习），时间戳还是当年那一刻。
+    把四者合成一个"成功次数"，界面就再也没法回答本周那个问题。
+    """
+    where, args = "", []
+    if device_id:
+        where, args = " WHERE device_id=?", [_cam_norm_device(device_id)]
+    with _db_lock:
+        conn = db_connect()
+        try:
+            rows = conn.execute("SELECT * FROM cam_snapshots%s" % where, args).fetchall()
+        finally:
+            conn.close()
+    by_state = {}
+    live_ok, live_occluded, sim, rep = 0, 0, 0, 0
+    last_live_ok, last_any = None, None
+    for r in rows:
+        by_state[r["state"]] = by_state.get(r["state"], 0) + 1
+        d = _snap_row(r)
+        last_any = last_any or d
+        if d["is_replay"]:
+            rep += 1
+        elif d["simulated"]:
+            sim += 1
+        elif d["counts_as_live"] and d["state"] == "ok":
+            live_ok += 1
+            # rows 已按时间倒序，第一条命中的就是"最近一次真正可用的真机采集"
+            last_live_ok = last_live_ok or d
+        elif d["counts_as_live"] and d["state"] == "occluded":
+            live_occluded += 1
+    return HTTPStatus.OK, {
+        "ok": True,
+        "device_id": _cam_norm_device(device_id) if device_id else None,
+        "server_time_utc": utc_now_iso(),
+        "total": len(rows),
+        "live_ok": live_ok,                 # 真机 + 本次请求 + 新帧 + 画面可用
+        "live_occluded": live_occluded,     # 真机拍到了，但画面不可用
+        "simulated": sim,                   # 协议模拟器（演练，不充数）
+        "replayed": rep,                    # 回放历史图像（练习，不充数）
+        "by_state": by_state,
+        "last_live_ok": last_live_ok,       # ★ 排除 replay / simulated / occluded
+        "last_any": last_any,
+        "in_flight": [d for d in (_snap_row(r) for r in rows)
+                      if d["state"] in _SNAP_OPEN],
+        "settings": {
+            "timeout_s": SNAPSHOT_TIMEOUT_S,
+            "keep_min": SNAPSHOT_KEEP_MIN,
+            "retention_days": SNAPSHOT_RETENTION_DAYS,
+        },
+    }
+
+
+def snapshot_image_path(sid, late=False):
+    rec = snapshot_get(sid)
+    if rec is None:
+        return None, None
+    rel = rec.get("late_filename") if late else rec.get("filename")
+    if not rel:
+        return rec, None
+    base = os.path.abspath(SNAPSHOT_DIR)
+    full = os.path.abspath(os.path.join(base, rel))
+    if not full.startswith(base + os.sep) or not os.path.isfile(full):
+        return rec, None
+    return rec, full
+
+
+def snapshot_timeout_scan():
+    """把过了 deadline 还在等的请求置 timeout。★ 只改等待中的行，绝不碰已收尾的。"""
+    cutoff = datetime.now(timezone.utc) - timedelta(seconds=SNAPSHOT_TIMEOUT_S)
+    cutoff_iso = cutoff.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+    n = 0
+    with _db_lock:
+        conn = db_connect()
+        try:
+            rows = conn.execute(
+                "SELECT snapshot_id, device_id, state, delivered_at_utc "
+                "FROM cam_snapshots WHERE state IN ('pending','requested','capturing') "
+                "AND requested_at_utc < ?", (cutoff_iso,)).fetchall()
+            for r in rows:
+                if r["delivered_at_utc"]:
+                    code, msg = ("DEVICE_SLOW",
+                                 "请求已下发给设备，但 %.0f 秒内没有送回图像"
+                                 % SNAPSHOT_TIMEOUT_S)
+                else:
+                    code, msg = ("NO_FRAME_STREAM",
+                                 "设备没有上传画面，请求一直没能下发；%.0f 秒后判定失败"
+                                 % SNAPSHOT_TIMEOUT_S)
+                conn.execute(
+                    "UPDATE cam_snapshots SET state='timeout', error_code=?, "
+                    "error_message=?, version=version+1 WHERE snapshot_id=?",
+                    (code, msg, r["snapshot_id"]))
+                n += 1
+            if n:
+                conn.commit()
+        finally:
+            conn.close()
+    if n:
+        print("[snap] 本轮 %d 条请求超时（%.0fs 未回）" % (n, SNAPSHOT_TIMEOUT_S))
+        with _snap_lock:
+            dead = [k for k, v in _snap_pending.items()
+                    if (snapshot_get((v or {}).get("id") or "") or {}).get("state")
+                    not in _SNAP_OPEN]
+            for k in dead:
+                _snap_pending.pop(k, None)
+    return n
+
+
+def snapshot_prune(device_id=None, dry_run=False, keep_min=None, days=None):
+    """按保留策略清理图像文件。
+
+    ★ 三条不可动摇：
+      ① **只删图像文件，记录永不删** —— "某天某人请求过一次并且失败"这个事实
+         比一张过期的图重要得多；
+      ② 每台设备最近 keep_min 张"带图"的快照无论如何都保留；
+      ③ 只删超过保留期的。dry_run 时只报告将删哪些，不动磁盘。
+    """
+    keep_min = SNAPSHOT_KEEP_MIN if keep_min is None else max(0, int(keep_min))
+    days = SNAPSHOT_RETENTION_DAYS if days is None else max(0, int(days))
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).strftime(
+        "%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+    sql = ("SELECT snapshot_id, device_id, requested_at_utc, filename, late_filename "
+           "FROM cam_snapshots WHERE (filename IS NOT NULL OR late_filename IS NOT NULL) "
+           "AND image_pruned=0")
+    args = []
+    if device_id:
+        sql += " AND device_id=?"
+        args.append(_cam_norm_device(device_id))
+    sql += " ORDER BY requested_at_utc DESC, rowid DESC"
+    with _db_lock:
+        conn = db_connect()
+        try:
+            rows = conn.execute(sql, args).fetchall()
+        finally:
+            conn.close()
+
+    seen = {}
+    victims = []
+    for r in rows:
+        dev = r["device_id"]
+        seen[dev] = seen.get(dev, 0) + 1
+        if seen[dev] <= keep_min:
+            continue                      # 保留下限：最近 N 张永远不删
+        if r["requested_at_utc"] >= cutoff:
+            continue                      # 还在保留期内
+        victims.append(r)
+
+    removed, bytes_freed, bytes_would = [], 0, 0
+    base = os.path.abspath(SNAPSHOT_DIR)
+    for r in victims:
+        gone = []
+        for key in ("filename", "late_filename"):
+            rel = r[key]
+            if not rel:
+                continue
+            full = os.path.abspath(os.path.join(base, rel))
+            if not full.startswith(base + os.sep):
+                continue
+            if os.path.isfile(full):
+                try:
+                    size = os.path.getsize(full)
+                    if dry_run:
+                        bytes_would += size       # ★ dry_run 不删、也不许报"已释放"
+                    else:
+                        os.remove(full)
+                        bytes_freed += size
+                    gone.append(rel)
+                except OSError as e:
+                    print("[snap] 清理失败 %s: %r" % (rel, e))
+        if gone:
+            if not dry_run:
+                with _db_lock:
+                    conn = db_connect()
+                    try:
+                        conn.execute("UPDATE cam_snapshots SET image_pruned=1, "
+                                     "version=version+1 WHERE snapshot_id=?",
+                                     (r["snapshot_id"],))
+                        conn.commit()
+                    finally:
+                        conn.close()
+            removed.append({"snapshot_id": r["snapshot_id"], "files": gone})
+
+    return HTTPStatus.OK, {
+        "ok": True, "dry_run": bool(dry_run),
+        "keep_min": keep_min, "retention_days": days, "cutoff_utc": cutoff,
+        "scanned": len(rows), "pruned": len(removed),
+        "bytes_freed": bytes_freed,          # 真的删掉了多少（dry_run 恒为 0）
+        "bytes_would_free": bytes_would,     # dry_run 时"如果执行会释放多少"
+        "items": removed,
+        "note": "只删图像文件；记录（含失败/超时/回放）一条都不删。",
+    }
+
+
+def _snapshot_scanner():
+    while True:
+        try:
+            snapshot_timeout_scan()
+        except Exception as e:                               # noqa: BLE001
+            print("[snap] 超时扫描异常: %r" % (e,))
+        time.sleep(1.0)
+
+
+# ===========================================================================
 # 第 4 周：把后端能力注入语言助手（助手只通过这 7 个回调接触数据与设备）
 #   ★ 助手不直接 import 本文件：避免 `python server.py` 与 `python -m backend.server`
 #     两种启动方式下模块名不同导致的"两份单例"问题。
@@ -2828,7 +3763,11 @@ class Handler(BaseHTTPRequestHandler):
                         # 第 4 周：摄像头预览帧与照片（body 是原始 JPEG，不是 JSON）
                         "/api/v1/cam/frame", "/api/v1/cam/photo",
                         # 设备启动时自报摄像头可用性（JSON）——用于区分"没联网"与"摄像头没接"
-                        "/api/v1/cam/state")
+                        "/api/v1/cam/state",
+                        # 第 7 周：按需快照的设备侧三个上报口（begin / upload / fail）
+                        "/api/v1/cam/snapshot/begin",
+                        "/api/v1/cam/snapshot/upload",
+                        "/api/v1/cam/snapshot/fail")
 
         if path in DEVICE_PATHS:
             if not self._token_ok():
@@ -2847,6 +3786,11 @@ class Handler(BaseHTTPRequestHandler):
         #   若走 JSON 解析，每张图都会 400（"JSON 解析失败"）——这是很容易踩的坑。
         if path in ("/api/v1/cam/frame", "/api/v1/cam/photo"):
             self._handle_cam_upload(path, remote)
+            return
+
+        # ★ 第 7 周：快照图像同样是原始 JPEG，必须走同一条二进制分支。
+        if path == "/api/v1/cam/snapshot/upload":
+            self._handle_snapshot_upload(remote)
             return
 
         # ★ 第 5 周：语音 turn 的 body 是**原始 WAV 二进制**，同理必须先分流。
@@ -2896,6 +3840,26 @@ class Handler(BaseHTTPRequestHandler):
             handler = lambda: cam_report_state(payload)
         elif path == "/api/v1/cam/capture":
             handler = lambda: self._cam_capture_api(payload)
+        # ---- 第 7 周：按需环境快照 ----
+        elif path == "/api/v1/cam/snapshot":
+            handler = lambda: snapshot_create(payload, remote)
+        elif path == "/api/v1/cam/snapshot/replay":
+            handler = lambda: snapshot_replay(payload, remote)
+        elif path == "/api/v1/cam/snapshot/prune":
+            handler = lambda: snapshot_prune(
+                (payload or {}).get("device_id"),
+                bool((payload or {}).get("dry_run")),
+                (payload or {}).get("keep_min"),
+                (payload or {}).get("days"))
+        elif path == "/api/v1/cam/snapshot/begin":
+            handler = lambda: snapshot_begin((payload or {}).get("snapshot_id"), payload)
+        elif path == "/api/v1/cam/snapshot/fail":
+            handler = lambda: snapshot_fail((payload or {}).get("snapshot_id"), payload)
+        elif path.startswith("/api/v1/cam/snapshot/") and path.endswith("/cancel"):
+            sid = path[len("/api/v1/cam/snapshot/"):-len("/cancel")]
+            handler = lambda: snapshot_cancel(
+                sid, (payload or {}).get("reason") or "user_cancel",
+                (payload or {}).get("requested_by") or remote)
         # ---- 第 4 周：受限工具语言助手（自然语言查询 / 请求采集）----
         elif path == "/api/v1/nl/query":
             handler = lambda: nl_assistant.handle_query(payload)
@@ -3093,14 +4057,71 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         if path.endswith("/frame"):
-            want_photo, is_new = cam_store_frame(device_id, raw, seq, w, h, remote)
+            want_photo, is_new, snap = cam_store_frame(device_id, raw, seq, w, h, remote)
             # ★ 拍照指令就搭在这条响应里：设备收到 capture=true 会立刻切 UXGA 拍一张
+            # ★ 第 7 周的按需快照同样搭这条便车，但带 id 与 mode：
+            #   snapshot_id 为空字符串表示"这次没有快照请求"，设备不得自作主张取图。
             self._send_json(HTTPStatus.OK,
                             {"ok": True, "seq": seq, "bytes": len(raw),
-                             "capture": bool(want_photo), "new": bool(is_new)})
+                             "capture": bool(want_photo), "new": bool(is_new),
+                             "snapshot_id": (snap or {}).get("id") or "",
+                             "snapshot_mode": (snap or {}).get("mode") or ""})
         else:
             rec = cam_save_photo(device_id, raw, w, h, seq, remote)
             self._send_json(HTTPStatus.OK, {"ok": True, "photo": rec})
+
+    def _handle_snapshot_upload(self, remote):
+        """POST /api/v1/cam/snapshot/upload —— body = 属于**某一次请求**的原始 JPEG。
+
+        参数（query string）：
+            sid         必填，服务端在帧响应里下发的 snapshot_id
+            device_id   必填
+            seq         必填，设备端帧序号（★ 必须大于请求时刻的序号，否则视为陈旧帧）
+            w / h       图像声明宽高
+            upload_ms   设备自测"取帧 → 开始发请求"的毫秒数
+            uptime_ms   设备开机毫秒（不做时钟对齐，只作证据）
+            sim=1       协议模拟器自报（★ 这类快照 counts_as_live=0）
+
+        ★ rx_ms 由服务端自己量（不信任客户端）：从开始读 body 到读齐的耗时。
+          快门时刻要靠它往前推 —— 只减设备自报的 upload_ms 会得到 0ms 级误差，
+          等于把"估计"写成"精确"。
+        """
+        t_rx0 = time.time()
+        raw = self._read_raw(CAM_MAX_BODY)
+        rx_ms = int((time.time() - t_rx0) * 1000)
+        if raw is None:
+            return
+        qs = parse_qs(urlparse(self.path).query)
+
+        def q(name, default=None):
+            v = qs.get(name)
+            return v[0] if v else default
+
+        sid = q("sid")
+        if not sid:
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False, "error": "缺少 sid（图像必须带 snapshot_id 回来）"})
+            return
+        if not _jpeg_looks_valid(raw):
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False, "error": "不是完整的 JPEG（缺 SOI/EOI）"})
+            return
+        try:
+            meta = {
+                "seq": int(q("seq", "0") or 0),
+                "w": int(q("w", "0") or 0),
+                "h": int(q("h", "0") or 0),
+                "upload_ms": int(q("upload_ms", "0") or 0),
+                "uptime_ms": int(q("uptime_ms", "0") or 0),
+                "rx_ms": rx_ms,
+                "sim": q("sim", ""),
+            }
+        except ValueError:
+            self._send_json(HTTPStatus.BAD_REQUEST,
+                            {"ok": False, "error": "seq/w/h/upload_ms 必须是整数"})
+            return
+        status, resp = snapshot_accept_image(sid, raw, meta, remote)
+        self._send_json(status, resp)
 
     def _cam_capture_api(self, payload):
         """网页点「拍照」——只登记请求，真正按快门在设备端。"""
@@ -3245,10 +4266,55 @@ class Handler(BaseHTTPRequestHandler):
                 "X-Photo-Bytes": row["byte_len"],
                 "Content-Disposition": 'inline; filename="%s.jpg"' % row["photo_id"],
             })
+        # ---- 第 7 周：按需环境快照 ----
+        #   ★ 顺序要紧：/snapshots（列表）与 /snapshot/summary 必须排在
+        #     startswith("/api/v1/cam/snapshot/") 之前，否则会被当成某个 id。
+        elif path == "/api/v1/cam/snapshots":
+            self._send_json(*snapshot_list(q("device_id"), q("limit", "20"),
+                                           q("state")))
+        elif path == "/api/v1/cam/snapshot/summary":
+            self._send_json(*snapshot_summary(q("device_id")))
+        elif path.startswith("/api/v1/cam/snapshot/") and path.endswith("/image"):
+            sid = path[len("/api/v1/cam/snapshot/"):-len("/image")]
+            late = (q("late", "0") or "0") in ("1", "true", "yes")
+            rec, full = snapshot_image_path(sid, late=late)
+            if rec is None:
+                self._send_json(HTTPStatus.NOT_FOUND,
+                                _error("SNAPSHOT_NOT_FOUND",
+                                       "没有这个快照请求: %s" % sid))
+                return
+            if full is None:
+                # ★ R3：取不到**本次**图像时绝不回退到上一张成功的图。
+                #   409 而不是 404：这条请求是存在的，只是它没有图像。
+                #   用 404 会让人以为"这个 id 不存在"，从而去找错方向。
+                state = rec["state"]
+                self._send_json(HTTPStatus.CONFLICT, _error(
+                    "SNAPSHOT_NO_IMAGE",
+                    "这次请求没有图像可取（state=%s）。%s" % (state, rec["explain"]),
+                    retryable=(state in ("pending", "requested", "capturing")),
+                    state=state, snapshot=rec))
+                return
+            with open(full, "rb") as f:
+                data = f.read()
+            self._send_bytes(HTTPStatus.OK, data, "image/jpeg", {
+                "X-Snapshot-Id": rec["snapshot_id"],
+                "X-Snapshot-State": rec["state"],
+                "X-Snapshot-Captured-At": rec["captured_at_utc"] or "",
+                "X-Snapshot-Sha256": (rec["late_sha256"] if late else rec["sha256"]) or "",
+                "X-Snapshot-Late": "1" if late else "0",
+            })
+        elif path.startswith("/api/v1/cam/snapshot/"):
+            sid = path[len("/api/v1/cam/snapshot/"):]
+            rec = snapshot_get(sid)
+            if rec is None:
+                self._send_json(HTTPStatus.NOT_FOUND,
+                                _error("SNAPSHOT_NOT_FOUND",
+                                       "没有这个快照请求: %s" % sid))
+                return
+            self._send_json(HTTPStatus.OK, {"ok": True, "snapshot": rec})
         # ---- 第 4 周：语言助手的工具清单与解析器状态（不含任何密钥）----
         elif path == "/api/v1/nl/tools":
-            self._send_json(*nl_assistant.tools_info())
-        # ---- 第 5 周：语音链路 ----
+            self._send_json(*nl_assistant.tools_info())        # ---- 第 5 周：语音链路 ----
         elif path == "/api/v1/voice/health":
             # 引擎是否就绪、跑在哪个端口、什么引擎/模型（不含密钥）
             self._send_json(*voice_pipeline.health())
@@ -3371,6 +4437,10 @@ def main():
     #   绝不改 devices.last_status、绝不写 sensor_error（超时 ≠ 硬件故障）。
     threading.Thread(target=_timeout_scanner, daemon=True).start()
 
+    # 第 7 周：快照超时扫描（1s 一次）。★ 只把"等待中"的请求置 timeout，
+    #   已收尾的记录一个字段都不动（迟到图像另行标注，见 snapshot_accept_image）。
+    threading.Thread(target=_snapshot_scanner, daemon=True).start()
+
     srv = ThreadingHTTPServer((HOST, PORT), Handler)
     srv.daemon_threads = True
     print("=" * 70)
@@ -3411,6 +4481,22 @@ def main():
     print("             GET  /api/v1/cam/photos                照片列表（落盘 + SHA256）")
     print("             GET  /api/v1/cam/photo/<id>.jpg        下载原图")
     print("  上限     : 单张 %d 字节；照片目录 %s" % (CAM_MAX_BODY, CAM_DIR))
+    print("  ---- 第 7 周：按需环境快照（一次请求 = 一次采集事实）----")
+    print("  请求侧   : POST /api/v1/cam/snapshot           {device_id,mode,trigger,reason}")
+    print("             GET  /api/v1/cam/snapshot/<sid>     单条状态（含三个时刻与 explain）")
+    print("             GET  /api/v1/cam/snapshot/<sid>/image  本次图像（没有就是 409，不回退）")
+    print("             POST /api/v1/cam/snapshot/<sid>/cancel 取消（之后到的图记为迟到）")
+    print("             GET  /api/v1/cam/snapshots          历史（区分 live / simulated / replay）")
+    print("             GET  /api/v1/cam/snapshot/summary   汇总（last_live_ok 排除回放与模拟）")
+    print("             POST /api/v1/cam/snapshot/replay    回放历史图像（练习，counts_as_live=0）")
+    print("             POST /api/v1/cam/snapshot/prune     按保留策略清理图像文件（记录不删）")
+    print("  设备侧   : POST /api/v1/cam/snapshot/begin   设备自报「开始取图」")
+    print("             POST /api/v1/cam/snapshot/upload  body=JPEG，必须带 sid 且 seq 比请求时新")
+    print("             POST /api/v1/cam/snapshot/fail    设备明确回报失败")
+    print("  红线     : 陈旧帧(seq<=请求时序号) 400 拒收；超时/取消后到的图只记迟到；"
+          "回放与模拟 counts_as_live=0")
+    print("  保留     : 超时 %.0fs；每设备至少保留 %d 张；%d 天后清理图像文件（记录永久保留）"
+          % (SNAPSHOT_TIMEOUT_S, SNAPSHOT_KEEP_MIN, SNAPSHOT_RETENTION_DAYS))
     print("=" * 70)
     try:
         srv.serve_forever()

@@ -1,0 +1,74 @@
+================================================================================================
+第 7 周 · 按需环境快照 端到端探针
+后端: http://127.0.0.1:8000
+================================================================================================
+  OK   S0.1 后端在线 | 200
+  OK   S0.2 摄像头状态接口可用 | 200
+  保留参数: 超时 35s / 每设备最少保留 10 张 / 保留 7 天
+
+★【SIM】本次起一个**协议模拟设备**：simdevice-lab-01（原因：命令行指定了 --sim）
+        模拟设备上传时带 sim=1，后端会把 simulated=1 / counts_as_live=0 落库，
+        所以下面的结论只证明**协议与状态机**成立，不是这台机器拍到的画面。
+  OK   S0.3 模拟设备已开始上传预览帧 | 1
+
+【S1】正常一轮（mode=qvga，请求之后重新取一帧）
+  OK   S1.1 请求被接受 202 | (202, "{'ok': True, 'server_time_utc': '2026-10-29T06:58:46.274Z', 'snapshot': {'snapshot_id': 'snp_20261029T065846-2a05bb', 'd")
+  OK   S1.2 拿到 snapshot_id | snp_20261029T065846-2a05bb
+      state=ok  quality=usable  captured=2026-10-29T06:58:46.340Z  received=2026-10-29T06:58:46.341Z
+      端到端 67 ms（其中快门前后 66 ms）  simulated=True  counts_as_live=False
+  OK   S1.3 终局是 ok 或 occluded（两者都是真的拍到了；occluded 只是画面不可用） | ok
+  OK   S1.4 有快门时刻，且标出了是否为估计值
+  OK   S1.5 请求时刻 ≤ 快门时刻 ≤ 到达时刻 | ('2026-10-29T06:58:46.274Z', '2026-10-29T06:58:46.340Z', '2026-10-29T06:58:46.341Z')
+  OK   S1.6 有质量度量（可复算） | usable
+  OK   S1.7 取图 200 且是 JPEG | (200, b'\xff\xd8\xff\xdb')
+  OK   S1.8 响应头带 snapshot id | snp_20261029T065846-2a05bb
+  OK   S1.9 counts_as_live 与 simulated 互斥（模拟不算真机） | (True, False)
+
+【S2】把旧帧当本次结果交回来 → 必须拒收
+  OK   S2.1 第二个请求被接受 202 | 202
+  OK   S2.1b 请求已被取走但还没回图（停在 requested） | ('requested', 'baseline_seq=5')
+  OK   S2.2 旧序号 → 400 | (400, "{'ok': False, 'server_time_utc': '2026-10-29T06:58:48.272Z', 'error': {'code': 'SNAPSHOT_STALE_IMAGE', 'message': '送回来的帧")
+  OK   S2.3 错误码 SNAPSHOT_STALE_IMAGE | {'code': 'SNAPSHOT_STALE_IMAGE', 'message': '送回来的帧序号(5)不比基准(5)新 —— 这不是请求之后重新取到的画面，不能算作这次采集的结果', 'retryable': False, 'requested_seq': 5, 'got_seq': 5}
+  OK   S2.4 状态没有被改写 | requested
+
+【S3】设备不响应 → 超时终局（最多等 35s）→ 之后到的图只记迟到
+  OK   S3.1 请求被接受 202 | 202
+  OK   S3.2 到达终局 timeout | timeout
+  OK   S3.3 错误码是 DEVICE_SLOW | DEVICE_SLOW
+  OK   S3.4 ★ 取图 409（不回退到上一次成功的图） | 409
+  OK   S3.5 返回体里没有 JPEG 字节 | b'{"ok'
+  OK   S3.6 迟到图像被收下但标 late | (200, "{'ok': True, 'accepted': False, 'late': True, 'server_time_utc': '2026-10-29T06:59:24.654Z', 'messag")
+  OK   S3.7 ★ 终局仍然是 timeout（迟到不改结论） | timeout
+  OK   S3.8 迟到图像单独留档 | simdevice-lab-01/snp_20261029T065848-4d4705-late.jpg
+  OK   S3.9 counts_as_live 仍是 False
+
+【S4】镜头被遮挡 → occluded（有质量证据，不算看到环境）
+  OK   S4.1 请求被接受 202 | 202
+      state=occluded  mean_luma=18.0  std=0.0  note=画面几乎没有任何明暗变化（块间标准差 0.0 < 3.0），典型表现是镜头被挡住/盖住或对着纯色表面
+  OK   S4.2 状态=occluded | occluded
+  OK   S4.3 quality_verdict=occluded
+  OK   S4.4 记录里有可复算的亮度指标 | 18.0
+  OK   S4.5 遮挡的图仍然可取（证据不藏） | 200
+
+【S5】回放历史图像 → 标为 replayed，不算本次采集
+  OK   S5.1 回放 200 | 200
+  OK   S5.2 状态=replayed | replayed
+  OK   S5.3 ★ counts_as_live=False
+  OK   S5.4 ★ 快门时刻=原照片采集时刻（不是现在） | ('2026-10-19T07:04:03.113Z', '2026-10-19T07:04:03.113Z')
+  OK   S5.5 ★ 回放不改变「最近一次成功采集」 | ('snp_20261029T063728-d5b615', 'snp_20261029T063728-d5b615')
+  OK   S5.6 replayed 计数 +1 | 15
+
+【S6】汇总口径：真机 / 模拟 / 回放 分开
+  OK   S6.1 模拟轮的结论被单独计数（simulated 增加） | (13, 11)
+  OK   S6.2 ★ 模拟一条都没混进 live_ok（本轮 live_ok 没变） | (25, 34)
+      live_ok=25 live_occluded=9 simulated=13 replayed=15 by_state={'ok': 32, 'timeout': 13, 'occluded': 15, 'replayed': 15, 'cancelled': 19}
+  OK   S6.3 last_live_ok 若不是空，状态必须是 ok | ok
+  OK   S6.4 汇总带保留参数 | {'timeout_s': 35.0, 'keep_min': 10, 'retention_days': 7}
+
+★【SIM】模拟设备共上传 147 帧，处理快照请求 142 次（errors=0）
+   本次全部结论来自协议演练：证明「请求—下发—取图—上传—落盘」这条链路成立，
+   不证明这台机器的摄像头真的拍到了什么（那要接上板子、去掉 --sim 再跑一次）。
+
+================================================================================================
+探针全部通过：41 项断言
+================================================================================================

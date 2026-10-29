@@ -43,6 +43,12 @@
 #include "app_config.h"
 #include "uploader.h"          // uploader_wifi_is_connected()：没网就不空转上传
 
+// ★ 兜底：开关宏缺失时 `#if` 会按 0 处理，快照分支被**静默**编译掉、编译还能过
+//   （第 3 周 D7 的同一个坑）。让它在这里直接报错，问题留在编译期。
+#ifndef APP_CAM_SNAPSHOT_ENABLE
+#error "app_config.h 必须定义 APP_CAM_SNAPSHOT_ENABLE（0/1），否则按需快照会被静默编译掉"
+#endif
+
 #if APP_TLS_TRUST_MODE == 1
 #include "server_ca_pem.h"     // 与 uploader 共用同一份真实 CA 链（HTTPS 时才用到）
 #endif
@@ -59,6 +65,14 @@ static cam_status_t      s_status = { 0 };
 static volatile bool     s_photo_pending = false;
 static volatile bool     s_photo_busy = false;   // 正在拍（避免重入）
 static volatile bool     s_quit_logged = false;
+
+// 第 7 周：待执行的按需快照（id 由后端下发，原样带回去）
+static volatile bool     s_snap_pending = false;
+static char              s_snap_sid[64] = { 0 };
+static char              s_snap_mode[16] = { 0 };
+// ★ 已经处理过的那一个 id。后端为了抗丢包会**每帧重复下发同一个 id**（at-least-once），
+//   设备必须按 id 去重，否则同一个请求会被连拍好几次（第 7 周 D3 的另一半）。
+static char              s_snap_last_sid[64] = { 0 };
 
 static esp_http_client_handle_t s_client = NULL;
 static char s_client_url[160] = { 0 };
@@ -336,32 +350,155 @@ static void build_camera_config(camera_config_t *cfg, framesize_t fs, int fb_cou
 }
 
 // ===========================================================================
-// 拍照：以 UXGA 重新初始化相机（不是只 set_framesize）
+// 第 7 周：按需环境快照 —— 只有后端下发了 snapshot_id 才取图
 //
-// ★ 为什么不能只 set_framesize：帧缓冲/DMA 节点是 esp_camera_init 时按
+// ★ 为什么不能直接复用预览帧：预览流是"一直开着"的，用户点「查看环境」时
+//   内存里那一帧是在**请求之前**就拍好的。把它当成本次结果，就是典型的
+//   "上次成功图像被标成本次成功"。所以快照必须是请求之后**重新取的一帧**，
+//   并且带着后端给的 id 回来 —— id 对不上、序号不比基线新，一律不算。
+//
+// ★ 为什么默认 QVGA：用户要的是"现在环境长什么样"，不是一张存档原图。
+//   QVGA 取帧 + 上传约 0.2~0.5 秒，能立刻证明"这是请求之后拍的"；
+//   需要清晰画面时后端可以指定 mode=uxga，代价是重建相机约 8.7 秒（第 4 周实测）。
+// ===========================================================================
+
+/** 从 JSON 响应里抠出一个字符串字段（设备侧不引入 JSON 库，只认这一种形状）。
+ *
+ *  ★ 必须同时容忍 `"k":"v"` 和 `"k": "v"` 两种写法。
+ *    后端是 Python 的 `json.dumps`，冒号后**带空格**；设备侧如果只认紧凑写法，
+ *    就会**静默**匹配不到任何东西 —— 症状是"后端日志显示已下发 id，板子却像没收到"，
+ *    而固件不报任何错（第 7 周 D1，和第 4 周 `"capture": true` 是同一个坑）。
+ *    第 4 周之所以没暴露，是因为那里手写了两个 strstr 变体；这里统一在解析器里解决。
+ */
+static bool json_find_str(const char *json, const char *key, char *out, size_t out_len)
+{
+    if (out && out_len) out[0] = '\0';
+    if (!json || !key || !out || out_len < 2) return false;
+
+    char needle[40];
+    snprintf(needle, sizeof(needle), "\"%s\"", key);
+    const char *p = strstr(json, needle);
+    if (!p) return false;
+    p += strlen(needle);
+    while (*p == ' ' || *p == '\t') p++;
+    if (*p != ':') return false;          // 命中的是别的字段（或是数组里的同名串）
+    p++;
+    while (*p == ' ' || *p == '\t') p++;
+    if (*p != '"') return false;          // 值不是字符串（如 null / true / 数字）→ 当作没有
+    p++;
+    const char *e = strchr(p, '"');
+    if (!e) return false;
+    size_t n = (size_t)(e - p);
+    if (n == 0 || n + 1 > out_len) return false;
+    memcpy(out, p, n);
+    out[n] = '\0';
+    return true;
+}
+
+/** 上报"开始取图"（best-effort：失败了照常取图，只是后端少一个中间态）。 */
+static void snapshot_report_begin(const cam_state_t *st, const char *sid)
+{
+#if APP_CAM_SNAPSHOT_REPORT_BEGIN
+    char json[192];
+    snprintf(json, sizeof(json),
+             "{\"snapshot_id\":\"%s\",\"device_id\":\"%s\",\"uptime_ms\":%lld}",
+             sid, st->device_id ? st->device_id : "unknown",
+             (long long)(esp_timer_get_time() / 1000));
+    char url[200];
+    build_url(url, sizeof(url), "/api/v1/cam/snapshot/begin");
+    char resp[96] = { 0 };
+    if (post_bytes(url, (const uint8_t *)json, strlen(json), "application/json",
+                   3000, resp, sizeof(resp)) != ESP_OK) {
+        ESP_LOGW(TAG, "快照 begin 上报失败（不影响取图）");
+    }
+#else
+    (void)st; (void)sid;
+#endif
+}
+
+/** 明确回报"这次取不到图"，而不是让后端一直等到超时。 */
+static void snapshot_report_fail(const cam_state_t *st, const char *sid,
+                                 const char *code, const char *msg)
+{
+    char json[288];
+    snprintf(json, sizeof(json),
+             "{\"snapshot_id\":\"%s\",\"device_id\":\"%s\",\"error_code\":\"%s\","
+             "\"error_message\":\"%s\"}",
+             sid, st->device_id ? st->device_id : "unknown",
+             code ? code : "CAPTURE_FAILED", msg ? msg : "");
+    char url[200];
+    build_url(url, sizeof(url), "/api/v1/cam/snapshot/fail");
+    char resp[96] = { 0 };
+    post_bytes(url, (const uint8_t *)json, strlen(json), "application/json",
+               4000, resp, sizeof(resp));
+    ESP_LOGW(TAG, "已回报快照失败: %s (%s)", code, msg);
+}
+
+/**
+ * 上传一张图像：sid != NULL 走快照口（带 id/seq/耗时），否则走第 4 周的拍照口。
+ * @param t_get_us 取帧那一刻的 esp_timer（用于算"取帧→开始上传"的耗时）
+ */
+static esp_err_t upload_image(const cam_state_t *st, const camera_fb_t *fb,
+                              const char *sid, int64_t t_get_us, int timeout_ms)
+{
+    char suffix[288];
+    if (sid) {
+        // 取帧→准备上传的耗时：后端拿它估计"快门时刻"（received - upload_ms）。
+        // ★ 这里刻意**不**把整趟 POST 的耗时算进去 —— 那是上行传输，算进去会让
+        //   快门时刻被推得太早。真实的误差上限就是这趟上行，文档里如实写明。
+        int prep_ms = (int)((esp_timer_get_time() - t_get_us) / 1000);
+        if (prep_ms < 0) prep_ms = 0;
+        snprintf(suffix, sizeof(suffix),
+                 "/api/v1/cam/snapshot/upload?sid=%s&device_id=%s&seq=%lu&w=%u&h=%u"
+                 "&upload_ms=%d&uptime_ms=%lld",
+                 sid, st->device_id ? st->device_id : "unknown",
+                 (unsigned long)s_seq, (unsigned)fb->width, (unsigned)fb->height,
+                 prep_ms, (long long)(t_get_us / 1000));
+    } else {
+        snprintf(suffix, sizeof(suffix),
+                 "/api/v1/cam/photo?device_id=%s&w=%u&h=%u&seq=%lu",
+                 st->device_id ? st->device_id : "unknown",
+                 (unsigned)fb->width, (unsigned)fb->height, (unsigned long)s_seq);
+    }
+
+    char full[352];
+    build_url(full, sizeof(full), suffix);
+    char resp[256] = { 0 };
+    return post_bytes(full, fb->buf, fb->len, "image/jpeg", timeout_ms,
+                      resp, sizeof(resp));
+}
+
+// ===========================================================================
+// 取一张图并上传（预览分辨率 / UXGA 重建）
+//
+// ★ 为什么 UXGA 不能只 set_framesize：帧缓冲/DMA 节点是 esp_camera_init 时按
 //   recv_size = width*height/5 一次性分配好的。QVGA 建的是 16KB 级缓冲，
 //   直接切到 UXGA（JPEG 常 100~200KB）会 FB-OVF、NO-EOI，最后取帧超时——
 //   真机实测就是这个现象。要真拍到 1600x1200，必须让驱动按 UXGA 重新分配。
-// ★ 代价：拍照期间预览会中断约 0.5~1 秒，拍完立刻以 QVGA 重建并恢复推流。
+// ★ 代价：UXGA 期间预览中断约 9 秒，拍完立刻以 QVGA 重建并恢复推流。
 // ===========================================================================
-static bool capture_photo(const cam_state_t *st)
+static bool capture_at(const cam_state_t *st, bool uxga, const char *sid)
 {
-    ESP_LOGI(TAG, "收到拍照指令 → 以 %dx%d 重建相机（DMA 缓冲要按目标分辨率重分配）",
-             APP_CAM_PHOTO_W, APP_CAM_PHOTO_H);
-
-    // ① 停掉预览实例（本函数在 cam_task 内调用，不存在并发取帧）
-    esp_camera_deinit();
-
-    camera_config_t cfg;
-    build_camera_config(&cfg, FRAMESIZE_UXGA, 1);
-    esp_err_t err = esp_camera_init(&cfg);
     bool ok = false;
+    int64_t t_get_us = 0;
+    camera_config_t cfg;
 
-    if (err != ESP_OK) {
-        status_set_error("UXGA 初始化失败: %s", esp_err_to_name(err));
-        ESP_LOGW(TAG, "UXGA 初始化失败（%s）：本次无照片，绝不拿预览帧冒充",
-                 esp_err_to_name(err));
-    } else {
+    if (uxga) {
+        ESP_LOGI(TAG, "收到%s → 以 %dx%d 重建相机（DMA 缓冲要按目标分辨率重分配）",
+                 sid ? "快照(UXGA)指令" : "拍照指令", APP_CAM_PHOTO_W, APP_CAM_PHOTO_H);
+
+        // ① 停掉预览实例（本函数在 cam_task 内调用，不存在并发取帧）
+        esp_camera_deinit();
+        build_camera_config(&cfg, FRAMESIZE_UXGA, 1);
+        esp_err_t err = esp_camera_init(&cfg);
+        if (err != ESP_OK) {
+            status_set_error("UXGA 初始化失败: %s", esp_err_to_name(err));
+            ESP_LOGW(TAG, "UXGA 初始化失败（%s）：本次无图像，绝不拿预览帧冒充",
+                     esp_err_to_name(err));
+            if (sid) snapshot_report_fail(st, sid, "UXGA_INIT_FAILED",
+                                          esp_err_to_name(err));
+            goto restore;
+        }
         sensor_t *s = esp_camera_sensor_get();
         if (s) s->set_quality(s, APP_CAM_PHOTO_QUALITY);
 
@@ -371,42 +508,47 @@ static bool capture_photo(const cam_state_t *st)
             if (warm) esp_camera_fb_return(warm);
             vTaskDelay(pdMS_TO_TICKS(80));
         }
-
-        camera_fb_t *fb = esp_camera_fb_get();
-        if (!fb) {
-            status_set_error("UXGA 取帧失败");
-            ESP_LOGW(TAG, "UXGA 取帧失败（本次无照片，不补拍假的）");
-        } else {
-            char url[200];
-            snprintf(url, sizeof(url),
-                     "/api/v1/cam/photo?device_id=%s&w=%u&h=%u&seq=%lu",
-                     st->device_id ? st->device_id : "unknown",
-                     (unsigned)fb->width, (unsigned)fb->height, (unsigned long)(s_seq + 1));
-            char full[280];
-            build_url(full, sizeof(full), url);
-
-            char resp[256] = { 0 };
-            esp_err_t perr = post_bytes(full, fb->buf, fb->len, "image/jpeg",
-                                        APP_CAM_PHOTO_TIMEOUT_MS, resp, sizeof(resp));
-            if (perr == ESP_OK) {
-                ok = true;
-                if (s_lock) xSemaphoreTake(s_lock, portMAX_DELAY);
-                s_status.photos_taken++;
-                if (s_lock) xSemaphoreGive(s_lock);
-                ESP_LOGI(TAG, "照片已上传: %ux%u, %u 字节",
-                         (unsigned)fb->width, (unsigned)fb->height, (unsigned)fb->len);
-            } else {
-                status_set_error("照片上传失败 (%s)", esp_err_to_name(perr));
-                ESP_LOGW(TAG, "照片上传失败: %s", esp_err_to_name(perr));
-            }
-            esp_camera_fb_return(fb);
-        }
     }
+
+    s_seq++;                      // ★ 快照的序号必须严格大于请求时的基线
+    t_get_us = esp_timer_get_time();
+    camera_fb_t *fb = esp_camera_fb_get();
+    if (!fb) {
+        status_set_error("%s取帧失败", uxga ? "UXGA" : "快照");
+        ESP_LOGW(TAG, "%s取帧失败（本次无图像，不补拍假的）", uxga ? "UXGA" : "快照");
+        if (sid) snapshot_report_fail(st, sid, "GRAB_FAILED",
+                                      "esp_camera_fb_get() 返回空（取帧失败）");
+        goto restore;
+    }
+
+    {
+        int timeout = uxga ? APP_CAM_PHOTO_TIMEOUT_MS : APP_CAM_SNAPSHOT_TIMEOUT_MS;
+        esp_err_t perr = upload_image(st, fb, sid, t_get_us, timeout);
+        if (perr == ESP_OK) {
+            ok = true;
+            if (s_lock) xSemaphoreTake(s_lock, portMAX_DELAY);
+            if (sid) s_status.snapshots_taken++; else s_status.photos_taken++;
+            if (s_lock) xSemaphoreGive(s_lock);
+            ESP_LOGI(TAG, "%s已上传: %ux%u, %u 字节, seq=%lu",
+                     sid ? "快照" : "照片", (unsigned)fb->width, (unsigned)fb->height,
+                     (unsigned)fb->len, (unsigned long)s_seq);
+        } else {
+            status_set_error("%s上传失败 (%s)", sid ? "快照" : "照片",
+                             esp_err_to_name(perr));
+            ESP_LOGW(TAG, "%s上传失败: %s", sid ? "快照" : "照片", esp_err_to_name(perr));
+            if (sid) snapshot_report_fail(st, sid, "UPLOAD_FAILED",
+                                          esp_err_to_name(perr));
+        }
+        esp_camera_fb_return(fb);
+    }
+
+restore:
+    if (!uxga) return ok;
 
     // ③ 无论成败都必须恢复预览：一直停在 UXGA 会让 5fps 推流变成 0.5fps
     esp_camera_deinit();
     build_camera_config(&cfg, FRAMESIZE_QVGA, 2);
-    err = esp_camera_init(&cfg);
+    esp_err_t err = esp_camera_init(&cfg);
     if (err == ESP_OK) {
         if (s_lock) xSemaphoreTake(s_lock, portMAX_DELAY);
         s_status.ready  = true;
@@ -426,6 +568,20 @@ static bool capture_photo(const cam_state_t *st)
     }
     return ok;
 }
+
+static bool capture_photo(const cam_state_t *st)
+{
+    return capture_at(st, true, NULL);
+}
+
+static void capture_snapshot(const cam_state_t *st, const char *sid, const char *mode)
+{
+    bool uxga = (mode && strcmp(mode, "uxga") == 0);
+    snapshot_report_begin(st, sid);
+    ESP_LOGI(TAG, "按需快照 %s（mode=%s）→ 请求之后重新取一帧", sid, uxga ? "uxga" : "qvga");
+    capture_at(st, uxga, sid);
+}
+
 
 // ===========================================================================
 // 采集/上传任务
@@ -477,7 +633,10 @@ static void cam_task(void *arg)
         char url[300];
         build_url(url, sizeof(url), suffix);
 
-        char resp[192] = { 0 };
+        // ★ 384 而不是 192：这条响应里塞了 server_time_utc + snapshot_id + snapshot_mode，
+        //   实测 184 字节左右，留 192 只剩几个字节余量 —— 一旦后端多加一个字段，
+        //   snapshot_id 就会被截断成半截字符串，设备拿它去上传只会收到 404。
+        char resp[384] = { 0 };
         esp_err_t err = post_bytes(url, fb->buf, fb->len, "image/jpeg",
                                    APP_CAM_FRAME_TIMEOUT_MS, resp, sizeof(resp));
 
@@ -506,6 +665,29 @@ static void cam_task(void *arg)
                 strstr(resp, "\"capture\": true") != NULL) {
                 s_photo_pending = true;
             }
+
+            // ---- 3b) 第 7 周：响应里夹带的按需快照请求 ----
+            //   ★ 只有当后端真的下发了一个 snapshot_id 才取图。
+            //     snapshot_id 为空 = 没有请求，"顺手拍一张"是绝对不允许的。
+#if APP_CAM_SNAPSHOT_ENABLE
+            {
+                char sid[64];
+                char smode[16];
+                if (json_find_str(resp, "snapshot_id", sid, sizeof(sid))) {
+                    if (!json_find_str(resp, "snapshot_mode", smode, sizeof(smode))) {
+                        smode[0] = '\0';
+                    }
+                    if (!s_snap_pending && strcmp(sid, s_snap_last_sid) != 0) {
+                        snprintf(s_snap_sid, sizeof(s_snap_sid), "%s", sid);
+                        snprintf(s_snap_mode, sizeof(s_snap_mode), "%s", smode);
+                        snprintf(s_snap_last_sid, sizeof(s_snap_last_sid), "%s", sid);
+                        s_snap_pending = true;
+                        ESP_LOGI(TAG, "后端请求按需快照: %s（mode=%s）", sid,
+                                 smode[0] ? smode : "qvga");
+                    }
+                }
+            }
+#endif
         } else {
             s_fail_streak++;
             if (s_lock) xSemaphoreTake(s_lock, portMAX_DELAY);
@@ -523,6 +705,16 @@ static void cam_task(void *arg)
             capture_photo(&st);
             s_photo_busy = false;
         }
+
+        // ---- 4b) 第 7 周：按需快照（同样必须在 fb_return 之后取新帧）----
+#if APP_CAM_SNAPSHOT_ENABLE
+        if (s_snap_pending && !s_photo_busy) {
+            s_snap_pending = false;
+            s_photo_busy = true;          // 借用同一个"相机正忙"标志，避免与拍照抢相机
+            capture_snapshot(&st, s_snap_sid, s_snap_mode);
+            s_photo_busy = false;
+        }
+#endif
 
         // ---- 5) 严格按预览帧率走（上传耗时计入周期）----
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(period_ms));

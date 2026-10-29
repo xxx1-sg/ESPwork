@@ -1081,3 +1081,110 @@ body.is-stale .axis-card{ border-style: dashed; }
   font-family: var(--mono); font-size:10.5px; padding:1px 4px;
   border-radius:5px; background: var(--track); color: var(--text-2);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   第 7 周：按需环境快照（一次请求 = 一次采集事实）
+   -----------------------------------------------------------------------
+   视觉上刻意与上面的"实时预览"分开：预览是暗底视频区，快照是浅底卡片，
+   因为它回答的是另一个问题（"我请求的那一次拍到了没有"）。
+   状态色一律走既有变量：ok=绿 / warn=橙 / bad=红 / replay=紫。
+   ═══════════════════════════════════════════════════════════════════════ */
+.snap-block{
+  margin-top:16px; padding:14px;
+  border:1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--card-strong);
+}
+.snap-head{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.snap-title{ font-size:13px; font-weight:660; color:var(--text); }
+.snap-spacer{ flex:1 1 auto; }
+
+.snap-chip{
+  font-size:11px; padding:3px 10px; border-radius:999px;
+  border:1px solid var(--line-2); color:var(--text-2); background:var(--track);
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.snap-chip.s-idle{ color:var(--muted); }
+.snap-chip.s-wait{ color:var(--primary); border-color:var(--primary-line); background:var(--primary-soft); }
+.snap-chip.s-busy{ color:var(--warn); border-color:rgba(207,132,25,.35); background:rgba(207,132,25,.08); }
+.snap-chip.s-ok{ color:var(--ok); border-color:rgba(15,168,126,.35); background:rgba(15,168,126,.08); }
+.snap-chip.s-warn{ color:var(--warn); border-color:rgba(207,132,25,.45); background:rgba(207,132,25,.12); }
+.snap-chip.s-bad{ color:var(--bad); border-color:rgba(224,67,67,.35); background:rgba(224,67,67,.08); }
+.snap-chip.s-replay{ color:var(--primary-2); border-color:rgba(139,92,246,.38); background:rgba(139,92,246,.10); }
+
+.snap-body{
+  display:grid; grid-template-columns: minmax(240px, 1.1fr) minmax(240px, 1fr);
+  gap:14px; margin-top:12px; align-items:start;
+}
+.snap-shot{
+  position:relative; aspect-ratio:4/3; background:#0b0f18;
+  border:1px solid var(--line-2); border-radius:12px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.snap-img{ width:100%; height:100%; object-fit:contain; display:block; background:#0b0f18; }
+.snap-ph{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:6px; padding:18px 20px;
+  color:#93a0bb; text-align:center;
+}
+.snap-ph-title{ font-size:13.5px; font-weight:640; color:#cfd8ea; }
+.snap-ph-sub{ font-size:12px; color:#8b97b2; line-height:1.8; max-width:46ch; }
+
+.snap-info{ display:flex; flex-direction:column; gap:10px; min-width:0; }
+.snap-explain{
+  font-size:12.5px; line-height:1.75; color:var(--text-2);
+  padding:9px 11px; border-radius:10px; background:var(--track);
+  border-left:3px solid var(--primary-line);
+}
+.snap-times{ margin:0; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.snap-times div{
+  border:1px solid var(--line); border-radius:10px; background:var(--card-flat);
+  padding:7px 9px; min-width:0;
+}
+.snap-times dt{ font-size:10.5px; color:var(--muted); margin:0 0 2px; }
+.snap-times dd{ margin:0; font-size:12.5px; color:var(--text); font-variant-numeric:tabular-nums; }
+.snap-q{ font-size:11.5px; color:var(--muted); line-height:1.7; }
+.snap-replay{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.snap-hint{ font-size:11px; color:var(--muted); line-height:1.6; flex:1 1 180px; }
+.snap-hint code{
+  font-family:var(--mono); font-size:10.5px; padding:1px 4px;
+  border-radius:5px; background:var(--track); color:var(--text-2);
+}
+
+.snap-hist-head{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin:14px 0 8px; font-size:12.5px; color:var(--text-2);
+}
+.snap-hist{ display:flex; flex-direction:column; gap:6px; }
+.snap-row{
+  display:grid;
+  grid-template-columns: 88px 92px 46px minmax(0, 1fr) auto auto;
+  gap:8px; align-items:center;
+  padding:7px 10px; border:1px solid var(--line); border-radius:10px;
+  background:var(--card-flat); font-size:11.5px;
+}
+.snap-row .snap-badge{
+  font-size:10.5px; padding:2px 8px; border-radius:999px; text-align:center;
+  border:1px solid var(--line-2); color:var(--text-2); background:var(--track);
+}
+.snap-row.s-ok .snap-badge{ color:var(--ok); border-color:rgba(15,168,126,.35); background:rgba(15,168,126,.08); }
+.snap-row.s-warn .snap-badge{ color:var(--warn); border-color:rgba(207,132,25,.45); background:rgba(207,132,25,.12); }
+.snap-row.s-bad .snap-badge{ color:var(--bad); border-color:rgba(224,67,67,.35); background:rgba(224,67,67,.08); }
+.snap-row.s-replay .snap-badge{ color:var(--primary-2); border-color:rgba(139,92,246,.38); background:rgba(139,92,246,.10); }
+.snap-row-t{ font-variant-numeric:tabular-nums; color:var(--text-2); }
+.snap-row-kind{ font-size:10.5px; text-align:center; color:var(--muted); }
+.snap-row-kind.is-live{ color:var(--ok); }
+.snap-row-kind.is-sim{ color:var(--warn); }
+.snap-row-kind.is-replay{ color:var(--primary-2); }
+.snap-row-note{
+  color:var(--muted); font-size:11px; line-height:1.5;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.snap-open{ font-size:11px; color:var(--primary); text-decoration:none; }
+.snap-open.dim{ color:var(--muted); }
+.snap-open:hover{ text-decoration:underline; }
+.snap-view{ padding:2px 8px; font-size:10.5px; }
+@media (max-width:860px){
+  .snap-body{ grid-template-columns:1fr; }
+  .snap-row{ grid-template-columns: 84px 1fr 42px auto; }
+  .snap-row-note, .snap-open{ display:none; }
+}

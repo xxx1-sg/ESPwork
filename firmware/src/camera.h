@@ -43,6 +43,7 @@ typedef struct {
     uint16_t sensor_pid;      /**< OV2640 = 0x26；0 表示未探测到 */
     uint32_t frames_sent;     /**< 成功上传的预览帧总数 */
     uint32_t photos_taken;    /**< 成功上传的照片总数 */
+    uint32_t snapshots_taken; /**< 第 7 周：成功上传的按需快照总数 */
     uint32_t frame_errors;    /**< 预览帧上传失败次数（累计） */
     uint32_t last_seq;        /**< 最近一帧的序号（后端据此判断新旧） */
     int      last_w;          /**< 最近一帧实际宽度 */
