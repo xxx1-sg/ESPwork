@@ -9,7 +9,7 @@
 
 | 项目 | 说明 |
 |---|---|
-| 交付分支 | `feature/week5-voice-assistant` |
+| 交付分支 | `main`（与 `feature/week5-voice-assistant` 同一提交） |
 | 运行环境 | Windows 10/11（语音合成用系统 SAPI）；识别、任务、网页跨平台，Python 3.9+ |
 | 依赖 | 主后端 **零第三方依赖**；语音引擎只要 2 个包 + 1 个 44 MB 离线模型（`backend/requirements-voice.txt`） |
 | 本周新增 | 2 个后端模块（`voice_engine.py` / `voice_pipeline.py`）、1 个前端面板（`#voicePanel`）、1 张表（`voice_turns`）、3 套自检脚本 |
@@ -87,7 +87,7 @@
 ## 4. 三步跑起来
 
 ```bash
-git clone -b feature/week5-voice-assistant https://github.com/xxx1-sg/ESPwork.git
+git clone https://github.com/xxx1-sg/ESPwork.git
 cd ESPwork
 python backend/server.py          # 浏览器打开 http://127.0.0.1:8000/
 ```
@@ -253,10 +253,12 @@ python tools/check_web_contract.py --api http://127.0.0.1:8000   # 网页↔接�
 
 ---
 
-## 10. 关于这个分支
+## 10. 关于分支
 
-- 分支：`feature/week5-voice-assistant`，从 `feature/week4-nl-assistant` 继续；
-  主分支 `main` 保持第 1 周基线，按周分支便于逐周评审，最后再合并。
+- 主分支 `main` 已更新到本周（直接打开仓库看到的就是这一页），
+  各周的 `feature/*` 分支全部保留，方便按周单独评审：
+  `feature/week2-remote-collection` · `feature/week4-nl-assistant` · `feature/week5-voice-assistant`。
+- 本周的改动集中在 `feature/week5-voice-assistant`。
 - 本周的关键取舍：**宁可少说，也不多说**。识别不确定就承认不确定，任务没回执就说不知道，
   合成不了就标 `tone`，只有现场听到才算"听到"。
 - 想只看代码差异：`git diff feature/week4-nl-assistant --stat`；
