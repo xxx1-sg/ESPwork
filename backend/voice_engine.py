@@ -422,6 +422,21 @@ def tts_tone(text):
                   "note": "系统无可用音频输出设备，这是合成音占位，不是语音"}
 
 
+_FALLBACK_WARNED = set()
+
+
+def _warn_fallback_once(err):
+    """同类降级警告只打一次（按错误内容去重），避免刷屏淹没真正的诊断信息。"""
+    key = type(err).__name__ + ":" + str(err)[:200]
+    if key in _FALLBACK_WARNED:
+        return
+    _FALLBACK_WARNED.add(key)
+    sys.stderr.write(
+        "[voice] SAPI 合成不可用（%s），降级到 tone 合成音。\n"
+        "        这一轮记录里的 tts.engine 会是 'tone'，不是语音。\n"
+        "        同类警告本次只提示一次（每轮的事实仍逐条记在记录的 tts 段里）。\n" % (err,))
+
+
 def do_tts(text):
     if TTS_BACKEND == "none":
         raise RuntimeError("TTS 引擎未配置（VOICE_TTS_BACKEND=none）")
@@ -441,9 +456,12 @@ def do_tts(text):
         except Exception as e:
             if not TTS_FALLBACK:
                 raise RuntimeError("SAPI 合成失败：%s" % (e,))
-            sys.stderr.write(
-                "[voice] SAPI 合成不可用（%s），降级到 tone 合成音。\n"
-                "        这一轮记录里的 tts.engine 会是 'tone'，不是语音。\n" % (e,))
+            # ★ 只在第一次降级时说一次。理由：SAPI 不可用是**环境状态**，
+            #   一个自检跑下来会触发几十上百次，每轮都写两行 stderr 会把
+            #   真正的诊断信息淹掉（实测一次全量回归刷了几百行）。
+            #   第一次说清楚 + 之后静默，日志才可读；
+            #   每轮的事实仍然完整落在记录的 tts.engine/fallback_reason 里。
+            _warn_fallback_once(e)
             data, info = tts_tone(text)
             info["fallback_from"] = "sapi"
             info["fallback_reason"] = str(e)
